@@ -1,0 +1,21 @@
+<ion-view title="Detalle" ng-controller="ABooksDetailCtrl">
+	<ion-nav-buttons side="right">
+        <a class="button button-icon icon ion-home" href="#/"></a>
+    </ion-nav-buttons>
+	<ion-content class="padding">
+		<div class="list card">
+			<div class="item">
+				<h2>{{detail.Title}}</h2>
+				<p>{{detail.Author.Name}}</p>
+				<p>Duraci&oacute;n: {{detail.LengthHours}} horas {{detail.LengthMins}} minutos</p>
+			</div>
+			<div class="item item-body">
+				<p>{{detail.Comments}}
+				</p>
+			</div>
+			<button class="button button-full button-positive">
+  				Descargar
+			</button>
+		</div>		
+	</ion-content>
+</ion-view>

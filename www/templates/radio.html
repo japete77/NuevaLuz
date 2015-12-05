@@ -1,0 +1,18 @@
+<ion-view title="Radio" ng-controller="RadioCtrl">
+	<ion-nav-buttons side="right">
+        <a class="button button-icon icon ion-home" href="#/"></a>
+    </ion-nav-buttons>
+	<ion-content class="padding">
+		<ul class="list">
+			<li class="item item-toggle">
+				{{ radioOn ? 'Apagar' : 'Encender' }}
+				<label class="toggle toggle-balanced">
+				<input type="checkbox" ng-model="radioOn" ng-change="switchRadio()">
+				<div class="track">
+					<div class="handle"></div>
+				</div>
+				</label>
+			</li>
+		</ul>
+	</ion-content>
+</ion-view>

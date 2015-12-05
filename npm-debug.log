@@ -1,0 +1,812 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '-g',
+1 verbose cli   'ionic',
+1 verbose cli   'to',
+1 verbose cli   'update' ]
+2 info using npm@2.14.7
+3 info using node@v4.2.1
+4 verbose install initial load of /usr/local/lib/package.json
+5 verbose readDependencies loading dependencies from /usr/local/lib/package.json
+6 silly cache add args [ 'ionic', null ]
+7 verbose cache add spec ionic
+8 silly cache add args [ 'to', null ]
+9 verbose cache add spec to
+10 silly cache add args [ 'update', null ]
+11 verbose cache add spec update
+12 silly cache add parsed spec Result {
+12 silly cache add   raw: 'ionic',
+12 silly cache add   scope: null,
+12 silly cache add   name: 'ionic',
+12 silly cache add   rawSpec: '',
+12 silly cache add   spec: '*',
+12 silly cache add   type: 'range' }
+13 silly addNamed ionic@*
+14 verbose addNamed "*" is a valid semver range for ionic
+15 silly addNameRange { name: 'ionic', range: '*', hasData: false }
+16 silly mapToRegistry name ionic
+17 silly mapToRegistry using default registry
+18 silly mapToRegistry registry https://registry.npmjs.org/
+19 silly mapToRegistry uri https://registry.npmjs.org/ionic
+20 verbose addNameRange registry:https://registry.npmjs.org/ionic not in flight; fetching
+21 silly cache add parsed spec Result {
+21 silly cache add   raw: 'to',
+21 silly cache add   scope: null,
+21 silly cache add   name: 'to',
+21 silly cache add   rawSpec: '',
+21 silly cache add   spec: '*',
+21 silly cache add   type: 'range' }
+22 silly addNamed to@*
+23 verbose addNamed "*" is a valid semver range for to
+24 silly addNameRange { name: 'to', range: '*', hasData: false }
+25 silly mapToRegistry name to
+26 silly mapToRegistry using default registry
+27 silly mapToRegistry registry https://registry.npmjs.org/
+28 silly mapToRegistry uri https://registry.npmjs.org/to
+29 verbose addNameRange registry:https://registry.npmjs.org/to not in flight; fetching
+30 silly cache add parsed spec Result {
+30 silly cache add   raw: 'update',
+30 silly cache add   scope: null,
+30 silly cache add   name: 'update',
+30 silly cache add   rawSpec: '',
+30 silly cache add   spec: '*',
+30 silly cache add   type: 'range' }
+31 silly addNamed update@*
+32 verbose addNamed "*" is a valid semver range for update
+33 silly addNameRange { name: 'update', range: '*', hasData: false }
+34 silly mapToRegistry name update
+35 silly mapToRegistry using default registry
+36 silly mapToRegistry registry https://registry.npmjs.org/
+37 silly mapToRegistry uri https://registry.npmjs.org/update
+38 verbose addNameRange registry:https://registry.npmjs.org/update not in flight; fetching
+39 verbose request uri https://registry.npmjs.org/ionic
+40 verbose request no auth needed
+41 info attempt registry request try #1 at 10:10:51
+42 verbose request id c01c568be104e9a6
+43 http request GET https://registry.npmjs.org/ionic
+44 verbose request uri https://registry.npmjs.org/to
+45 verbose request no auth needed
+46 info attempt registry request try #1 at 10:10:51
+47 http request GET https://registry.npmjs.org/to
+48 verbose request uri https://registry.npmjs.org/update
+49 verbose request no auth needed
+50 info attempt registry request try #1 at 10:10:51
+51 http request GET https://registry.npmjs.org/update
+52 http 200 https://registry.npmjs.org/update
+53 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+53 verbose headers   etag: '"7Y8DBB3ASI3QFID32Q0E2UKZL"',
+53 verbose headers   'content-type': 'application/json',
+53 verbose headers   'cache-control': 'max-age=60',
+53 verbose headers   'content-length': '18036',
+53 verbose headers   'accept-ranges': 'bytes',
+53 verbose headers   date: 'Sat, 28 Nov 2015 09:10:52 GMT',
+53 verbose headers   via: '1.1 varnish',
+53 verbose headers   age: '0',
+53 verbose headers   connection: 'keep-alive',
+53 verbose headers   'x-served-by': 'cache-lhr6327-LHR',
+53 verbose headers   'x-cache': 'MISS',
+53 verbose headers   'x-cache-hits': '0',
+53 verbose headers   'x-timer': 'S1448701851.716744,VS0,VE308',
+53 verbose headers   vary: 'Accept' }
+54 silly get cb [ 200,
+54 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+54 silly get     etag: '"7Y8DBB3ASI3QFID32Q0E2UKZL"',
+54 silly get     'content-type': 'application/json',
+54 silly get     'cache-control': 'max-age=60',
+54 silly get     'content-length': '18036',
+54 silly get     'accept-ranges': 'bytes',
+54 silly get     date: 'Sat, 28 Nov 2015 09:10:52 GMT',
+54 silly get     via: '1.1 varnish',
+54 silly get     age: '0',
+54 silly get     connection: 'keep-alive',
+54 silly get     'x-served-by': 'cache-lhr6327-LHR',
+54 silly get     'x-cache': 'MISS',
+54 silly get     'x-cache-hits': '0',
+54 silly get     'x-timer': 'S1448701851.716744,VS0,VE308',
+54 silly get     vary: 'Accept' } ]
+55 verbose get saving update to /Users/Japete/.npm/registry.npmjs.org/update/.cache.json
+56 silly addNameRange number 2 { name: 'update', range: '*', hasData: true }
+57 silly addNameRange versions [ 'update',
+57 silly addNameRange   [ '0.1.0',
+57 silly addNameRange     '0.2.0',
+57 silly addNameRange     '0.3.0-beta',
+57 silly addNameRange     '0.3.1-beta',
+57 silly addNameRange     '0.3.2-beta',
+57 silly addNameRange     '0.3.3-beta',
+57 silly addNameRange     '0.3.3',
+57 silly addNameRange     '0.3.5',
+57 silly addNameRange     '0.3.6' ] ]
+58 silly addNamed update@0.3.6
+59 verbose addNamed "0.3.6" is a plain semver version for update
+60 silly mapToRegistry name update
+61 silly mapToRegistry using default registry
+62 silly mapToRegistry registry https://registry.npmjs.org/
+63 silly mapToRegistry uri https://registry.npmjs.org/update
+64 verbose addRemoteTarball https://registry.npmjs.org/update/-/update-0.3.6.tgz not in flight; adding
+65 verbose addRemoteTarball [ 'https://registry.npmjs.org/update/-/update-0.3.6.tgz',
+65 verbose addRemoteTarball   '11bcae2d5fe3413a5dd0910f424d6310e50c99e8' ]
+66 info retry fetch attempt 1 at 10:10:52
+67 info attempt registry request try #1 at 10:10:52
+68 http fetch GET https://registry.npmjs.org/update/-/update-0.3.6.tgz
+69 http 200 https://registry.npmjs.org/to
+70 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+70 verbose headers   etag: '"C0CKNCOJZFPGGLNP1OSQMTNDW"',
+70 verbose headers   'content-type': 'application/json',
+70 verbose headers   'cache-control': 'max-age=60',
+70 verbose headers   'content-length': '37266',
+70 verbose headers   'accept-ranges': 'bytes',
+70 verbose headers   date: 'Sat, 28 Nov 2015 09:10:52 GMT',
+70 verbose headers   via: '1.1 varnish',
+70 verbose headers   age: '0',
+70 verbose headers   connection: 'keep-alive',
+70 verbose headers   'x-served-by': 'cache-lhr6332-LHR',
+70 verbose headers   'x-cache': 'MISS',
+70 verbose headers   'x-cache-hits': '0',
+70 verbose headers   'x-timer': 'S1448701851.720140,VS0,VE441',
+70 verbose headers   vary: 'Accept' }
+71 silly get cb [ 200,
+71 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+71 silly get     etag: '"C0CKNCOJZFPGGLNP1OSQMTNDW"',
+71 silly get     'content-type': 'application/json',
+71 silly get     'cache-control': 'max-age=60',
+71 silly get     'content-length': '37266',
+71 silly get     'accept-ranges': 'bytes',
+71 silly get     date: 'Sat, 28 Nov 2015 09:10:52 GMT',
+71 silly get     via: '1.1 varnish',
+71 silly get     age: '0',
+71 silly get     connection: 'keep-alive',
+71 silly get     'x-served-by': 'cache-lhr6332-LHR',
+71 silly get     'x-cache': 'MISS',
+71 silly get     'x-cache-hits': '0',
+71 silly get     'x-timer': 'S1448701851.720140,VS0,VE441',
+71 silly get     vary: 'Accept' } ]
+72 verbose get saving to to /Users/Japete/.npm/registry.npmjs.org/to/.cache.json
+73 silly addNameRange number 2 { name: 'to', range: '*', hasData: true }
+74 silly addNameRange versions [ 'to',
+74 silly addNameRange   [ '0.0.1',
+74 silly addNameRange     '0.0.2',
+74 silly addNameRange     '0.0.3',
+74 silly addNameRange     '0.1.0',
+74 silly addNameRange     '0.1.1',
+74 silly addNameRange     '0.1.2',
+74 silly addNameRange     '0.2.0',
+74 silly addNameRange     '0.2.1',
+74 silly addNameRange     '0.2.2',
+74 silly addNameRange     '0.2.3',
+74 silly addNameRange     '0.2.4',
+74 silly addNameRange     '0.2.5',
+74 silly addNameRange     '0.2.6',
+74 silly addNameRange     '0.2.7',
+74 silly addNameRange     '0.2.8',
+74 silly addNameRange     '0.2.9' ] ]
+75 silly addNamed to@0.2.9
+76 verbose addNamed "0.2.9" is a plain semver version for to
+77 silly mapToRegistry name to
+78 silly mapToRegistry using default registry
+79 silly mapToRegistry registry https://registry.npmjs.org/
+80 silly mapToRegistry uri https://registry.npmjs.org/to
+81 verbose addRemoteTarball https://registry.npmjs.org/to/-/to-0.2.9.tgz not in flight; adding
+82 verbose addRemoteTarball [ 'https://registry.npmjs.org/to/-/to-0.2.9.tgz',
+82 verbose addRemoteTarball   '0ba5a56fe53538db9205ceb6d7ed217aae4635c4' ]
+83 info retry fetch attempt 1 at 10:10:52
+84 info attempt registry request try #1 at 10:10:52
+85 http fetch GET https://registry.npmjs.org/to/-/to-0.2.9.tgz
+86 http fetch 200 https://registry.npmjs.org/update/-/update-0.3.6.tgz
+87 silly fetchAndShaCheck shasum 11bcae2d5fe3413a5dd0910f424d6310e50c99e8
+88 verbose addTmpTarball /var/folders/p7/74_v1zvn20s5fyxv0y6zkjww0000gn/T/npm-1353-8599d91e/registry.npmjs.org/update/-/update-0.3.6.tgz not in flight; adding
+89 verbose addTmpTarball already have metadata; skipping unpack for update@0.3.6
+90 silly cache afterAdd update@0.3.6
+91 verbose afterAdd /Users/Japete/.npm/update/0.3.6/package/package.json not in flight; writing
+92 verbose afterAdd /Users/Japete/.npm/update/0.3.6/package/package.json written
+93 http fetch 200 https://registry.npmjs.org/to/-/to-0.2.9.tgz
+94 silly fetchAndShaCheck shasum 0ba5a56fe53538db9205ceb6d7ed217aae4635c4
+95 verbose addTmpTarball /var/folders/p7/74_v1zvn20s5fyxv0y6zkjww0000gn/T/npm-1353-8599d91e/registry.npmjs.org/to/-/to-0.2.9.tgz not in flight; adding
+96 verbose addTmpTarball already have metadata; skipping unpack for to@0.2.9
+97 silly cache afterAdd to@0.2.9
+98 verbose afterAdd /Users/Japete/.npm/to/0.2.9/package/package.json not in flight; writing
+99 verbose afterAdd /Users/Japete/.npm/to/0.2.9/package/package.json written
+100 http 200 https://registry.npmjs.org/ionic
+101 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+101 verbose headers   etag: '"3UBWNFASHVIWLVKOMLPJH6PTJ"',
+101 verbose headers   'content-type': 'application/json',
+101 verbose headers   'cache-control': 'max-age=60',
+101 verbose headers   'content-length': '608441',
+101 verbose headers   'accept-ranges': 'bytes',
+101 verbose headers   date: 'Sat, 28 Nov 2015 09:10:52 GMT',
+101 verbose headers   via: '1.1 varnish',
+101 verbose headers   age: '0',
+101 verbose headers   connection: 'keep-alive',
+101 verbose headers   'x-served-by': 'cache-lhr6333-LHR',
+101 verbose headers   'x-cache': 'HIT',
+101 verbose headers   'x-cache-hits': '1',
+101 verbose headers   'x-timer': 'S1448701851.727965,VS0,VE647',
+101 verbose headers   vary: 'Accept' }
+102 silly get cb [ 200,
+102 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+102 silly get     etag: '"3UBWNFASHVIWLVKOMLPJH6PTJ"',
+102 silly get     'content-type': 'application/json',
+102 silly get     'cache-control': 'max-age=60',
+102 silly get     'content-length': '608441',
+102 silly get     'accept-ranges': 'bytes',
+102 silly get     date: 'Sat, 28 Nov 2015 09:10:52 GMT',
+102 silly get     via: '1.1 varnish',
+102 silly get     age: '0',
+102 silly get     connection: 'keep-alive',
+102 silly get     'x-served-by': 'cache-lhr6333-LHR',
+102 silly get     'x-cache': 'HIT',
+102 silly get     'x-cache-hits': '1',
+102 silly get     'x-timer': 'S1448701851.727965,VS0,VE647',
+102 silly get     vary: 'Accept' } ]
+103 verbose get saving ionic to /Users/Japete/.npm/registry.npmjs.org/ionic/.cache.json
+104 silly addNameRange number 2 { name: 'ionic', range: '*', hasData: true }
+105 silly addNameRange versions [ 'ionic',
+105 silly addNameRange   [ '0.9.6',
+105 silly addNameRange     '0.9.8',
+105 silly addNameRange     '0.9.9',
+105 silly addNameRange     '0.9.10',
+105 silly addNameRange     '0.9.11',
+105 silly addNameRange     '0.9.12',
+105 silly addNameRange     '0.9.13',
+105 silly addNameRange     '0.9.14',
+105 silly addNameRange     '0.9.15',
+105 silly addNameRange     '0.9.16',
+105 silly addNameRange     '1.0.0-beta.1',
+105 silly addNameRange     '1.0.0-beta',
+105 silly addNameRange     '1.0.1-beta',
+105 silly addNameRange     '1.0.3-beta',
+105 silly addNameRange     '1.0.4',
+105 silly addNameRange     '1.0.5',
+105 silly addNameRange     '1.0.6',
+105 silly addNameRange     '1.0.7',
+105 silly addNameRange     '1.0.8',
+105 silly addNameRange     '1.0.9',
+105 silly addNameRange     '1.0.10',
+105 silly addNameRange     '1.0.11',
+105 silly addNameRange     '1.0.12',
+105 silly addNameRange     '1.0.13',
+105 silly addNameRange     '1.0.14',
+105 silly addNameRange     '1.0.15',
+105 silly addNameRange     '1.0.16',
+105 silly addNameRange     '1.0.17',
+105 silly addNameRange     '1.1.0-beta1',
+105 silly addNameRange     '1.1.0-beta2',
+105 silly addNameRange     '1.1.0-beta3',
+105 silly addNameRange     '1.1.0-beta4',
+105 silly addNameRange     '1.1.0-beta5',
+105 silly addNameRange     '1.1.0-beta6',
+105 silly addNameRange     '1.1.0',
+105 silly addNameRange     '1.1.1-beta1',
+105 silly addNameRange     '1.1.1-beta2',
+105 silly addNameRange     '1.1.1-beta3',
+105 silly addNameRange     '1.1.1',
+105 silly addNameRange     '1.1.3',
+105 silly addNameRange     '1.1.4',
+105 silly addNameRange     '1.1.5-beta1',
+105 silly addNameRange     '1.1.5-beta2',
+105 silly addNameRange     '1.1.5-beta3',
+105 silly addNameRange     '1.1.5-beta4',
+105 silly addNameRange     '1.1.5-beta5',
+105 silly addNameRange     '1.1.5',
+105 silly addNameRange     '1.1.6',
+105 silly addNameRange     '1.1.7-beta1',
+105 silly addNameRange     '1.1.7',
+105 silly addNameRange     '1.1.8-beta1',
+105 silly addNameRange     '1.1.8-beta2',
+105 silly addNameRange     '1.1.8-beta3',
+105 silly addNameRange     '1.1.8-beta4',
+105 silly addNameRange     '1.1.8-beta5',
+105 silly addNameRange     '1.1.8',
+105 silly addNameRange     '1.1.9-beta1',
+105 silly addNameRange     '1.1.9',
+105 silly addNameRange     '1.1.10',
+105 silly addNameRange     '1.1.11-beta1',
+105 silly addNameRange     '1.1.11-beta2',
+105 silly addNameRange     '1.1.11',
+105 silly addNameRange     '1.1.12-beta1',
+105 silly addNameRange     '1.1.12-beta2',
+105 silly addNameRange     '1.1.12-beta3',
+105 silly addNameRange     '1.1.12',
+105 silly addNameRange     '1.1.13',
+105 silly addNameRange     '1.1.14-beta1',
+105 silly addNameRange     '1.1.14-beta2',
+105 silly addNameRange     '1.1.14-beta3',
+105 silly addNameRange     '1.2.0-beta1',
+105 silly addNameRange     '1.2.0',
+105 silly addNameRange     '1.2.1-beta1',
+105 silly addNameRange     '1.2.1-beta2',
+105 silly addNameRange     '1.2.1-beta3',
+105 silly addNameRange     '1.2.1-beta4',
+105 silly addNameRange     '1.2.1',
+105 silly addNameRange     '1.2.2',
+105 silly addNameRange     '1.2.3-beta1',
+105 silly addNameRange     '1.2.3-beta2',
+105 silly addNameRange     '1.2.3-beta3',
+105 silly addNameRange     '1.2.3',
+105 silly addNameRange     '1.2.4-beta1',
+105 silly addNameRange     '1.2.4-beta2',
+105 silly addNameRange     '1.2.4-beta3',
+105 silly addNameRange     '1.2.4',
+105 silly addNameRange     '1.2.5-beta1',
+105 silly addNameRange     '1.2.5-beta2',
+105 silly addNameRange     '1.2.5-beta3',
+105 silly addNameRange     '1.2.5',
+105 silly addNameRange     '1.2.6-beta1',
+105 silly addNameRange     '1.2.6-beta2',
+105 silly addNameRange     '1.2.6-beta3',
+105 silly addNameRange     '1.2.6',
+105 silly addNameRange     '1.2.7',
+105 silly addNameRange     '1.2.8-beta1',
+105 silly addNameRange     '1.2.8-beta2',
+105 silly addNameRange     '1.2.8',
+105 silly addNameRange     '1.2.9',
+105 silly addNameRange     '1.2.10',
+105 silly addNameRange     '1.2.11',
+105 silly addNameRange     '1.2.12',
+105 silly addNameRange     '1.2.13',
+105 silly addNameRange     '1.2.14-beta1',
+105 silly addNameRange     '1.2.14-beta2',
+105 silly addNameRange     '1.2.14-beta3',
+105 silly addNameRange     '1.2.14-beta4',
+105 silly addNameRange     '1.2.14-beta5',
+105 silly addNameRange     '1.2.14-beta6',
+105 silly addNameRange     '1.2.14',
+105 silly addNameRange     '1.3.0-beta1',
+105 silly addNameRange     '1.3.0',
+105 silly addNameRange     '1.3.1',
+105 silly addNameRange     '1.3.2',
+105 silly addNameRange     '1.3.3',
+105 silly addNameRange     '1.3.4',
+105 silly addNameRange     '1.3.5',
+105 silly addNameRange     '1.3.6',
+105 silly addNameRange     '1.3.7',
+105 silly addNameRange     '1.3.8',
+105 silly addNameRange     '1.3.9',
+105 silly addNameRange     '1.3.10',
+105 silly addNameRange     '1.4.0-alpha.1',
+105 silly addNameRange     '1.3.11',
+105 silly addNameRange     '1.3.1-1.alpha.0',
+105 silly addNameRange     '1.4.0-alpha.2',
+105 silly addNameRange     '1.3.12',
+105 silly addNameRange     '1.3.12-beta.1',
+105 silly addNameRange     '1.3.12-beta.2',
+105 silly addNameRange     '1.3.13-beta.0',
+105 silly addNameRange     '1.3.1-3.beta.1',
+105 silly addNameRange     '1.3.1-3.beta.2',
+105 silly addNameRange     '1.3.13',
+105 silly addNameRange     '1.3.1-3.beta.4',
+105 silly addNameRange     '1.3.14-beta',
+105 silly addNameRange     '1.3.14-beta.1',
+105 silly addNameRange     '1.4.0-alpha.3',
+105 silly addNameRange     '1.3.14',
+105 silly addNameRange     '1.4.0-alpha.4',
+105 silly addNameRange     '1.4.0-alpha.5',
+105 silly addNameRange     '1.3.15-beta.0',
+105 silly addNameRange     '1.3.15-beta.1',
+105 silly addNameRange     '1.3.15-beta.2',
+105 silly addNameRange     '1.3.15-beta.3',
+105 silly addNameRange     '1.3.15-beta.4',
+105 silly addNameRange     '1.3.15',
+105 silly addNameRange     '1.3.16',
+105 silly addNameRange     '1.4.0-alpha.6',
+105 silly addNameRange     '1.3.17-beta.0',
+105 silly addNameRange     '1.3.17-beta.1',
+105 silly addNameRange     '1.3.17-beta.2',
+105 silly addNameRange     '1.3.17-beta.3',
+105 silly addNameRange     '1.3.1-7.beta.4',
+105 silly addNameRange     '1.3.17',
+105 silly addNameRange     '1.3.18-beta.0',
+105 silly addNameRange     '1.3.18-beta.1',
+105 silly addNameRange     '1.3.18-beta.2',
+105 silly addNameRange     '1.3.18-beta.3',
+105 silly addNameRange     '1.3.18',
+105 silly addNameRange     '1.3.19-beta.0',
+105 silly addNameRange     '1.3.19-beta.1',
+105 silly addNameRange     '1.3.19-beta.2',
+105 silly addNameRange     '1.3.19-beta.3',
+105 silly addNameRange     '1.3.19-beta.4',
+105 silly addNameRange     '1.3.19',
+105 silly addNameRange     '1.3.20',
+105 silly addNameRange     '1.4.1-beta.0',
+105 silly addNameRange     '1.4.0-beta.1',
+105 silly addNameRange     '1.4.0-beta.2',
+105 silly addNameRange     '1.4.0-beta.3',
+105 silly addNameRange     '1.4.0-beta.5',
+105 silly addNameRange     '1.4.0-beta.6',
+105 silly addNameRange     '1.4.0-beta.7',
+105 silly addNameRange     '1.3.21-beta.0',
+105 silly addNameRange     '1.3.21-beta.1',
+105 silly addNameRange     '1.3.21',
+105 silly addNameRange     '1.3.22',
+105 silly addNameRange     '1.4.0-beta.8',
+105 silly addNameRange     '1.4.0-beta.9',
+105 silly addNameRange     '1.4.0-beta.10',
+105 silly addNameRange     '1.4.0-beta.11',
+105 silly addNameRange     '1.4.0-beta.12',
+105 silly addNameRange     '1.4.0-beta.13',
+105 silly addNameRange     '1.4.0-beta.14',
+105 silly addNameRange     '1.4.0-beta.15',
+105 silly addNameRange     '1.4.0-beta.16',
+105 silly addNameRange     '1.4.0-beta.17',
+105 silly addNameRange     '1.4.0-beta.18',
+105 silly addNameRange     '1.4.0',
+105 silly addNameRange     '1.4.1',
+105 silly addNameRange     '1.4.2',
+105 silly addNameRange     '1.4.3',
+105 silly addNameRange     '1.4.4-beta.0',
+105 silly addNameRange     '1.4.4-beta.2',
+105 silly addNameRange     '1.4.4',
+105 silly addNameRange     '1.4.5-beta.0',
+105 silly addNameRange     '1.4.5-beta.1',
+105 silly addNameRange     '1.4.5-beta.2',
+105 silly addNameRange     '1.4.5-beta.3',
+105 silly addNameRange     '1.4.5',
+105 silly addNameRange     '1.4.6-beta.0',
+105 silly addNameRange     '1.4.6',
+105 silly addNameRange     '1.4.7',
+105 silly addNameRange     '1.4.8',
+105 silly addNameRange     '1.5.0-beta.0',
+105 silly addNameRange     '1.5.0-beta.1',
+105 silly addNameRange     '1.5.0',
+105 silly addNameRange     '1.5.1-beta.0',
+105 silly addNameRange     '1.5.1-beta.1',
+105 silly addNameRange     '1.5.1-beta.2',
+105 silly addNameRange     '1.5.1-beta.3',
+105 silly addNameRange     '1.5.1-beta.4',
+105 silly addNameRange     '1.5.1',
+105 silly addNameRange     '1.5.2',
+105 silly addNameRange     '1.5.3',
+105 silly addNameRange     '1.5.4',
+105 silly addNameRange     '1.5.5',
+105 silly addNameRange     '1.6.0-beta.1',
+105 silly addNameRange     '1.6.0',
+105 silly addNameRange     '1.6.1',
+105 silly addNameRange     '1.6.2-beta.0',
+105 silly addNameRange     '1.6.2-beta.1',
+105 silly addNameRange     '1.6.2-beta.2',
+105 silly addNameRange     '1.6.2',
+105 silly addNameRange     '1.6.3-beta.0',
+105 silly addNameRange     '1.6.3-beta.1',
+105 silly addNameRange     '1.6.3',
+105 silly addNameRange     '1.6.4-beta.0',
+105 silly addNameRange     '1.6.4-beta.1',
+105 silly addNameRange     '1.6.4',
+105 silly addNameRange     '1.7.0-beta.0',
+105 silly addNameRange     '1.7.0-beta.1',
+105 silly addNameRange     '1.7.0-beta.2',
+105 silly addNameRange     '1.7.0-beta.3',
+105 silly addNameRange     '2.0.0-alpha.1',
+105 silly addNameRange     '2.0.0-alpha.3',
+105 silly addNameRange     '1.7.0-beta.4',
+105 silly addNameRange     '1.6.5-testing.0',
+105 silly addNameRange     '1.6.5-testing.1',
+105 silly addNameRange     '1.6.5-testing.2',
+105 silly addNameRange     '1.6.5-testing.3',
+105 silly addNameRange     '1.6.5',
+105 silly addNameRange     '2.0.0-alpha.4',
+105 silly addNameRange     '1.7.0-beta.5',
+105 silly addNameRange     '1.7.0-beta.6',
+105 silly addNameRange     '1.7.0',
+105 silly addNameRange     '2.0.0-alpha.5',
+105 silly addNameRange     '2.0.0-alpha.6',
+105 silly addNameRange     '1.7.1',
+105 silly addNameRange     '2.0.0-alpha.7',
+105 silly addNameRange     '2.0.0-alpha.8',
+105 silly addNameRange     '1.7.2',
+105 silly addNameRange     '1.7.3',
+105 silly addNameRange     '1.7.4',
+105 silly addNameRange     '1.7.5',
+105 silly addNameRange     '1.7.6',
+105 silly addNameRange     '1.7.7-beta.0',
+105 silly addNameRange     '2.0.0-alpha.9',
+105 silly addNameRange     '1.7.7',
+105 silly addNameRange     '2.0.0-alpha.10',
+105 silly addNameRange     '2.0.0-alpha.11',
+105 silly addNameRange     '2.0.0-alpha.12',
+105 silly addNameRange     '2.0.0-alpha.13',
+105 silly addNameRange     '2.0.0-alpha.14',
+105 silly addNameRange     '2.0.0-alpha.15',
+105 silly addNameRange     '2.0.0-alpha.16',
+105 silly addNameRange     '2.0.0-alpha.17',
+105 silly addNameRange     '2.0.0-alpha.18',
+105 silly addNameRange     '1.7.8-beta.0',
+105 silly addNameRange     '1.7.8-beta.1',
+105 silly addNameRange     '1.7.8-beta.2',
+105 silly addNameRange     '1.7.8-beta.3',
+105 silly addNameRange     '1.7.8',
+105 silly addNameRange     '2.0.0-alpha.19',
+105 silly addNameRange     '2.0.0-alpha.20',
+105 silly addNameRange     '2.0.0-alpha.21',
+105 silly addNameRange     '2.0.0-alpha.22',
+105 silly addNameRange     '2.0.0-alpha.23',
+105 silly addNameRange     '1.7.9',
+105 silly addNameRange     '1.7.10',
+105 silly addNameRange     '2.0.0-alpha.24',
+105 silly addNameRange     '2.0.0-alpha.25' ] ]
+106 silly addNamed ionic@1.7.10
+107 verbose addNamed "1.7.10" is a plain semver version for ionic
+108 silly mapToRegistry name ionic
+109 silly mapToRegistry using default registry
+110 silly mapToRegistry registry https://registry.npmjs.org/
+111 silly mapToRegistry uri https://registry.npmjs.org/ionic
+112 verbose addRemoteTarball https://registry.npmjs.org/ionic/-/ionic-1.7.10.tgz not in flight; adding
+113 verbose addRemoteTarball [ 'https://registry.npmjs.org/ionic/-/ionic-1.7.10.tgz',
+113 verbose addRemoteTarball   'c6d5dba712255aa5c98059bac31fe28e78b97a25' ]
+114 info retry fetch attempt 1 at 10:10:53
+115 info attempt registry request try #1 at 10:10:53
+116 http fetch GET https://registry.npmjs.org/ionic/-/ionic-1.7.10.tgz
+117 http fetch 200 https://registry.npmjs.org/ionic/-/ionic-1.7.10.tgz
+118 silly fetchAndShaCheck shasum c6d5dba712255aa5c98059bac31fe28e78b97a25
+119 verbose addTmpTarball /var/folders/p7/74_v1zvn20s5fyxv0y6zkjww0000gn/T/npm-1353-8599d91e/registry.npmjs.org/ionic/-/ionic-1.7.10.tgz not in flight; adding
+120 verbose addTmpTarball already have metadata; skipping unpack for ionic@1.7.10
+121 silly cache afterAdd ionic@1.7.10
+122 verbose afterAdd /Users/Japete/.npm/ionic/1.7.10/package/package.json not in flight; writing
+123 verbose afterAdd /Users/Japete/.npm/ionic/1.7.10/package/package.json written
+124 silly install resolved [ { name: 'update',
+124 silly install resolved     description: 'Update the year in all files in a project using glob patterns.',
+124 silly install resolved     version: '0.3.6',
+124 silly install resolved     homepage: 'https://github.com/jonschlinkert/update',
+124 silly install resolved     author:
+124 silly install resolved      { name: 'Jon Schlinkert',
+124 silly install resolved        url: 'https://github.com/jonschlinkert' },
+124 silly install resolved     repository: { type: 'git', url: 'https://github.com/jonschlinkert/update' },
+124 silly install resolved     bugs: { url: 'https://github.com/jonschlinkert/update/issues' },
+124 silly install resolved     license: 'MIT',
+124 silly install resolved     files: [ 'cli.js', 'lib/', 'templates/', 'verbfile.js', 'plugins/' ],
+124 silly install resolved     main: 'index.js',
+124 silly install resolved     preferGlobal: true,
+124 silly install resolved     bin: { update: './cli.js' },
+124 silly install resolved     engines: { node: '>=0.10.0' },
+124 silly install resolved     scripts: { test: 'mocha' },
+124 silly install resolved     dependencies:
+124 silly install resolved      { 'arr-diff': '^1.0.1',
+124 silly install resolved        'array-intersection': '^0.1.1',
+124 silly install resolved        'array-unique': '^0.1.1',
+124 silly install resolved        chalk: '^1.0.0',
+124 silly install resolved        del: '^1.1.1',
+124 silly install resolved        'export-files': '^1.1.0',
+124 silly install resolved        glob: '^4.4.1',
+124 silly install resolved        'gray-matter': '^1.2.5',
+124 silly install resolved        'gulp-util': '^3.0.4',
+124 silly install resolved        'has-banner': '^0.2.0',
+124 silly install resolved        'kind-of': '^1.1.0',
+124 silly install resolved        'log-symbols': '^1.0.2',
+124 silly install resolved        'merge-deep': '^1.0.1',
+124 silly install resolved        micromatch: '^1.4.2',
+124 silly install resolved        'parse-copyright': '^0.4.0',
+124 silly install resolved        'requires-regex': '^0.2.0',
+124 silly install resolved        'sort-object': '^1.0.0',
+124 silly install resolved        through2: '^0.6.3',
+124 silly install resolved        'update-banner': '^0.1.1',
+124 silly install resolved        'update-license': '^0.3.0',
+124 silly install resolved        'update-package': '^0.2.0',
+124 silly install resolved        verb: '^0.6.1' },
+124 silly install resolved     keywords: [ 'javascript', 'keys', 'object', 'sort' ],
+124 silly install resolved     gitHead: '20af38473d5630c5b725a34f041df0aabf050935',
+124 silly install resolved     _id: 'update@0.3.6',
+124 silly install resolved     _shasum: '11bcae2d5fe3413a5dd0910f424d6310e50c99e8',
+124 silly install resolved     _from: 'update@*',
+124 silly install resolved     _npmVersion: '2.5.1',
+124 silly install resolved     _nodeVersion: '0.12.0',
+124 silly install resolved     _npmUser: { name: 'jonschlinkert', email: 'github@sellside.com' },
+124 silly install resolved     maintainers: [ [Object] ],
+124 silly install resolved     dist:
+124 silly install resolved      { shasum: '11bcae2d5fe3413a5dd0910f424d6310e50c99e8',
+124 silly install resolved        tarball: 'http://registry.npmjs.org/update/-/update-0.3.6.tgz' },
+124 silly install resolved     directories: {},
+124 silly install resolved     _resolved: 'https://registry.npmjs.org/update/-/update-0.3.6.tgz' },
+124 silly install resolved   { name: 'to',
+124 silly install resolved     description: 'load/convert between xml,json,yaml formats',
+124 silly install resolved     homepage: 'https://github.com/openmason/to',
+124 silly install resolved     version: '0.2.9',
+124 silly install resolved     author: { name: 'el aras', email: 'openmason@gmail.com' },
+124 silly install resolved     dependencies:
+124 silly install resolved      { handy: '>= 0.0.11',
+124 silly install resolved        underscore: '>= 1.4.0',
+124 silly install resolved        'js-yaml': '>= 1.0.2',
+124 silly install resolved        htmlparser: '>= 1.7.6',
+124 silly install resolved        optimist: '>= 0.3.5' },
+124 silly install resolved     devDependencies: { mocha: '>= 1.6.0', should: '>= 1.2.0' },
+124 silly install resolved     keywords: [ 'converter', 'convertor', 'json', 'xml', 'yaml' ],
+124 silly install resolved     repository: { type: 'git', url: 'git://github.com/openmason/to' },
+124 silly install resolved     main: 'index',
+124 silly install resolved     scripts: { prepublish: 'npm prune', test: 'make test' },
+124 silly install resolved     engines: { node: '>= 0.8.0' },
+124 silly install resolved     readme: '[![build status](https://secure.travis-ci.org/openmason/to.png)](http://travis-ci.org/openmason/to)\n\n# to.js\ncollection of convertors.\nComes with command line options to use the convertors along with a library version that can be used within programs as well.\n\n# Solves\n  * read input formats json, xml, yaml \n  * converts the document to internal javascript object form\n  * write output as json, yaml documents\n  * only input xml is handled (no output xml yet)\n\n## Installation\n\n    $ npm install -g to\n    $ npm install to\n\n## Usage\n\nCommand line:\n\n     # reads xml file and prints it in yml\n     $ to -i examples/sample.xml -o .yaml\n     \n     # reads yaml and prints it in json\n     $ to -i examples/sample.yml -o .json\n\nWithin your program:\n\n    var to = require(\'to\');\n    \n    # Load yaml\n    var yamldoc = to.format.yaml.load(\'config.yaml\');\n    \n    # print doc in yaml \n    var doc = ...;\n    console.log(to.format.yaml.stringify(doc));\n\n * refer to examples directory for xml, json, yaml code\n\n## Example\nFor a sample input xml:\n\n    <?xml version="1.0" encoding="UTF-8" ?>\n    <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">    \n    <dummy>\n    <value>15</value>\n    <value>35</value>\n    <value>5</value>\n    <value>4784</value>\n    <value>one more</value>\n    <h>decent</h>\n    <h>list</h>\n    <h>another</h>\n    <object>value</object>\n    <inner>\n      <h1>value</h1>\n      <li>got</li>\n      <li>milk</li>\n    </inner>\n   </dummy>\n\nOutput in json:\n\n    {\n      "dummy": {\n        "value": [\n          "15",\n          "35",\n          "5",\n          "4784",\n          "one more"\n        ],\n        "h": [\n          "decent",\n          "list",\n          "another"\n        ],\n        "object": "value",\n        "inner": {\n          "h1": "value",\n          "li": [\n            "got",\n            "milk"\n          ]\n        }\n      }\n    }\n    \n    # to try this example\n    $ to -i examples/sample1.xml -o .json\n\nOutput in yaml:\n\n    dummy: \n      value: \n        - 15\n        - 35\n        - 5\n        - 4784\n        - "one more"\n      h: \n        - decent\n        - list\n        - another\n      object: value\n      inner: \n        h1: value\n        li: \n          - got\n          - milk\n\n    # to try this example\n    $ to -i examples/sample1.xml -o .yaml\n\n## Todo\n * Input html (be forgiving with bad html)\n * Input markdown \n * Output xml\n * Output html\n * add unit tests\n * allow beautification params for all outputs \n\n## Test cases\nTo execute full test cases\n\n    $ make\n\n',
+124 silly install resolved     _id: 'to@0.2.9',
+124 silly install resolved     dist:
+124 silly install resolved      { shasum: '0ba5a56fe53538db9205ceb6d7ed217aae4635c4',
+124 silly install resolved        tarball: 'http://registry.npmjs.org/to/-/to-0.2.9.tgz' },
+124 silly install resolved     maintainers: [ [Object], [Object] ],
+124 silly install resolved     directories: {},
+124 silly install resolved     _shasum: '0ba5a56fe53538db9205ceb6d7ed217aae4635c4',
+124 silly install resolved     _resolved: 'https://registry.npmjs.org/to/-/to-0.2.9.tgz',
+124 silly install resolved     _from: 'to@*' },
+124 silly install resolved   { name: 'ionic',
+124 silly install resolved     version: '1.7.10',
+124 silly install resolved     preferGlobal: true,
+124 silly install resolved     description: 'A tool for creating and developing Ionic Framework mobile apps.',
+124 silly install resolved     homepage: 'http://ionicframework.com/',
+124 silly install resolved     bin: { ionic: 'bin/ionic' },
+124 silly install resolved     scripts:
+124 silly install resolved      { bump: 'node lib/tasks/bumpversion',
+124 silly install resolved        'beta-bump': 'node lib/tasks/bumpversion --level pre --identifier beta',
+124 silly install resolved        'publish-release': 'node lib/tasks/bumpversion --npmPublish',
+124 silly install resolved        'publish-tag': 'node lib/tasks/bumpversion --level beta --npmPublishTag',
+124 silly install resolved        'full-release': 'node lib/tasks/bumpversion --npmInstall --git --npmPublish',
+124 silly install resolved        test: 'npm run jasmine',
+124 silly install resolved        e2e: 'jasmine-node --captureExceptions ./e2e',
+124 silly install resolved        jasmine: 'jasmine-node --captureExceptions  ./spec' },
+124 silly install resolved     keywords:
+124 silly install resolved      [ 'ionic',
+124 silly install resolved        'ionic framework',
+124 silly install resolved        'ionicframework',
+124 silly install resolved        'mobile',
+124 silly install resolved        'app',
+124 silly install resolved        'hybrid',
+124 silly install resolved        'cordova',
+124 silly install resolved        'phonegap' ],
+124 silly install resolved     repository:
+124 silly install resolved      { type: 'git',
+124 silly install resolved        url: 'https://github.com/driftyco/ionic-cli.git' },
+124 silly install resolved     contributors: [ [Object], [Object], [Object], [Object] ],
+124 silly install resolved     license: 'MIT',
+124 silly install resolved     dependencies:
+124 silly install resolved      { async: '^0.9.0',
+124 silly install resolved        cheerio: '^0.19.0',
+124 silly install resolved        'cli-table': '^0.3.1',
+124 silly install resolved        colors: '0.6.2',
+124 silly install resolved        connect: '3.1.1',
+124 silly install resolved        'connect-livereload': '0.5.2',
+124 silly install resolved        crc: '3.2.1',
+124 silly install resolved        'cross-spawn': '0.2.3',
+124 silly install resolved        'event-stream': '3.0.x',
+124 silly install resolved        'expand-tilde': '^1.2.0',
+124 silly install resolved        finalhandler: '0.2.0',
+124 silly install resolved        'form-data': '0.1.4',
+124 silly install resolved        gulp: '3.8.8',
+124 silly install resolved        'ionic-app-lib': '0.6.5',
+124 silly install resolved        moment: '^2.10.6',
+124 silly install resolved        ncp: '0.4.2',
+124 silly install resolved        npm: '2.1.3',
+124 silly install resolved        open: '0.0.5',
+124 silly install resolved        optimist: '0.6.0',
+124 silly install resolved        progress: '1.1.7',
+124 silly install resolved        prompt: '0.2.12',
+124 silly install resolved        'proxy-middleware': '^0.7.0',
+124 silly install resolved        q: '1.0.1',
+124 silly install resolved        request: '2.51.0',
+124 silly install resolved        semver: '^4.2.0',
+124 silly install resolved        'serve-static': '1.7.1',
+124 silly install resolved        shelljs: '0.2.6',
+124 silly install resolved        'tiny-lr-fork': '0.0.5',
+124 silly install resolved        underscore: '~1.7.0',
+124 silly install resolved        unzip: '0.1.9',
+124 silly install resolved        'vinyl-fs': '0.3.7',
+124 silly install resolved        xml2js: '0.4.4' },
+124 silly install resolved     devDependencies: { 'jasmine-node': '^1.14.5', rewire: '^2.3.4' },
+124 silly install resolved     gitHead: '12d5964d4369c6b6146dc0f0ec9fa2f3e8806224',
+124 silly install resolved     bugs: { url: 'https://github.com/driftyco/ionic-cli/issues' },
+124 silly install resolved     _id: 'ionic@1.7.10',
+124 silly install resolved     _shasum: 'c6d5dba712255aa5c98059bac31fe28e78b97a25',
+124 silly install resolved     _from: 'ionic@*',
+124 silly install resolved     _npmVersion: '2.14.7',
+124 silly install resolved     _nodeVersion: '4.2.2',
+124 silly install resolved     _npmUser: { name: 'drifty', email: 'max@drifty.com' },
+124 silly install resolved     dist:
+124 silly install resolved      { shasum: 'c6d5dba712255aa5c98059bac31fe28e78b97a25',
+124 silly install resolved        tarball: 'http://registry.npmjs.org/ionic/-/ionic-1.7.10.tgz' },
+124 silly install resolved     maintainers: [ [Object], [Object], [Object], [Object], [Object] ],
+124 silly install resolved     directories: {},
+124 silly install resolved     _resolved: 'https://registry.npmjs.org/ionic/-/ionic-1.7.10.tgz' } ]
+125 info install update@0.3.6 into /usr/local/lib
+126 info install to@0.2.9 into /usr/local/lib
+127 info install ionic@1.7.10 into /usr/local/lib
+128 info installOne update@0.3.6
+129 verbose installOne of update to /usr/local/lib not in flight; installing
+130 info installOne to@0.2.9
+131 verbose installOne of to to /usr/local/lib not in flight; installing
+132 info installOne ionic@1.7.10
+133 verbose installOne of ionic to /usr/local/lib not in flight; installing
+134 verbose lock using /Users/Japete/.npm/_locks/ionic-61c0cd50dc7a1457.lock for /usr/local/lib/node_modules/ionic
+135 verbose lock using /Users/Japete/.npm/_locks/update-a554ca6fd1dfb67b.lock for /usr/local/lib/node_modules/update
+136 verbose lock using /Users/Japete/.npm/_locks/to-9394763c9b022e79.lock for /usr/local/lib/node_modules/to
+137 silly install write writing update 0.3.6 to /usr/local/lib/node_modules/update
+138 silly install write writing to 0.2.9 to /usr/local/lib/node_modules/to
+139 silly install write writing ionic 1.7.10 to /usr/local/lib/node_modules/ionic
+140 verbose unbuild lib/node_modules/to
+141 verbose unbuild lib/node_modules/update
+142 verbose unbuild lib/node_modules/ionic
+143 silly gentlyRm /usr/local/lib/node_modules/to is being purged from base /usr/local
+144 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/to
+145 silly gentlyRm /usr/local/lib/node_modules/update is being purged from base /usr/local
+146 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/update
+147 verbose tar unpack /Users/Japete/.npm/to/0.2.9/package.tgz
+148 verbose tar unpacking to /usr/local/lib/node_modules/to
+149 silly gentlyRm /usr/local/lib/node_modules/to is being purged
+150 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/to
+151 verbose tar unpack /Users/Japete/.npm/update/0.3.6/package.tgz
+152 verbose tar unpacking to /usr/local/lib/node_modules/update
+153 silly gentlyRm /usr/local/lib/node_modules/update is being purged
+154 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/update
+155 silly gunzTarPerm modes [ '755', '644' ]
+156 silly gunzTarPerm modes [ '755', '644' ]
+157 info preuninstall ionic@1.7.7
+158 info uninstall ionic@1.7.7
+159 error tar.unpack untar error /Users/Japete/.npm/to/0.2.9/package.tgz
+160 error tar.unpack untar error /Users/Japete/.npm/update/0.3.6/package.tgz
+161 verbose unbuild rmStuff ionic@1.7.7 from /usr/local/lib/node_modules
+162 silly gentlyRm /usr/local/bin/ionic is being gently removed
+163 silly gentlyRm verifying /usr/local is an npm working directory
+164 verbose unlock done using /Users/Japete/.npm/_locks/to-9394763c9b022e79.lock for /usr/local/lib/node_modules/to
+165 verbose unlock done using /Users/Japete/.npm/_locks/update-a554ca6fd1dfb67b.lock for /usr/local/lib/node_modules/update
+166 silly gentlyRm containing path /usr/local is under npm's control, in /usr/local
+167 silly gentlyRm deletion target /usr/local/bin/ionic is under /usr/local
+168 verbose gentlyRm vacuuming from /usr/local/bin/ionic up to /usr/local
+169 silly vacuum-fs removing /usr/local/bin/ionic
+170 silly vacuum-fs quitting because other entries in /usr/local/bin
+171 info postuninstall ionic@1.7.7
+172 silly gentlyRm /usr/local/lib/node_modules/ionic is being purged from base /usr/local
+173 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ionic
+174 silly vacuum-fs purging /usr/local/lib/node_modules/ionic
+175 verbose unlock done using /Users/Japete/.npm/_locks/ionic-61c0cd50dc7a1457.lock for /usr/local/lib/node_modules/ionic
+176 verbose fstream_path /usr/local/lib/node_modules/to
+177 verbose fstream_type Directory
+178 verbose fstream_class DirWriter
+179 verbose stack Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/to'
+179 verbose stack     at Error (native)
+180 verbose fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:35:25
+180 verbose fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:47:53
+180 verbose fstream_stack FSReqWrap.oncomplete (fs.js:82:15)
+181 verbose cwd /Users/Japete/Projects/NuevaLuz
+182 error Darwin 14.5.0
+183 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "-g" "ionic" "to" "update"
+184 error node v4.2.1
+185 error npm  v2.14.7
+186 error path /usr/local/lib/node_modules/to
+187 error code EACCES
+188 error errno -13
+189 error syscall mkdir
+190 error Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/to'
+190 error     at Error (native)
+190 error  { [Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/to']
+190 error   errno: -13,
+190 error   code: 'EACCES',
+190 error   syscall: 'mkdir',
+190 error   path: '/usr/local/lib/node_modules/to',
+190 error   fstream_type: 'Directory',
+190 error   fstream_path: '/usr/local/lib/node_modules/to',
+190 error   fstream_class: 'DirWriter',
+190 error   fstream_stack:
+190 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:35:25',
+190 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:47:53',
+190 error      'FSReqWrap.oncomplete (fs.js:82:15)' ] }
+191 error Please try running this command again as root/Administrator.
+192 verbose exit [ -13, true ]
+193 verbose unbuild lib/node_modules/to
+194 silly gentlyRm /usr/local/lib/node_modules/to is being purged from base /usr/local
+195 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/to
+196 verbose unbuild lib/node_modules/update
+197 silly gentlyRm /usr/local/lib/node_modules/update is being purged from base /usr/local
+198 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/update
+199 verbose unbuild lib/node_modules/ionic
+200 info preuninstall ionic@1.7.7
+201 info uninstall ionic@1.7.7
+202 verbose unbuild rmStuff ionic@1.7.7 from /usr/local/lib/node_modules
+203 silly gentlyRm /usr/local/bin/ionic is being gently removed
+204 silly gentlyRm verifying /usr/local is an npm working directory
+205 silly gentlyRm containing path /usr/local is under npm's control, in /usr/local
+206 silly gentlyRm deletion target /usr/local/bin/ionic is under /usr/local
+207 verbose gentlyRm vacuuming from /usr/local/bin/ionic up to /usr/local
+208 info postuninstall ionic@1.7.7
+209 silly gentlyRm /usr/local/lib/node_modules/ionic is being purged from base /usr/local
+210 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ionic
+211 silly vacuum-fs purging /usr/local/lib/node_modules/ionic
+212 error error rolling back Error: EACCES: permission denied, rmdir '/usr/local/lib/node_modules/ionic'
+212 error error rolling back     at Error (native)
+212 error error rolling back  { [Error: EACCES: permission denied, rmdir '/usr/local/lib/node_modules/ionic']
+212 error error rolling back   errno: -13,
+212 error error rolling back   code: 'EACCES',
+212 error error rolling back   syscall: 'rmdir',
+212 error error rolling back   path: '/usr/local/lib/node_modules/ionic' }

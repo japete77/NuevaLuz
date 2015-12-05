@@ -1,0 +1,16 @@
+<ion-view title="Titulos" ng-controller="AuthorsBooksCtrl">
+	<ion-nav-buttons side="right">
+        <a class="button button-icon icon ion-home" href="#/"></a>
+    </ion-nav-buttons>
+	<ion-content class="padding">
+		<ion-list>
+			<a ng-repeat="title in titles" class="item item-icon-right" ng-href="#/abooks/menu/detail/{{title.Id}}">
+				<i class="icon ion-ios-arrow-right"></i>
+				<h2>{{title.Name}}</h2>
+			</a>
+		</ion-list>
+		
+		<ion-infinite-scroll on-infinite="loadMore()" distance="1%">
+		</ion-infinite-scroll>
+	</ion-content>
+</ion-view>

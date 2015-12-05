@@ -1,0 +1,21 @@
+<ion-view title="Acceso" ng-controller="ABooksLoginCtrl">
+	<ion-nav-buttons side="right">
+        <a class="button button-icon icon ion-home" href="#/"></a>
+    </ion-nav-buttons>
+	<ion-content class="padding">
+		<div class="list">
+			<label class="item item-input">
+				<span class="input-label">Usuario</span>
+				<input type="text" placeholder="Introduzca usuario" ng-model="user.name">
+			</label>
+			<label class="item item-input">
+				<span class="input-label">Contraseña</span>
+				<input type="password" placeholder="Introduzca contraseña" ng-model="user.password">
+			</label>
+			<button class="button button-block button-positive" ng-click="Login(user.name, user.password)">Entrar</button>
+		</div>
+		<div class="row">
+			<div ng-show="showErrorLogin" class="col warning">{{errorMessage}}</div>
+		</div>
+	</ion-content>
+</ion-view>

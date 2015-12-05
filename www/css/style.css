@@ -1,0 +1,13 @@
+/* Empty. Add your own CSS if you like */
+.bar.bar-energized .title {
+	color: #555;
+}
+
+.col.warning {
+	color: red;
+	text-align: center;
+}
+
+.button.button-icon {
+	color: black;
+}
