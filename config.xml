@@ -2,10 +2,10 @@
 <widget id="com.ionicframework.nuevaluz667548" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>NuevaLuz</name>
   <description>
-        An Ionic Framework and Cordova project.
+        Club del Libro Nueva Luz
     </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+  <author email="nuevaluz@nuevaluz.org" href="http://www.nuevaluz.org//">
+      Nueva Luz
     </author>
   <content src="index.html"/>
   <access origin="*"/>
