@@ -55,21 +55,6 @@ angular.module('starter.services', ['angularSoap'])
 	}
 })
 
-.service('xmlParser', function () {
-  var x2js = new X2JS();
-  return {
-    xml2json: function (args) {
-      return angular.bind(x2js, x2js.xml2json, args)();
-    },
-    xml_str2json: function (args) {
-      return angular.bind(x2js, x2js.xml_str2json, args)();
-    },
-    json2xml_str: function (args) {
-      return angular.bind(x2js, x2js.json2xml_str, args)();
-    }
-  }
-})
-
 // NLSvc: SOAP Service to access Daisy books
 .service('NLSvc', ['$http', function($http) {
 	var session;
