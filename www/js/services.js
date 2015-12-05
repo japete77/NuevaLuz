@@ -1,10 +1,10 @@
 // var baseUrl = "http://win8:8080/AudioBookService/";
-var baseUrl = "http://nluz.dyndns.org:8081/AudioBookService/";
+// var baseUrl = "http://nluz.dyndns.org:8081/AudioBookService/";
 	
-angular.module('starter.services', ['angularSoap'])
+var services = angular.module('services', ['angularSoap']);
 
 // RadioSvc: Service to control Nueva Luz radio streaming
-.service('RadioSvc', function() {
+services.service('RadioSvc', function() {
 	var mplayer = {
 		stream : null,
 		status : false
@@ -53,10 +53,10 @@ angular.module('starter.services', ['angularSoap'])
 		switchRadio : switchRadio,
 		initializeStream : initializeStream
 	}
-})
+});
 
 // NLSvc: SOAP Service to access Daisy books
-.service('NLSvc', ['$http', function($http) {
+services.service('NLSvc', ['$http', function($http) {
 	var session;
 	
 	return {
@@ -72,21 +72,6 @@ angular.module('starter.services', ['angularSoap'])
 		
 		IsLoggedIn : function() {
 			return session;
-		},
-		
-		GetTitles : function() {
-			return $http({
-				method: 'GET',
-				url: baseUrl + 'GetTitles?Session=' + session + '&Index=1&Count=10'
-			})
-		},
-		
-		GetAuthors: function() {
-			return $http({
-				method: 'GET',
-				url: baseUrl + 'GetAuthors?Session=' + session + '&Index=1&Count=10'
-			})
-		},
-				
+		},		
 	}
-}])
+}]);

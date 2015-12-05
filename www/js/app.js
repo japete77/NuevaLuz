@@ -1,11 +1,16 @@
+// Global variables
+//var baseUrl = "http://win8:8080/AudioBookService/";
+var baseUrl = "http://nluz.dyndns.org:8081/AudioBookService/";
+var angular;
+
 // Ionic Starter App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngIOS9UIWebViewPatch'])
+var starter = angular.module('starter', ['ionic', 'controllers', 'services', 'ngIOS9UIWebViewPatch']);
 
-.run(['$ionicPlatform', '$rootScope', '$location', 'NLSvc', 'RadioSvc', function($ionicPlatform, $rootScope, $location, NLSvc, RadioSvc) {
+starter.run(['$ionicPlatform', '$rootScope', '$location', 'NLSvc', 'RadioSvc', function($ionicPlatform, $rootScope, $location, NLSvc, RadioSvc) {
   
   function stringStartsWith (str, prefix) {
     return str.substring(0, prefix.length) == prefix;
@@ -34,9 +39,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     });
     
   });
-}])
+}]);
 
-.config(function($stateProvider, $urlRouterProvider) {
+starter.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/');
   
   $stateProvider
@@ -76,4 +81,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       url: '/abooks/menu/detail/:abookId',
       templateUrl: 'templates/abooks-detail.html'
     })
-})
+});
+
+var controllers = angular.module('controllers', ['services', 'ionic']);
