@@ -73,10 +73,6 @@ starter.config(function($stateProvider, $urlRouterProvider) {
       url: '/abooks/menu/author/:authorId',
       templateUrl: 'templates/abooks-author-books.html'
     })
-    .state('abooks-search', {
-      url: '/abooks/menu/search',
-      templateUrl: 'templates/abooks-search.html'
-    })
     .state('abooks-detail', {
       url: '/abooks/menu/detail/:abookId',
       templateUrl: 'templates/abooks-detail.html'
