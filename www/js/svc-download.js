@@ -41,21 +41,23 @@ function($rootScope, $interval, $cordovaFile) {
 		
 		currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, 
 			function (entry) {
+				
 				// Unzip file
-				
-				// Delete .zip
-				$cordovaFile.removeFile(currentDownload.path, currentDownload.filename);
-				
-				// Register in My Audio Books
-				
-				// Notify downloaded
-				currentDownload.status = 'Descarga completada';
-				$rootScope.$broadcast('downloaded', currentDownload);
-	
-				downloads.splice(getDownloadIndex(currentDownload.id), 1);
-				
-				processDownloadQueue();
-				
+				zip.unzip(currentDownload.path + currentDownload.filename, currentDownload.path, function(result) {					
+					
+					// Delete .zip
+					$cordovaFile.removeFile(currentDownload.path, currentDownload.filename);
+					
+					// Register in My Audio Books
+					
+					// Notify downloaded
+					currentDownload.status = 'Descarga completada';
+					$rootScope.$broadcast('downloaded', currentDownload);
+		
+					downloads.splice(getDownloadIndex(currentDownload.id), 1);
+					
+					processDownloadQueue();
+				});				
 			}, function (error) {			
 				
 				currentDownload.errorCode = error.code;
