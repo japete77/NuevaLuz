@@ -1,10 +1,5 @@
-// var baseUrl = "http://win8:8080/AudioBookService/";
-// var baseUrl = "http://nluz.dyndns.org:8081/AudioBookService/";
-	
-var services = angular.module('services', []);
-
 // RadioSvc: Service to control Nueva Luz radio streaming
-services.service('RadioSvc', function() {
+app.service('SvcRadio', function() {
 	var mplayer = {
 		stream : null,
 		status : false
@@ -54,24 +49,3 @@ services.service('RadioSvc', function() {
 		initializeStream : initializeStream
 	}
 });
-
-// NLSvc: SOAP Service to access Daisy books
-services.service('NLSvc', ['$http', function($http) {
-	var session;
-	
-	return {
-				
-		GetSession : function() {
-			return session;
-		},
-		
-		SetSession : function(data)
-		{
-			session = data;
-		},
-		
-		IsLoggedIn : function() {
-			return session;
-		},		
-	}
-}]);

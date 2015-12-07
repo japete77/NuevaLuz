@@ -1,6 +1,6 @@
 // Login controller
-controllers.controller('ABooksLoginCtrl', ['$scope', '$location', '$ionicLoading', '$ionicHistory', '$timeout', '$http', 'NLSvc', 
-function($scope, $location, $ionicLoading, $ionicHistory, $timeout, $http, NLSvc) {
+app.controller('ABooksLoginCtrl', ['$scope', '$location', '$ionicLoading', '$ionicHistory', '$timeout', '$http', 'SvcNL', 
+function($scope, $location, $ionicLoading, $ionicHistory, $timeout, $http, SvcNL) {
 
 	$scope.showErrorLogin = false;
 	$scope.errorMessage = '';
@@ -22,7 +22,7 @@ function($scope, $location, $ionicLoading, $ionicHistory, $timeout, $http, NLSvc
 		.then(function success(response) {
 			if (response.data.LoginResult.Success) {           
 			
-				NLSvc.SetSession(response.data.LoginResult.Session);
+				SvcNL.SetSession(response.data.LoginResult.Session);
 		
 				$scope.showErrorLogin = false;
 		
@@ -54,6 +54,6 @@ function($scope, $location, $ionicLoading, $ionicHistory, $timeout, $http, NLSvc
 	}
 
 	$scope.IsAuthenticated = function() {
-		return NLSvc.IsLoggedIn();
+		return SvcNL.IsLoggedIn();
 	}
 }]);

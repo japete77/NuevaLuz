@@ -1,6 +1,6 @@
 // Authors
-controllers.controller('AuthorsCtrl', ['$scope', '$http', '$ionicLoading', '$location', 'NLSvc', 
-function($scope, $http, $ionicLoading, $location, NLSvc) {
+app.controller('AuthorsCtrl', ['$scope', '$http', '$ionicLoading', '$location', 'SvcNL', 
+function($scope, $http, $ionicLoading, $location, SvcNL) {
 	var index = 1;
 	var maxAuthors = 9999999;
 	var pageSize = 25;
@@ -16,7 +16,7 @@ function($scope, $http, $ionicLoading, $location, NLSvc) {
 			
 			$http({
 				method: 'GET',
-				url: baseUrl + 'GetAuthors?Session=' + NLSvc.GetSession() + '&Index=' + index + '&Count=' + pageSize
+				url: baseUrl + 'GetAuthors?Session=' + SvcNL.GetSession() + '&Index=' + index + '&Count=' + pageSize
 			})
 			.then(function success(response) {
 			

@@ -1,6 +1,6 @@
 // Audio books controller
-controllers.controller('ABooksTitlesCtrl', ['$scope', '$timeout', '$http', '$ionicLoading', 'NLSvc', 
-function($scope, $timeout, $http, $ionicLoading, NLSvc) {
+app.controller('ABooksTitlesCtrl', ['$scope', '$timeout', '$http', '$ionicLoading', 'SvcNL', 
+function($scope, $timeout, $http, $ionicLoading, SvcNL) {
 
 	var index = 1;
 	var maxTitles = 9999999;
@@ -17,7 +17,7 @@ function($scope, $timeout, $http, $ionicLoading, NLSvc) {
 			
 			$http({
 				method: 'GET',
-				url: baseUrl + 'GetTitles?Session=' + NLSvc.GetSession() + '&Index=' + index + '&Count=' + pageSize
+				url: baseUrl + 'GetTitles?Session=' + SvcNL.GetSession() + '&Index=' + index + '&Count=' + pageSize
 			})
 			.then(function success(response) {
 			

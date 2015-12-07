@@ -1,4 +1,4 @@
-services.service('ABooksDownloader', '$scope', '$ionicPlatform', '$cordovaFile', '$interval', '$rootScope', 
+app.service('ABooksDownloader', '$scope', '$ionicPlatform', '$cordovaFile', '$interval', '$rootScope', 
 	function($scope, $ionicPlatform, $cordovaFile, $interval, $rootScope) {
 	
 });

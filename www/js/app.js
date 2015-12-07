@@ -8,9 +8,10 @@ var angular;
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var starter = angular.module('starter', ['ionic', 'controllers', 'services', 'ngIOS9UIWebViewPatch']);
+var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
 
-starter.run(['$ionicPlatform', '$rootScope', '$location', 'NLSvc', 'RadioSvc', function($ionicPlatform, $rootScope, $location, NLSvc, RadioSvc) {
+app.run(['$ionicPlatform', '$rootScope', '$location', 'SvcNL', 'SvcRadio', 'SvcDownload',
+  function($ionicPlatform, $rootScope, $location, SvcNL, SvcRadio, SvcDownload) {
   
   function stringStartsWith (str, prefix) {
     return str.substring(0, prefix.length) == prefix;
@@ -30,7 +31,7 @@ starter.run(['$ionicPlatform', '$rootScope', '$location', 'NLSvc', 'RadioSvc', f
 
         // prevent access to protected routes unless the user is logged
         if (stringStartsWith(toState.url, '/abooks/') &&
-            !NLSvc.IsLoggedIn()) {
+            !SvcNL.IsLoggedIn()) {
               event.preventDefault();
               $rootScope.$evalAsync(function() {              
                 $location.path('/login');                
@@ -41,7 +42,7 @@ starter.run(['$ionicPlatform', '$rootScope', '$location', 'NLSvc', 'RadioSvc', f
   });
 }]);
 
-starter.config(function($stateProvider, $urlRouterProvider) {
+app.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/');
   
   $stateProvider
@@ -77,6 +78,12 @@ starter.config(function($stateProvider, $urlRouterProvider) {
       url: '/abooks/menu/detail/:abookId',
       templateUrl: 'templates/abooks-detail.html'
     })
+    .state('myabooks', {
+      url: '/myabooks',
+      templateUrl: 'templates/myabooks.html'
+    })
+    .state('myabooks-player', {
+      url: '/myabooks/player/:abookId',
+      templateUrl: 'templates/myabooks-player.html'
+    })
 });
-
-var controllers = angular.module('controllers', ['services', 'ionic']);

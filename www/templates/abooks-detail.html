@@ -13,9 +13,23 @@
 				<p>{{detail.Comments}}
 				</p>
 			</div>
-			<button class="button button-full button-positive">
-  				Descargar
+		</div>
+		<button ng-show="downloadInfo==null" class="button button-full button-positive" ng-click="downloadBook(detail.Id)">
+			Descargar
+		</button>
+		<button ng-show="false" class="button button-full button-positive" ng-click="downloadBook(detail.Id)">
+			Escuchar
+		</button>
+		<div ng-show="downloadInfo!=null">
+			<div class="row row-center">
+				<div class="col" style="text-align:center;">{{downloadInfo.downloadStatus}}</div>
+			</div>
+			<div  class="row">
+				<progress ng-show="true" value="{{downloadInfo.progress}}" max="100"></progress>
+			</div>
+			<button class="button button-full button-assertive" ng-click="cancelDownload(detail.Id)">
+				Cancelar descarga
 			</button>
-		</div>		
+		</div>
 	</ion-content>
 </ion-view>

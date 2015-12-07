@@ -1,6 +1,6 @@
 // Authors Titles
-controllers.controller('AuthorsBooksCtrl', ['$scope', '$http', '$ionicLoading', '$location', '$stateParams', 'NLSvc', 
-function($scope, $http, $ionicLoading, $location, $stateParams, NLSvc) {
+app.controller('AuthorsBooksCtrl', ['$scope', '$http', '$ionicLoading', '$location', '$stateParams', 'SvcNL', 
+function($scope, $http, $ionicLoading, $location, $stateParams, SvcNL) {
 	var index = 1;
 	var maxTitles = 9999999;
 	var pageSize = 25;
@@ -16,7 +16,7 @@ function($scope, $http, $ionicLoading, $location, $stateParams, NLSvc) {
 			
 			$http({
 				method: 'GET',
-				url: baseUrl + 'GetTitlesByAuthor?Session=' + NLSvc.GetSession() + '&Id=' + $stateParams.authorId + '&Index=' + index + '&Count=' + pageSize
+				url: baseUrl + 'GetTitlesByAuthor?Session=' + SvcNL.GetSession() + '&Id=' + $stateParams.authorId + '&Index=' + index + '&Count=' + pageSize
 			})
 			.then(function success(response) {
 			

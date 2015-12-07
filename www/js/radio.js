@@ -1,10 +1,10 @@
 // Radio controller
-starter.controller('RadioCtrl', function($scope, RadioSvc) {
+app.controller('RadioCtrl', function($scope, SvcRadio) {
   
-	$scope.radioOn = RadioSvc.mplayer.status;
+	$scope.radioOn = SvcRadio.mplayer.status;
 	
 	$scope.switchRadio = function() {
-		RadioSvc.switchRadio();
-		$scope.radioOn = RadioSvc.mplayer.status;
+		SvcRadio.switchRadio();
+		$scope.radioOn = SvcRadio.mplayer.status;
 	}
 });
