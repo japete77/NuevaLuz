@@ -40,8 +40,14 @@ function($rootScope, $interval, $cordovaFile) {
 			};
 		
 		currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, 
-			function (entry) {
-				
+			function (entry) {				
+				// Notify downloaded
+				currentDownload.status = 'Descarga completada';
+				$rootScope.$broadcast('downloaded', currentDownload);
+
+				// remove item
+				downloads.splice(getDownloadIndex(currentDownload.id), 1);
+
 				// Unzip file
 				zip.unzip(currentDownload.path + currentDownload.filename, currentDownload.path, function(result) {					
 					
@@ -49,12 +55,6 @@ function($rootScope, $interval, $cordovaFile) {
 					$cordovaFile.removeFile(currentDownload.path, currentDownload.filename);
 					
 					// Register in My Audio Books
-					
-					// Notify downloaded
-					currentDownload.status = 'Descarga completada';
-					$rootScope.$broadcast('downloaded', currentDownload);
-		
-					downloads.splice(getDownloadIndex(currentDownload.id), 1);
 					
 					processDownloadQueue();
 				});				
