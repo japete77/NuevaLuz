@@ -11,7 +11,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
   		ready = true;
 	});
 	
-	// broadcast download status every sec
+	// broadcast download status every 1 sec
 	$interval(function() {
 		if (downloads.length>0) {
 			downloads.forEach(function(item) {
