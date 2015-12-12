@@ -1,4 +1,4 @@
-<ion-view title="Mis Audio Libros">
+<ion-view title="Mis Audio Libros" ng-controller="ABooksCtrl">
 	<ion-nav-buttons side="right">
         <a class="button button-icon icon ion-home" href="#/"></a>
     </ion-nav-buttons>
@@ -10,9 +10,9 @@
 	</div>
 	<ion-content class="padding has-subheader">
 		<div class="list">
-			<a class="item item-icon-right" href="#/myabooks/player/1">
+			<a class="item item-icon-right" ng-repeat="book in abooks" ng-href="#/myabooks/player/{{book.id}}">
 				<i class="icon ion-ios-arrow-right"></i>
-				<h2>Mi primer audio libro</h2>
+				<h2>{{book.id}}</h2>
 			</a>
 		</div>	
 	</ion-content>

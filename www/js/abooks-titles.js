@@ -4,7 +4,7 @@ function($scope, $timeout, $http, $ionicLoading, SvcNL) {
 
 	var index = 1;
 	var maxTitles = 9999999;
-	var pageSize = 25;
+	var pageSize = 15;
 	var requesting = false;
 	
 	$scope.titles = [];

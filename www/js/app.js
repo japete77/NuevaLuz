@@ -10,8 +10,8 @@ var angular;
 // the 2nd parameter is an array of 'requires'
 var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
 
-app.run(['$ionicPlatform', '$rootScope', '$location', 'SvcNL', 'SvcRadio', 'SvcDownload',
-  function($ionicPlatform, $rootScope, $location, SvcNL, SvcRadio, SvcDownload) {
+app.run(['$ionicPlatform', '$rootScope', '$location', 'SvcNL', 'SvcRadio', 'SvcDownload', 'SvcMyABooks',
+  function($ionicPlatform, $rootScope, $location, SvcNL, SvcRadio, SvcDownload, SvcMyABooks) {
   
   function stringStartsWith (str, prefix) {
     return str.substring(0, prefix.length) == prefix;

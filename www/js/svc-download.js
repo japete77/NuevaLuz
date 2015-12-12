@@ -1,7 +1,7 @@
 var abookBaseUrl = "http://bibliasbraille.com/ClubLibro/";
 
-app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile',
-function($rootScope, $interval, $cordovaFile) {
+app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABooks',
+function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 		
 	var ready = false;
 	var downloads = [];
@@ -30,6 +30,9 @@ function($rootScope, $interval, $cordovaFile) {
 		// Get next item to download
 		var currentDownload = downloads[0];
 		
+		// Register item in abooks-index.json		
+		SvcMyABooks.addBook(currentDownload);
+		
 		// Instantiate new FileTransfer object
 		currentDownload.transfer = new FileTransfer();
 		currentDownload.transfer.onprogress = function(progressEvent) {
@@ -49,15 +52,8 @@ function($rootScope, $interval, $cordovaFile) {
 				downloads.splice(getDownloadIndex(currentDownload.id), 1);
 
 				// Unzip file
-				zip.unzip(currentDownload.path + currentDownload.filename, currentDownload.path, function(result) {					
-					
-					// Delete .zip
-					$cordovaFile.removeFile(currentDownload.path, currentDownload.filename);
-					
-					// Register in My Audio Books
-					
-					processDownloadQueue();
-				});				
+				// Unzip(currentDownload.id);
+				
 			}, function (error) {			
 				
 				currentDownload.errorCode = error.code;
@@ -93,6 +89,91 @@ function($rootScope, $interval, $cordovaFile) {
 			});
 	}
 	
+	$rootScope.targetFolder = '';
+	$rootScope.tmpFolder = '';
+	$rootScope.sourceZip = '';
+	
+	function addFileEntry(entry) {		
+		var dirReader = entry.createReader();
+		
+		dirReader.readEntries(
+			function (entries) {
+				var i = 0;
+				for (i = 0; i < entries.length; i++) {
+					if (entries[i].isDirectory === true) {
+						// Recursive -- call back into this subdirectory
+						addFileEntry(entries[i]);
+					} else {
+						var r = /[^\/]*$/;
+						var sourcePath = entries[i].fullPath.replace(r,'');
+						var filename = entries[i].name;
+						$cordovaFile.moveFile(cordova.file.documentsDirectory + sourcePath, filename, 
+							cordova.file.documentsDirectory + '/' + $rootScope.targetFolder + '/', filename)
+							.then(function (success) {
+								// Delete tmp folder at the end...
+								if (i==entries.length) {
+									$cordovaFile.removeRecursively(cordova.file.documentsDirectory, $rootScope.tmpFolder);
+								}
+							},
+							function (error) {
+								// clean tmp folder in case of error
+								$cordovaFile.removeRecursively(cordova.file.documentsDirectory, $rootScope.tmpFolder);
+							}
+						);
+					}
+				}			
+			}
+		);
+	}
+	
+	var Unzip = function(id) {
+		// Generate tmp folder
+		var d = new Date();
+		$rootScope.tmpFolder = '/' + d.getTime().toString() + '/';
+		
+		// Source file and target folder using id with left padding
+		var pad = "0000";
+		$rootScope.targetFolder = pad.substring(0, pad.length -  id.toString().length) + id;
+		$rootScope.sourceZip = '/' +  $rootScope.targetFolder + '.zip';
+		
+		// Unzip
+		zip.unzip(
+			cordova.file.documentsDirectory + $rootScope.sourceZip, 
+			cordova.file.documentsDirectory + $rootScope.tmpFolder, 
+			function(result) {
+				if (result>-1) {
+					// Delete .zip
+					$cordovaFile.removeFile(cordova.file.documentsDirectory, $rootScope.sourceZip);
+
+					// Create target dir
+					var res = $cordovaFile.createDir(cordova.file.documentsDirectory, '/' + $rootScope.targetFolder + '/', true);
+									
+					// Read files from tmp folder to move them to target dir
+					window.resolveLocalFileSystemURL(
+						cordova.file.documentsDirectory + $rootScope.tmpFolder, 
+						addFileEntry,
+						function(error) {
+							// Delete .zip file...
+							$cordovaFile.removeFile(cordova.file.documentsDirectory, $rootScope.sourceZip);
+				
+							processDownloadQueue();
+							
+							alert(error);
+						}
+					);
+				}
+				else {
+					// Delete .zip file...
+					$cordovaFile.removeFile(cordova.file.documentsDirectory, $rootScope.sourceZip);
+										
+					alert('Unzip Error!');				
+				
+					processDownloadQueue();
+				}
+			}
+		);
+	}
+	
 	var getPlatform = function() {
 			return ionic.Platform.platform();
 	}
@@ -101,7 +182,7 @@ function($rootScope, $interval, $cordovaFile) {
 			return ionic.Platform.version();
 	}
 	
-	var download = function(id) {
+	var download = function(id, title) {
 			
 			if (!ready) return;
 			
@@ -115,6 +196,7 @@ function($rootScope, $interval, $cordovaFile) {
 			// Add item to the queue
 			var downloadItem = {
 				id : id,
+				title: title,
 				url : url,
 				path : cordova.file.documentsDirectory, // TODO: check OS to select folder...
 				filename : filename,

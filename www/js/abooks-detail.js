@@ -29,8 +29,8 @@ function($scope, $timeout, $http, $ionicLoading, $stateParams, SvcNL, SvcDownloa
 		})
 	}
 	
-	$scope.downloadBook = function(id) {
-		SvcDownload.download(id);
+	$scope.downloadBook = function(id, title) {
+		SvcDownload.download(id, title);
 	}
 	
 	$scope.cancelDownload = function(id) {
