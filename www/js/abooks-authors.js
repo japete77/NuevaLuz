@@ -3,7 +3,7 @@ app.controller('AuthorsCtrl', ['$scope', '$http', '$ionicLoading', '$location', 
 function($scope, $http, $ionicLoading, $location, SvcNL) {
 	var index = 1;
 	var maxAuthors = 9999999;
-	var pageSize = 25;
+	var pageSize = 15;
 	var requesting = false;
 	
 	$scope.authors = [];

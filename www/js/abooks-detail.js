@@ -1,7 +1,8 @@
-app.controller('ABooksDetailCtrl', ['$scope', '$timeout', '$http', '$ionicLoading', '$stateParams', 'SvcNL', 'SvcDownload', 
-function($scope, $timeout, $http, $ionicLoading, $stateParams, SvcNL, SvcDownload) {
+app.controller('ABooksDetailCtrl', ['$scope', '$timeout', '$http', '$ionicLoading', '$stateParams', '$ionicPopup', 'SvcNL', 'SvcDownload', 
+function($scope, $timeout, $http, $ionicLoading, $stateParams, $ionicPopup, SvcNL, SvcDownload) {
 	
 	$scope.downloadInfo = null;
+	$scope.showDetail = false;
 	
 	$scope.isDownloading = function(id) {
 		var currentInfo = SvcDownload.getDownloadInfo(id);
@@ -26,6 +27,7 @@ function($scope, $timeout, $http, $ionicLoading, $stateParams, SvcNL, SvcDownloa
 		.then(function success(response) {
 			$scope.detail = response.data.GetAudioBookDetailResult;
 			$ionicLoading.hide();
+			$scope.showDetail = true;
 		})
 	}
 	
@@ -57,7 +59,10 @@ function($scope, $timeout, $http, $ionicLoading, $stateParams, SvcNL, SvcDownloa
 
 	$scope.$on('error', function(event, download) {
 		if ($stateParams.abookId==download.id) {
-			alert(download.downloadStatus);
+			$ionicPopup.alert({
+				title: 'Error en la descarga',
+				template: download.downloadStatus
+			});
 			$scope.downloadInfo = null;
 		}
 	});
