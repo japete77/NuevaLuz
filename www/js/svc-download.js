@@ -41,7 +41,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 					currentDownload.downloadStatus = Math.floor(currentDownload.progress) + '% descargado...';
 				}
 			};
-		
+
 		currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, 
 			function (entry) {				
 				// Notify downloaded
@@ -52,7 +52,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 				downloads.splice(getDownloadIndex(currentDownload.id), 1);
 
 				// Unzip file
-				// Unzip(currentDownload.id);
+				Unzip(currentDownload.id);
 				
 			}, function (error) {			
 				
@@ -127,6 +127,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 	}
 	
 	var Unzip = function(id) {
+				
 		// Generate tmp folder
 		var d = new Date();
 		$rootScope.tmpFolder = '/' + d.getTime().toString() + '/';
@@ -153,23 +154,17 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 						cordova.file.documentsDirectory + $rootScope.tmpFolder, 
 						addFileEntry,
 						function(error) {
-							// Delete .zip file...
-							$cordovaFile.removeFile(cordova.file.documentsDirectory, $rootScope.sourceZip);
-				
-							processDownloadQueue();
-							
 							alert(error);
+							processDownloadQueue();							
 						}
-					);
+					);					
 				}
-				else {
-					// Delete .zip file...
-					$cordovaFile.removeFile(cordova.file.documentsDirectory, $rootScope.sourceZip);
-										
-					alert('Unzip Error!');				
-				
+				else {										
+					alert('Unzip Error!');
 					processDownloadQueue();
 				}
+			},
+			function (progress) {
 			}
 		);
 	}

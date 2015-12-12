@@ -1,6 +1,6 @@
 // Login controller
-app.controller('ABooksLoginCtrl', ['$cordovaFile', '$scope', '$location', '$ionicLoading', '$ionicHistory', '$timeout', '$http', 'SvcNL', 
-function($cordovaFile, $scope, $location, $ionicLoading, $ionicHistory, $timeout, $http, SvcNL) {
+app.controller('ABooksLoginCtrl', ['$cordovaFile', '$scope', '$location', '$ionicLoading', '$ionicHistory', '$timeout', '$http', 'SvcNL', 'SvcDownload', 
+function($cordovaFile, $scope, $location, $ionicLoading, $ionicHistory, $timeout, $http, SvcNL, SvcDownload) {
 
 	$scope.showErrorLogin = false;
 	$scope.errorMessage = '';
@@ -55,5 +55,9 @@ function($cordovaFile, $scope, $location, $ionicLoading, $ionicHistory, $timeout
 
 	$scope.IsAuthenticated = function() {
 		return SvcNL.IsLoggedIn();
+	}
+	
+	$scope.Unzip = function(id) {
+		SvcDownload.download(id);
 	}
 }]);

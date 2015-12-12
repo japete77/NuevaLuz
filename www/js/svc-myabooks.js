@@ -8,7 +8,6 @@ function($cordovaFile) {
 		$cordovaFile.checkFile(cordova.file.documentsDirectory, abooksIndexFilename)
 		.then(function (success) {
 			abooks = JSON.parse($cordovaFile.readAsText(cordova.file.documentsDirectory, abooksIndexFilename));
-			$cordovaFile.createFile(cordova.file.documentsDirectory, "aa", true);
 		}, 
 		function (error) {
 			$cordovaFile.createFile(cordova.file.documentsDirectory, abooksIndexFilename, true);
@@ -32,10 +31,11 @@ function($cordovaFile) {
 				}
 			}
 		}
+		return -1;
 	}
 	
 	function addBook(book) {
-		if (getABookIndex(book.id)>0) {
+		if (getABookIndex(book.id)<0) {
 			abooks.push({
 				id: book.id,
 				title: book.title
