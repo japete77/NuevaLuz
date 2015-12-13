@@ -1,18 +1,19 @@
-<ion-view title="Mis Audio Libros" ng-controller="ABooksCtrl">
+<ion-view title="Mis Libros" ng-controller="ABooksCtrl">
 	<ion-nav-buttons side="right">
         <a class="button button-icon icon ion-home" href="#/"></a>
     </ion-nav-buttons>
 	<div class="bar bar-subheader">
 		<label class="item item-input">
 			<i class="icon ion-search placeholder-icon"></i>
-			<input type="search" placeholder="Filtrar">
+			<input type="search" ng-model="searchText" placeholder="Filtrar">
 		</label>
 	</div>
 	<ion-content class="padding has-subheader">
 		<div class="list">
-			<a class="item item-icon-right" ng-repeat="book in abooks" ng-href="#/myabooks/player/{{book.id}}">
-				<i class="icon ion-ios-arrow-right"></i>
-				<h2>{{book.id}}</h2>
+			<a class="item item-icon-right" ng-repeat="book in abooks | filter: searchText | orderBy: 'title'" ng-href="{{getLink(book.id)}}">
+				<ion-spinner ng-show="book.status=='downloading'" class="icon" icon="ios"></ion-spinner>
+				<i ng-show="book.status=='downloaded'" class="icon ion-ios-arrow-right"></i>
+				<h2>{{book.title}}</h2>
 			</a>
 		</div>	
 	</ion-content>

@@ -1,26 +1,35 @@
 var abooksIndexFilename = "abooks-index.json";
+var workingDir = "";
 
 app.service('SvcMyABooks', ['$cordovaFile',
 function($cordovaFile) {
  	var abooks = new Array();
+	var ready = false;
 	  	
 	document.addEventListener('deviceready', function () {
-		$cordovaFile.checkFile(cordova.file.documentsDirectory, abooksIndexFilename)
-		.then(function (success) {
-			abooks = JSON.parse($cordovaFile.readAsText(cordova.file.documentsDirectory, abooksIndexFilename));
-		}, 
-		function (error) {
-			$cordovaFile.createFile(cordova.file.documentsDirectory, abooksIndexFilename, true);
-			console.log(error);
-		});
+		ready = true;
+		
+		var deviceType = (navigator.userAgent.match(/iPad/i))  == "iPad" ? "iPad" : (navigator.userAgent.match(/iPhone/i))  == "iPhone" ? "iPhone" : "Android";
+		
+		switch (deviceType) {
+			case "iPad":
+			case "iPhone":
+				workingDir = cordova.file.documentsDirectory;
+				break;
+			default:
+				workingDir = cordova.file.dataDirectory;
+				break;
+		}
 	});
 	
 	var updateABooksFile = function() {
-		$cordovaFile.writeFile(cordova.file.documentsDirectory, abooksIndexFilename, JSON.stringify(abooks), true)
-			.then(function (success) {				
-			}, function (error) {
-				console.log(error);
-			});
+		if (ready) {
+			$cordovaFile.writeFile(workingDir, abooksIndexFilename, JSON.stringify(abooks), true)
+				.then(function (success) {				
+				}, function (error) {
+					console.log(error);
+				});
+		}
 	}
 	
 	var getABookIndex = function(id) {
@@ -34,29 +43,50 @@ function($cordovaFile) {
 		return -1;
 	}
 	
-	function addBook(book) {
-		if (getABookIndex(book.id)<0) {
+	function addUpdateBook(book) {
+		var index = getABookIndex(book.id); 
+		if (index<0) {
 			abooks.push({
 				id: book.id,
-				title: book.title
+				title: book.title,
+				status: book.progress<100?'downloading':'downloaded'
 			});
 			
-			updateABooksFile();			
 		}
+		else {
+			// update book status
+			abooks[index].status = book.progress<100?'downloading':'downloaded';	
+		}
+		updateABooksFile();			
 	}
 	
 	function deleteBook(id) {
-		abooks.splice(getABookIndex(id), 1);
-		
+		abooks.splice(getABookIndex(id), 1);	
 		updateABooksFile();
 	}
 	
-	function getBooks() {
-		return abooks;
+	function getBooks(callback) {
+		if (ready) {
+			$cordovaFile.checkFile(workingDir, abooksIndexFilename)
+			.then(function (success) {
+				$cordovaFile.readAsText(workingDir, abooksIndexFilename)
+				.then(function(result) {
+					abooks = JSON.parse(result);
+					callback(abooks);
+				},
+				function(error) {
+					console.log(error);
+				});
+			}, 
+			function (error) {
+				$cordovaFile.createFile(workingDir, abooksIndexFilename, true);
+				console.log(error);
+			});
+		}
 	}
 
 	return {
-		addBook: addBook,
+		addUpdateBook: addUpdateBook,
 		deleteBook: deleteBook,
 		getBooks: getBooks
 	}

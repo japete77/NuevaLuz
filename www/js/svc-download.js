@@ -15,6 +15,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 	$interval(function() {
 		if (downloads.length>0) {
 			downloads.forEach(function(item) {
+				console.log(item);
 				$rootScope.$broadcast('downloading', item);				
 			});
 		}
@@ -29,10 +30,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 		
 		// Get next item to download
 		var currentDownload = downloads[0];
-		
-		// Register item in abooks-index.json		
-		SvcMyABooks.addBook(currentDownload);
-		
+				
 		// Instantiate new FileTransfer object
 		currentDownload.transfer = new FileTransfer();
 		currentDownload.transfer.onprogress = function(progressEvent) {
@@ -47,8 +45,11 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 				// Notify downloaded
 				currentDownload.status = 'Descarga completada';
 				$rootScope.$broadcast('downloaded', currentDownload);
+				
+				// Save my audio books list
+				SvcMyABooks.addUpdateBook(currentDownload);
 
-				// remove item
+				// remove item from download list
 				downloads.splice(getDownloadIndex(currentDownload.id), 1);
 
 				// Unzip file
@@ -57,6 +58,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 			}, function (error) {			
 				
 				currentDownload.errorCode = error.code;
+				console.log(error);
 				
 				// Delete .zip
 				switch (error.code) {
@@ -82,10 +84,15 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 						break;
 				}				
 	
+				// Delete book from list
+				SvcMyABooks.deleteBook(currentDownload.id);
+
+				// Delete from download list
 				downloads.splice(getDownloadIndex(currentDownload.id), 1);
 				
+				// go for next item to process...
 				processDownloadQueue();
-				
+					
 			});
 	}
 	
@@ -107,17 +114,17 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 						var r = /[^\/]*$/;
 						var sourcePath = entries[i].fullPath.replace(r,'');
 						var filename = entries[i].name;
-						$cordovaFile.moveFile(cordova.file.documentsDirectory + sourcePath, filename, 
-							cordova.file.documentsDirectory + '/' + $rootScope.targetFolder + '/', filename)
+						$cordovaFile.moveFile(workingDir + sourcePath, filename, 
+							workingDir + '/' + $rootScope.targetFolder + '/', filename)
 							.then(function (success) {
 								// Delete tmp folder at the end...
 								if (i==entries.length) {
-									$cordovaFile.removeRecursively(cordova.file.documentsDirectory, $rootScope.tmpFolder);
+									$cordovaFile.removeRecursively(workingDir, $rootScope.tmpFolder);
 								}
 							},
 							function (error) {
 								// clean tmp folder in case of error
-								$cordovaFile.removeRecursively(cordova.file.documentsDirectory, $rootScope.tmpFolder);
+								$cordovaFile.removeRecursively(workingDir, $rootScope.tmpFolder);
 							}
 						);
 					}
@@ -139,19 +146,19 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 		
 		// Unzip
 		zip.unzip(
-			cordova.file.documentsDirectory + $rootScope.sourceZip, 
-			cordova.file.documentsDirectory + $rootScope.tmpFolder, 
+			workingDir + $rootScope.sourceZip, 
+			workingDir + $rootScope.tmpFolder, 
 			function(result) {
 				if (result>-1) {
 					// Delete .zip
-					$cordovaFile.removeFile(cordova.file.documentsDirectory, $rootScope.sourceZip);
+					$cordovaFile.removeFile(workingDir, $rootScope.sourceZip);
 
 					// Create target dir
-					var res = $cordovaFile.createDir(cordova.file.documentsDirectory, '/' + $rootScope.targetFolder + '/', true);
+					var res = $cordovaFile.createDir(workingDir, '/' + $rootScope.targetFolder + '/', true);
 									
 					// Read files from tmp folder to move them to target dir
 					window.resolveLocalFileSystemURL(
-						cordova.file.documentsDirectory + $rootScope.tmpFolder, 
+						workingDir + $rootScope.tmpFolder, 
 						addFileEntry,
 						function(error) {
 							alert(error);
@@ -180,7 +187,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 	var download = function(id, title) {
 			
 			if (!ready) return;
-			
+						
 			// File for download (left padding with zeros)
 			var pad = "0000";
 			var url = abookBaseUrl + pad.substring(0, pad.length -  id.toString().length) + id + ".zip";
@@ -193,7 +200,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 				id : id,
 				title: title,
 				url : url,
-				path : cordova.file.documentsDirectory, // TODO: check OS to select folder...
+				path : workingDir,
 				filename : filename,
 				progress : 0,
 				downloadStatus : 'Pendiente de descarga',
@@ -201,8 +208,12 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 				transfer : null
 			}
 			
+			// push item into the download queue
 			downloads.push(downloadItem);
 			
+			// Register item in abooks-index.json		
+			SvcMyABooks.addUpdateBook(downloadItem);
+
 			// process item
 			processDownloadQueue();
 	}
@@ -210,16 +221,19 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 	var cancel = function(id) {
 		var cancelDownload = getDownloadInfo(id);
 		
-		// abort transfer if it's in progress
 		if (cancelDownload)
 		{
+			// abort transfer if it's in progress
 			if (cancelDownload.transfer) {
 				cancelDownload.transfer.abort();
-			}
+			} 
 			else {
+				SvcMyABooks.deleteBook(cancelDownload.id);
+	
 				downloads.splice(getDownloadIndex(cancelDownload.id), 1);
 				cancelDownload.downloadStatus = 'Cancelada la descarga';
 				$rootScope.$broadcast('cancelled', cancelDownload);
+				
 				processDownloadQueue();
 			}
 		}
