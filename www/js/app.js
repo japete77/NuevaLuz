@@ -25,20 +25,7 @@ app.run(['$ionicPlatform', '$rootScope', '$location', 'SvcNL', 'SvcRadio', 'SvcD
     }
     if(window.StatusBar) {
       StatusBar.styleDefault();
-    }
-    
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-
-        // prevent access to protected routes unless the user is logged
-        if (stringStartsWith(toState.url, '/abooks/') &&
-            !SvcNL.IsLoggedIn()) {
-              event.preventDefault();
-              $rootScope.$evalAsync(function() {              
-                $location.path('/login');                
-              });
-            }
-    });
-    
+    }    
   });
 }]);
 

@@ -11,12 +11,11 @@
 				Mis Audio Libros
 				<i class="icon ion-ios-arrow-right"></i>
 			</a>
-			<a class="item item-icon-left item-icon-right" href="#/abooks/menu">
+			<a class="item item-icon-left item-icon-right" ng-href="{{GetLink()}}">
 				<i class="icon ion-android-download"></i>
 				Audioteca Nueva Luz
 				<i ng-class="{ 'icon ion-ios-arrow-right': IsAuthenticated(), 'icon ion-locked': !IsAuthenticated() }"></i>
 			</a>
-			<button ng-if="false" class="button button-block button-positive" ng-click="Unzip(83)">Unzip</button>
 		</div>
 	</ion-content>
 </ion-view>

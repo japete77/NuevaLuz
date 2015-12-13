@@ -44,20 +44,27 @@ function($cordovaFile, $scope, $location, $ionicLoading, $ionicHistory, $timeout
 			}, 0);			
 		},
 		function error(response) {
+			
 			$timeout(function() {
 				$ionicLoading.hide();
 			}, 0);
-			
+						
 			$scope.errorMessage = 'Biblioteca de audio libros fuera de servicio';
 			$scope.showErrorLogin = true;
 		})
+	}
+	
+	$scope.GetLink = function() {
+		if (SvcNL.IsLoggedIn()) {
+			return '#/abooks/menu';
+		}
+		else {
+			return '#/login';
+		}
 	}
 
 	$scope.IsAuthenticated = function() {
 		return SvcNL.IsLoggedIn();
 	}
 	
-	$scope.Unzip = function(id) {
-		SvcDownload.download(id);
-	}
 }]);
