@@ -758,3 +758,25 @@ $z-index-click-block:             99999 !default;
 // -------------------------------
 
 $ios-statusbar-height:           20px !default;
+
+$newHeight:110px;
+
+.bar-subheader {
+	&.player {
+		height: $newHeight !important;
+	}
+}
+
+.has-subheader {
+	&.player {
+		top: $bar-height + $newHeight + 10px !important;
+	}
+}
+
+.title {
+	color: black;
+}
+
+.bar-energized .button.button-icon {
+	color: black;
+}

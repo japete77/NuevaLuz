@@ -2,9 +2,42 @@
 	<ion-nav-buttons side="right">
         <a class="button button-icon icon ion-home" href="#/"></a>
     </ion-nav-buttons>
-	<ion-content class="padding">
-		<button class="button button-full button-positive" ng-click="test()">
-			Test
-		</button>
+	<div class="bar bar-subheader player">
+		<div class="row">
+			<div class="col col-25">
+				<button class="button button-full button-dark icon ion-ios-rewind"></button>
+			</div>
+			<div class="col col-50">
+				<button class="button button-full button-dark icon ion-play"></button>
+			</div>
+			<div class="col col-25">
+				<button class="button button-full button-dark icon ion-ios-fastforward"></button>
+			</div>
+		</div>
+		<div style="text-align:center">00:01:10 / 12:53:24</div>
+	</div>
+	<ion-content class="padding has-subheader player">
+		<h3 style="text-align:center">¡Buena pregunta!</h3>
+		<p>Este libro se ha preguntado como una de las mejores ediciones en su género pero sin llegar a tener
+			el máximo valor que le corresponde...
+		</p>
 	</ion-content>
+	<div class="tabs tabs-icon-top">
+		<a class="tab-item">
+			<i class="icon ion-bookmark"></i>
+			Crear marca
+		</a>
+		<a class="tab-item">
+			<i class="icon ion-ios-bookmarks"></i>
+			Ir a marca
+		</a>
+		<a class="tab-item">
+			<i class="icon ion-ios-browsers"></i>
+			Navegación
+		</a>
+		<a class="tab-item">
+			<i class="icon ion-ios-information"></i>
+			Info
+		</a>
+	</div>
 </ion-view>
