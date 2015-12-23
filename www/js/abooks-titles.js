@@ -1,21 +1,21 @@
 // Audio books controller
 app.controller('ABooksTitlesCtrl', ['$scope', '$timeout', '$http', '$ionicLoading', '$ionicScrollDelegate', 'SvcNL', 
 function($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SvcNL) {
-
 	var index = 1;
 	var maxTitles = 9999999;
 	var pageSize = 15;
-	var requesting = false;
-	
+    var timer = null;
+    
+    $scope.stopLoading = false;
+    $scope.showScroll = true;
 	$scope.titles = [];
     $scope.filterText = "";
 
 	$scope.GetNextTitles = function() {
 	
-		if (!requesting && index<maxTitles) {
-			
-			requesting = true;
-			
+		if (index<maxTitles) {
+		    $scope.showScroll = true;
+
             if ($scope.filterText=="") {
                 $http({
                     method: 'GET',
@@ -31,10 +31,13 @@ function($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SvcNL) {
                     
                     index += pageSize;
                     
-                    requesting = false;
+                    timer = null;
+                    $scope.stopLoading = false;
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
                 })
             }
             else {
+                
                 $http({
                     method: 'GET',
                     url: baseUrl + 'SearchTitles?Session=' + SvcNL.GetSession() + '&Text=' + $scope.filterText + '&Index=' + index + '&Count=' + pageSize
@@ -48,28 +51,40 @@ function($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SvcNL) {
                     }, this);
                     
                     index += pageSize;
-                    
-                    requesting = false;
-                })                
+
+                    timer = null;
+                    $scope.stopLoading = false;
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                })
             }
 		}
+        else {
+            $scope.showScroll = false;
+        }
 	}
   
 	$scope.loadMore = function() {
-		$scope.GetNextTitles();
-		$scope.$broadcast('scroll.infiniteScrollComplete');
+        if (!$scope.stopLoading) {
+            $scope.GetNextTitles();
+        }
 	} 
-  
-	$scope.$on('$stateChangeSuccess', function() {
-		$scope.loadMore();
-	});
     
     // Filter
     $scope.$watch('filterText', function() {
-        index = 1;
-        maxTitles = 9999999;
-        $scope.titles = [];
-        $ionicScrollDelegate.scrollTop();
-        $scope.GetNextTitles();
+        
+        $scope.stopLoading = true;
+        
+        if (timer) {
+            $timeout.cancel(timer);
+        }
+        
+        // delay to avoid many requests when writing search text
+        timer = $timeout(function() {
+            index = 1;
+            maxTitles = 9999999;
+            $scope.titles = [];
+            $ionicScrollDelegate.scrollTop();
+            $scope.GetNextTitles();
+        }, 1000);
     });
 }]);

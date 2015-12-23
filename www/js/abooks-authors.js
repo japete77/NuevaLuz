@@ -1,20 +1,20 @@
 // Authors
-app.controller('AuthorsCtrl', ['$scope', '$http', '$ionicLoading', '$ionicScrollDelegate', '$location', 'SvcNL', 
-function($scope, $http, $ionicLoading, $ionicScrollDelegate, $location, SvcNL) {
+app.controller('AuthorsCtrl', ['$scope', '$http', '$timeout', '$ionicLoading', '$ionicScrollDelegate', '$location', 'SvcNL', 
+function($scope, $http, $timeout, $ionicLoading, $ionicScrollDelegate, $location, SvcNL) {
 	var index = 1;
 	var maxAuthors = 9999999;
 	var pageSize = 15;
-	var requesting = false;
-	
-	$scope.authors = [];
+	var timer = null;
     
+    $scope.stopLoading = false;
+    $scope.showScroll = true;
+	$scope.authors = [];
     $scope.filterText = "";
 
 	$scope.GetNextAuthors = function() {
 	
-		if (!requesting && index<maxAuthors) {
-			
-			requesting = true;
+		if (index<maxAuthors) {
+            $scope.showScroll = true;		
 			
             if ($scope.filterText=="") {
                 $http({
@@ -31,7 +31,9 @@ function($scope, $http, $ionicLoading, $ionicScrollDelegate, $location, SvcNL) {
                     
                     index += pageSize;
                     
-                    requesting = false;
+                    timer = null;
+                    $scope.stopLoading = false;
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
                 })
             }
             else {
@@ -49,29 +51,39 @@ function($scope, $http, $ionicLoading, $ionicScrollDelegate, $location, SvcNL) {
                     
                     index += pageSize;
                     
-                    requesting = false;
-                })
-                
+                    timer = null;
+                    $scope.stopLoading = false;
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                })              
             }
 		}
+        else {
+            $scope.showScroll = false;
+        }
 	}
-  
+
 	$scope.loadMore = function() {
-		$scope.GetNextAuthors();
-		$scope.$broadcast('scroll.infiniteScrollComplete');
+        if (!$scope.stopLoading) {
+            $scope.GetNextAuthors();
+        }
 	} 
-  
-	$scope.$on('$stateChangeSuccess', function() {
-		$scope.loadMore();
-	});
     
-        // Filter
+    // Filter
     $scope.$watch('filterText', function() {
-        index = 1;
-        maxAuthors = 9999999;
-        $scope.authors = [];
-        $ionicScrollDelegate.scrollTop();
-        $scope.GetNextAuthors();
+        $scope.stopLoading = true;
+        
+        if (timer) {
+            $timeout.cancel(timer);
+        }
+        
+        // delay to avoid many requests when writing search text
+        timer = $timeout(function() {
+            index = 1;
+            maxAuthors = 9999999;
+            $scope.authors = [];
+            $ionicScrollDelegate.scrollTop();
+            $scope.GetNextAuthors();
+        }, 1000);
     });
 
 }]);
