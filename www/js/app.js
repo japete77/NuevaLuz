@@ -9,8 +9,11 @@ var baseUrl = "http://nluz.dyndns.org:8081/AudioBookService/";
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
-app.run(['$ionicPlatform', '$rootScope', '$location', 'SvcNL', 'SvcRadio', 'SvcDownload', 'SvcMyABooks',
-    function ($ionicPlatform, $rootScope, $location, SvcNL, SvcRadio, SvcDownload, SvcMyABooks) {
+app.run(['$ionicPlatform', '$rootScope', '$cordovaSplashscreen', '$location', 'SvcNL', 'SvcRadio', 'SvcDownload', 'SvcMyABooks',
+    function ($ionicPlatform, $rootScope, $cordovaSplashscreen, $location, SvcNL, SvcRadio, SvcDownload, SvcMyABooks) {
+        setTimeout(function () {
+            $cordovaSplashscreen.hide();
+        }, 3000);
         function stringStartsWith(str, prefix) {
             return str.substring(0, prefix.length) == prefix;
         }
