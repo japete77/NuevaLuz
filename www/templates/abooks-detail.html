@@ -14,7 +14,7 @@
 				</p>
 			</div>
 		</div>
-		<button ng-if="showDetail" ng-show="downloadInfo==null" class="button button-full button-positive" ng-click="downloadBook(detail.Id, detail.Title)">
+		<button ng-if="showDetail" ng-show="downloadInfo==null" class="button button-full button-positive" ng-click="downloadBook(detail.Id, detail.Title, detail.Number)">
 			Descargar
 		</button>
 		<button ng-if="showDetail" ng-show="false" class="button button-full button-positive" ng-click="Play(detail.Id)">

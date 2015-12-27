@@ -33,8 +33,8 @@ function($scope, $timeout, $http, $ionicLoading, $stateParams, $ionicPopup, SvcN
 		})
 	}
 	
-	$scope.downloadBook = function(id, title) {
-		SvcDownload.download(id, title);
+	$scope.downloadBook = function(id, title, downloadId) {
+		SvcDownload.download(id, title, downloadId);
 	}
 	
 	$scope.cancelDownload = function(id) {

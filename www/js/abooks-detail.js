@@ -26,8 +26,8 @@ app.controller('ABooksDetailCtrl', ['$scope', '$timeout', '$http', '$ionicLoadin
                 $scope.showDetail = true;
             });
         };
-        $scope.downloadBook = function (id, title) {
-            SvcDownload.download(id, title);
+        $scope.downloadBook = function (id, title, downloadId) {
+            SvcDownload.download(id, title, downloadId);
         };
         $scope.cancelDownload = function (id) {
             SvcDownload.cancel(id);

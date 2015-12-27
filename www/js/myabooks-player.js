@@ -1,3 +1,4 @@
+/// <reference path="../../typings/cordova/plugins/Media.d.ts" />
 /// <reference path="app.ts" />
 app.controller('ABooksPlayerCtrl', ['$scope', '$cordovaMedia', 'SvcDownload',
     function ($scope, $cordovaMedia, SvcDownload) {

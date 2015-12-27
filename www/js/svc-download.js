@@ -2,6 +2,7 @@
 /// <reference path="../../typings/ionic/ionic.d.ts" />
 /// <reference path="../../typings/cordova/plugins/FileTransfer.d.ts" />
 /// <reference path="app.ts" />
+/// <reference path="../../typings/nluz/nluz.d.ts" />
 var abookBaseUrl = "http://bibliasbraille.com/ClubLibro/";
 var workingDir = "";
 app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABooks',
@@ -11,25 +12,25 @@ app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABo
         // Check when device is ready to be used...
         ionic.Platform.ready(function () {
             ready = true;
-        });
-        document.addEventListener('deviceready', function () {
-            ready = true;
-            var deviceType = (navigator.userAgent.match(/iPad/i)).toString() === "iPad" ? "iPad" : (navigator.userAgent.match(/iPhone/i)).toString() === "iPhone" ? "iPhone" : "Android";
-            switch (deviceType) {
-                case "iPad":
-                case "iPhone":
+            var userAgent;
+            userAgent = navigator.userAgent.match(/iPad/i);
+            if (userAgent && userAgent.toString() === "iPad") {
+                workingDir = cordova.file.documentsDirectory;
+            }
+            else {
+                userAgent = navigator.userAgent.match(/iPhone/i);
+                if (userAgent && userAgent.toString() === "iPhone") {
                     workingDir = cordova.file.documentsDirectory;
-                    break;
-                default:
+                }
+                else {
                     workingDir = cordova.file.dataDirectory;
-                    break;
+                }
             }
         });
         // broadcast download status every 1 sec
         $interval(function () {
             if (downloads.length > 0) {
                 downloads.forEach(function (item) {
-                    console.log(item);
                     $rootScope.$broadcast('downloading', item);
                 });
             }
@@ -58,7 +59,7 @@ app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABo
                 // remove item from download list
                 downloads.splice(getDownloadIndex(currentDownload.id), 1);
                 // Unzip file
-                Unzip(currentDownload.id);
+                Unzip(currentDownload.downloadId);
             }, function (error) {
                 currentDownload.errorCode = error.code;
                 console.log(error);
@@ -123,13 +124,12 @@ app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABo
                 }
             });
         }
-        var Unzip = function (id) {
+        var Unzip = function (downloadId) {
             // Generate tmp folder
             var d = new Date();
             $rootScope.tmpFolder = '/' + d.getTime().toString() + '/';
             // Source file and target folder using id with left padding
-            var pad = "0000";
-            $rootScope.targetFolder = pad.substring(0, pad.length - id.toString().length) + id;
+            $rootScope.targetFolder = downloadId;
             $rootScope.sourceZip = '/' + $rootScope.targetFolder + '.zip';
             // Unzip
             zip.unzip(workingDir + $rootScope.sourceZip, workingDir + $rootScope.tmpFolder, function (result) {
@@ -157,17 +157,16 @@ app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABo
         var getVersion = function () {
             return ionic.Platform.version();
         };
-        var download = function (id, title) {
+        var download = function (id, title, downloadId) {
             if (!ready)
                 return;
-            // File for download (left padding with zeros)
-            var pad = "0000";
-            var url = abookBaseUrl + pad.substring(0, pad.length - id.toString().length) + id + ".zip";
+            var url = abookBaseUrl + downloadId + ".zip";
             // File name only
             var filename = url.split("/").pop();
             // Add item to the queue
             var downloadItem = {
                 id: id,
+                downloadId: downloadId,
                 title: title,
                 url: url,
                 path: workingDir,
@@ -175,7 +174,8 @@ app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABo
                 progress: 0,
                 downloadStatus: 'Pendiente de descarga',
                 errorCode: 0,
-                transfer: null
+                transfer: null,
+                status: ""
             };
             // push item into the download queue
             downloads.push(downloadItem);
@@ -203,7 +203,7 @@ app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABo
         var getDownloadInfo = function (id) {
             if (downloads) {
                 for (var i = 0; i < downloads.length; i++) {
-                    if (downloads[i].id == id) {
+                    if (downloads[i].id === id) {
                         return downloads[i];
                     }
                 }
@@ -212,7 +212,7 @@ app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABo
         var getDownloadIndex = function (id) {
             if (downloads) {
                 for (var i = 0; i < downloads.length; i++) {
-                    if (downloads[i].id == id) {
+                    if (downloads[i].id === id) {
                         return i;
                     }
                 }

@@ -2,6 +2,7 @@
 /// <reference path="../../typings/ionic/ionic.d.ts" />
 /// <reference path="../../typings/cordova/plugins/FileTransfer.d.ts" />
 /// <reference path="app.ts" />
+/// <reference path="../../typings/nluz/nluz.d.ts" />
 
 declare var zip : any;
 
@@ -11,35 +12,33 @@ var workingDir : string = "";
 app.service('SvcDownload', ['$rootScope', '$interval', '$cordovaFile', 'SvcMyABooks',
 function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 		
-	var ready = false;
-	var downloads = [];
+	var ready : boolean = false;
+	var downloads : Array<DownloadItem> = [];
 	
 	// Check when device is ready to be used...
-	ionic.Platform.ready(function() {
+	ionic.Platform.ready(() => {
   		ready = true;
+
+        var userAgent : RegExpMatchArray;
+        userAgent = navigator.userAgent.match(/iPad/i);
+        if (userAgent && userAgent.toString()==="iPad") {
+            workingDir = cordova.file.documentsDirectory;            
+        }
+        else {
+            userAgent = navigator.userAgent.match(/iPhone/i);
+            if (userAgent && userAgent.toString()==="iPhone") {
+                workingDir = cordova.file.documentsDirectory;            
+            }
+            else {
+                workingDir = cordova.file.dataDirectory;
+            }            
+        }
 	});
-    
-    document.addEventListener('deviceready', function () {
-		ready = true;
-		
-		var deviceType = (navigator.userAgent.match(/iPad/i)).toString()  === "iPad" ? "iPad" : (navigator.userAgent.match(/iPhone/i)).toString()  === "iPhone" ? "iPhone" : "Android";
-		
-		switch (deviceType) {
-			case "iPad":
-			case "iPhone":
-				workingDir = cordova.file.documentsDirectory;
-				break;
-			default:
-				workingDir = cordova.file.dataDirectory;
-				break;
-		}
-	});
-	
+    	
 	// broadcast download status every 1 sec
 	$interval(function() {
 		if (downloads.length>0) {
-			downloads.forEach(function(item) {
-				console.log(item);
+			downloads.forEach(function(item : DownloadItem) {
 				$rootScope.$broadcast('downloading', item);				
 			});
 		}
@@ -53,7 +52,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 		}
 		
 		// Get next item to download
-		var currentDownload = downloads[0];
+		var currentDownload : DownloadItem = downloads[0];
 				
 		// Instantiate new FileTransfer object
 		currentDownload.transfer = new FileTransfer();
@@ -65,7 +64,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 			};
 
 		currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, 
-			function (entry) {				
+			function (entry : FileEntry) {				
 				// Notify downloaded
 				currentDownload.status = 'Descarga completada';
 				$rootScope.$broadcast('downloaded', currentDownload);
@@ -77,7 +76,7 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 				downloads.splice(getDownloadIndex(currentDownload.id), 1);
 
 				// Unzip file
-				Unzip(currentDownload.id);
+				Unzip(currentDownload.downloadId);
 				
 			}, function (error) {			
 				
@@ -124,20 +123,20 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 	$rootScope.tmpFolder = '';
 	$rootScope.sourceZip = '';
 	
-	function addFileEntry(entry) {		
+	function addFileEntry(entry : DirectoryEntry) {		
 		var dirReader = entry.createReader();
 		
 		dirReader.readEntries(
-			function (entries) {
-				var i = 0;
+			function (entries : DirectoryEntry[]) {
+				var i : number = 0;
 				for (i = 0; i < entries.length; i++) {
 					if (entries[i].isDirectory === true) {
 						// Recursive -- call back into this subdirectory
 						addFileEntry(entries[i]);
 					} else {
-						var r = /[^\/]*$/;
-						var sourcePath = entries[i].fullPath.replace(r,'');
-						var filename = entries[i].name;
+						var r : RegExp = /[^\/]*$/;
+						var sourcePath : string = entries[i].fullPath.replace(r,'');
+						var filename : string = entries[i].name;
 						$cordovaFile.moveFile(workingDir + sourcePath, filename, 
 							workingDir + '/' + $rootScope.targetFolder + '/', filename)
 							.then(function (success) {
@@ -157,15 +156,14 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 		);
 	}
 	
-	var Unzip = function(id) {
+	var Unzip = function(downloadId) {
 				
 		// Generate tmp folder
 		var d = new Date();
 		$rootScope.tmpFolder = '/' + d.getTime().toString() + '/';
 		
 		// Source file and target folder using id with left padding
-		var pad = "0000";
-		$rootScope.targetFolder = pad.substring(0, pad.length -  id.toString().length) + id;
+		$rootScope.targetFolder = downloadId;
 		$rootScope.sourceZip = '/' +  $rootScope.targetFolder + '.zip';
 		
 		// Unzip
@@ -208,41 +206,40 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 			return ionic.Platform.version();
 	}
 	
-	var download = function(id, title) {
-			
-			if (!ready) return;
-						
-			// File for download (left padding with zeros)
-			var pad = "0000";
-			var url = abookBaseUrl + pad.substring(0, pad.length -  id.toString().length) + id + ".zip";
-			
-			// File name only
-			var filename = url.split("/").pop();
-			
-			// Add item to the queue
-			var downloadItem = {
-				id : id,
-				title: title,
-				url : url,
-				path : workingDir,
-				filename : filename,
-				progress : 0,
-				downloadStatus : 'Pendiente de descarga',
-				errorCode : 0,
-				transfer : null
-			}
-			
-			// push item into the download queue
-			downloads.push(downloadItem);
-			
-			// Register item in abooks-index.json		
-			SvcMyABooks.addUpdateBook(downloadItem);
+	var download = function(id : string, title : string, downloadId : string) {        			
+        if (!ready) return;
+                    
+        var url : string = abookBaseUrl + downloadId + ".zip";
+        
+        // File name only
+        var filename : string = url.split("/").pop();
+                
+        // Add item to the queue
+        var downloadItem : DownloadItem = {
+            id : id,
+            downloadId : downloadId,
+            title: title,
+            url : url,
+            path : workingDir,
+            filename : filename,
+            progress : 0,
+            downloadStatus : 'Pendiente de descarga',
+            errorCode : 0,
+            transfer : null,
+            status : ""
+        }
+        
+        // push item into the download queue
+        downloads.push(downloadItem);
+        
+        // Register item in abooks-index.json		
+        SvcMyABooks.addUpdateBook(downloadItem);
 
-			// process item
-			processDownloadQueue();
+        // process item
+        processDownloadQueue();
 	}
 	
-	var cancel = function(id) {
+	var cancel = function(id : string) {
 		var cancelDownload = getDownloadInfo(id);
 		
 		if (cancelDownload)
@@ -263,20 +260,20 @@ function($rootScope, $interval, $cordovaFile, SvcMyABooks) {
 		}
 	}
 	
-	var getDownloadInfo = function(id) {
+	var getDownloadInfo = function(id : string) {
 		if (downloads) {
 			for (var i=0; i<downloads.length; i++) {
-				if (downloads[i].id==id) {
+				if (downloads[i].id===id) {
 					return downloads[i];
 				}
 			}
 		}
 	}
 	
-	var getDownloadIndex = function(id) {
+	var getDownloadIndex = function(id : string) {
 		if (downloads) {
 			for (var i=0; i<downloads.length; i++) {
-				if (downloads[i].id==id) {
+				if (downloads[i].id===id) {
 					return i;
 				}
 			}
