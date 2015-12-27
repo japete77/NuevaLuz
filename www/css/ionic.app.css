@@ -2984,7 +2984,7 @@ $dark:                            #444 !default;
 .has-subheader.player {
   top: 164px !important; }
 
-.title {
+.bar.bar-energized.title {
   color: black; }
 
 .bar-energized .button.button-icon {
@@ -3964,9 +3964,9 @@ a.subdued {
     border-color: #e6b500;
     background-color: #ffc900;
     background-image: linear-gradient(0deg, #e6b500, #e6b500 50%, transparent 50%);
-    color: #fff; }
+    color: #000; }
     .bar.bar-energized .title {
-      color: #fff; }
+      color: #000; }
     .bar.bar-energized.bar-footer {
       background-image: linear-gradient(180deg, #e6b500, #e6b500 50%, transparent 50%); }
   .bar.bar-royal {
@@ -4213,9 +4213,9 @@ a.subdued {
 .bar-energized .button {
   border-color: #e6b500;
   background-color: #ffc900;
-  color: #fff; }
+  color: #000; }
   .bar-energized .button:hover {
-    color: #fff;
+    color: #000;
     text-decoration: none; }
   .bar-energized .button.active, .bar-energized .button.activated {
     border-color: #e6b500;
@@ -4443,10 +4443,10 @@ a.subdued {
   border-color: #e6b500;
   background-color: #ffc900;
   background-image: linear-gradient(0deg, #e6b500, #e6b500 50%, transparent 50%);
-  color: #fff; }
+  color: #000; }
   .tabs-energized > .tabs .tab-item .badge,
   .tabs.tabs-energized .tab-item .badge {
-    background-color: #fff;
+    background-color: #000;
     color: #ffc900; }
 
 .tabs-royal > .tabs,
@@ -5724,7 +5724,7 @@ ion-tabs.tabs-color-active-dark .tab-item {
   .item.item-energized {
     border-color: #e6b500;
     background-color: #ffc900;
-    color: #fff; }
+    color: #000; }
   .item.item-royal {
     border-color: #6b46e5;
     background-color: #886aea;
@@ -5957,7 +5957,7 @@ a.item-content {
 .item-complex.item-energized > .item-content {
   border-color: #e6b500;
   background-color: #ffc900;
-  color: #fff; }
+  color: #000; }
   .item-complex.item-energized > .item-content.active, .item-complex.item-energized > .item-content:active {
     border-color: #e6b500;
     background-color: #e6b500; }
@@ -6597,7 +6597,7 @@ button.item.item-button-right {
 .tabs .tab-item .badge.badge-energized,
 .badge.badge-energized {
   background-color: #ffc900;
-  color: #fff; }
+  color: #000; }
 
 .tabs .tab-item .badge.badge-royal,
 .badge.badge-royal {
@@ -7857,9 +7857,9 @@ input:checked + .checkbox-icon:after {
     color: #fff; }
   .item-select.item-energized select {
     background: #ffc900;
-    color: #fff; }
+    color: #000; }
   .item-select.item-energized:after, .item-select.item-energized .input-label {
-    color: #fff; }
+    color: #000; }
   .item-select.item-royal select {
     background: #886aea;
     color: #fff; }
@@ -8106,9 +8106,9 @@ progress {
   .button.button-energized {
     border-color: #e6b500;
     background-color: #ffc900;
-    color: #fff; }
+    color: #000; }
     .button.button-energized:hover {
-      color: #fff;
+      color: #000;
       text-decoration: none; }
     .button.button-energized.active, .button.button-energized.activated {
       border-color: #e6b500;
