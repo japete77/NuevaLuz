@@ -1,12 +1,16 @@
-/// <reference path="../../typings/angularjs/angular.d.ts" />
-/// <reference path="../../typings/cordova/cordova.d.ts" />
-/// <reference path="../../typings/cordova/plugins/Keyboard.d.ts" />
-/// <reference path="../../typings/cordova/plugins/StatusBar.d.ts" />
+/// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="./services/svc-radio.ts" />
 /// <reference path="./services/svc-session.ts" />
 /// <reference path="./services/svc-myabooks.ts" />
-/// <reference path="./controllers/radio.ts" />
+/// <reference path="./services/svc-download.ts" />
+/// <reference path="./controllers/abooks-author-books.ts" />
+/// <reference path="./controllers/abooks-authors.ts" />
+/// <reference path="./controllers/abooks-detail.ts" />
 /// <reference path="./controllers/abooks-login.ts" />
+/// <reference path="./controllers/abooks-titles.ts" />
+/// <reference path="./controllers/myabooks.ts" />
+/// <reference path="./controllers/myabooks-player.ts" />
+/// <reference path="./controllers/radio.ts" />
 // Ionic Starter App
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
@@ -21,8 +25,8 @@ var NuevaLuz;
     NuevaLuz.radioStreamingUrl = "http://nlradio.dyndns.org:8294/;";
     // main angular app
     NuevaLuz.app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
-    NuevaLuz.app.run(['$ionicPlatform', '$rootScope', '$cordovaSplashscreen', '$location', 'SvcNL', 'SvcDownload', 'SvcMyABooks',
-        function ($ionicPlatform, $rootScope, $cordovaSplashscreen, $location, SvcNL, SvcDownload, SvcMyABooks) {
+    NuevaLuz.app.run(['$ionicPlatform', '$cordovaSplashscreen',
+        function ($ionicPlatform, $cordovaSplashscreen) {
             setTimeout(function () {
                 $cordovaSplashscreen.hide();
             }, 3000);
@@ -85,23 +89,35 @@ var NuevaLuz;
         });
     });
     // Register Services
-    NuevaLuz.app.factory("RadioSvc", function () {
-        return new NuevaLuz.RadioService();
-    });
-    NuevaLuz.app.factory("SessionSvc", function () {
-        return new NuevaLuz.SessionService();
-    });
-    NuevaLuz.app.factory("MyABooksSvc", function ($scope, $cordovaFile) {
-        return new NuevaLuz.MyABooksService($scope, $cordovaFile);
-    });
-    NuevaLuz.app.factory("DownloadSvc", function ($scope, $rootScope, $interval, $cordovaFile, MyABooksSvc) {
+    NuevaLuz.app.service("RadioSvc", function () { return new NuevaLuz.RadioService(); });
+    NuevaLuz.app.service("SessionSvc", function () { return new NuevaLuz.SessionService(); });
+    NuevaLuz.app.service('MyABooksSvc', function ($scope) { return new NuevaLuz.MyABooksService($scope); });
+    NuevaLuz.app.service('DownloadSvc', function ($scope, $rootScope, $interval, $cordovaFile, MyABooksSvc) {
         return new NuevaLuz.DownloadService($scope, $rootScope, $interval, $cordovaFile, MyABooksSvc);
     });
     // Register Controllers
-    NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc) {
-        return new NuevaLuz.Radio($scope, RadioSvc);
+    NuevaLuz.app.controller("AuthorsBooksCtrl", function ($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc) {
+        return new NuevaLuz.AuthorsBooksController($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc);
+    });
+    NuevaLuz.app.controller("AuthorsCtrl", function ($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc) {
+        return new NuevaLuz.AuthorsController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc);
+    });
+    NuevaLuz.app.controller("ABooksDetailCtrl", function ($scope, $timeout, $http, $location, $ionicLoading, $stateParams, $ionicPopup, SessionSvc, DownloadSvc, MyABooksSvc) {
+        return new NuevaLuz.ABooksDetailController($scope, $timeout, $http, $location, $ionicLoading, $stateParams, $ionicPopup, SessionSvc, DownloadSvc, MyABooksSvc);
     });
     NuevaLuz.app.controller("LoginCtrl", function ($scope, $location, $timeout, $http, $ionicLoading, $ionicHistory, SessionSvc) {
         return new NuevaLuz.LoginController($scope, $location, $timeout, $http, $ionicLoading, $ionicHistory, SessionSvc);
+    });
+    NuevaLuz.app.controller("ABooksTitlesCtrl", function ($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc) {
+        return new NuevaLuz.ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc);
+    });
+    NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyAbooksSvc) {
+        return new NuevaLuz.ABooksController($scope, $timeout, $http, MyAbooksSvc);
+    });
+    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $cordovaMedia) {
+        return new NuevaLuz.ABooksPlayerController($scope, $cordovaMedia);
+    });
+    NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc) {
+        return new NuevaLuz.RadioController($scope, RadioSvc);
     });
 })(NuevaLuz || (NuevaLuz = {}));

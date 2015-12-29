@@ -10,7 +10,7 @@ var typescript = require('gulp-tsc');
 
 var paths = {
   sass: ['./scss/**/*.scss'],
-  src: ['./www/js/*.ts']
+  src: ['./www/app/**/*.ts']
 };
 
 gulp.task('default', ['sass', 'compile', 'watch']);
@@ -31,7 +31,7 @@ gulp.task('sass', function(done) {
 gulp.task('compile', function(){
   gulp.src(paths.src)
   .pipe(typescript({ emitError: false }))
-  .pipe(gulp.dest('./www/js/'))
+  .pipe(gulp.dest('./www/app/'))
 })
 
 gulp.task('watch', function() {

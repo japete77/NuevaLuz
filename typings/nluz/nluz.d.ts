@@ -13,3 +13,9 @@ declare class DownloadItem {
     public transfer : FileTransfer;
     public status : string;
 }
+
+declare class AudioBook {
+    public id : string;
+    public title : string;
+    public status : string;
+}

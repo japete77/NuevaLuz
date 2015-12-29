@@ -1,4 +1,4 @@
-<ion-view title="Acceso" ng-controller="ABooksLoginCtrl">
+<ion-view title="Acceso" ng-controller="LoginCtrl">
 	<ion-nav-buttons side="right">
         <a class="button button-icon icon ion-home" href="#/"></a>
     </ion-nav-buttons>
@@ -12,7 +12,7 @@
 				<span class="input-label">Contraseña</span>
 				<input type="password" placeholder="Introduzca contraseña" ng-model="user.password">
 			</label>
-			<button class="button button-block button-positive" ng-click="Login(user.name, user.password)">Entrar</button>
+			<button class="button button-block button-positive" ng-click="control.login(user.name, user.password)">Entrar</button>
 		</div>
 		<div class="row">
 			<div ng-show="showErrorLogin" class="col warning">{{errorMessage}}</div>

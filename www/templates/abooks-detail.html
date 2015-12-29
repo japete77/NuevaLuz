@@ -14,10 +14,10 @@
 				</p>
 			</div>
 		</div>
-		<button ng-if="showDetail" ng-show="downloadInfo==null" class="button button-full button-positive" ng-click="downloadBook(detail.Id, detail.Title, detail.Number)">
+		<button ng-if="showDetail" ng-show="!control.isDownloaded(detail.Id)" class="button button-full button-positive" ng-click="control.downloadBook(detail.Id, detail.Title, detail.Number)">
 			Descargar
 		</button>
-		<button ng-if="showDetail" ng-show="false" class="button button-full button-positive" ng-click="Play(detail.Id)">
+		<button ng-if="showDetail" ng-show="control.isDownloaded(detail.Id)" class="button button-full button-balanced" ng-click="control.play(detail.Id)">
 			Escuchar
 		</button>
 		<div ng-if="showDetail" ng-show="downloadInfo!=null">
@@ -27,7 +27,7 @@
 			<div  class="row">
 				<progress ng-show="true" value="{{downloadInfo.progress}}" max="100"></progress>
 			</div>
-			<button class="button button-full button-assertive" ng-click="cancelDownload(detail.Id)">
+			<button class="button button-full button-assertive" ng-click="control.cancelDownload(detail.Id)">
 				Cancelar descarga
 			</button>
 		</div>

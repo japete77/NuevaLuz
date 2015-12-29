@@ -5,9 +5,9 @@
 	<ion-content class="padding">
 		<ul class="list">
 			<li class="item item-toggle">
-				{{ radioOn ? 'Apagar' : 'Encender' }}
+				{{ control.getStatus() ? 'Apagar' : 'Encender' }}
 				<label class="toggle toggle-balanced">
-				<input type="checkbox" ng-model="radioOn" ng-change="switchRadio()">
+				<input type="checkbox" ng-model="radioOn" ng-change="control.switchRadio()">
 				<div class="track">
 					<div class="handle"></div>
 				</div>

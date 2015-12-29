@@ -10,7 +10,7 @@
 	</div>
 	<ion-content class="padding has-subheader">
 		<div class="list">
-			<a class="item item-icon-right" ng-repeat="book in abooks | filter: searchText | orderBy: 'title'" ng-href="{{getLink(book.id)}}">
+			<a class="item item-icon-right" ng-repeat="book in abooks | filter: searchText | orderBy: 'title'" ng-href="{{control.getLink(book.id)}}">
 				<ion-spinner ng-show="book.status=='downloading'" class="icon" icon="ios"></ion-spinner>
 				<i ng-show="book.status=='downloaded'" class="icon ion-ios-arrow-right"></i>
 				<h2>{{book.title}}</h2>

@@ -1,4 +1,4 @@
-<ion-view title="Inicio" hide-back-button="true" ng-controller="ABooksLoginCtrl">
+<ion-view title="Inicio" hide-back-button="true" ng-controller="LoginCtrl">
 	<ion-content class="padding">
 		<div class="list">
 			<a class="item item-icon-left item-icon-right" href="#/radio">
@@ -11,10 +11,10 @@
 				Mis Audio Libros
 				<i class="icon ion-ios-arrow-right"></i>
 			</a>
-			<a class="item item-icon-left item-icon-right" ng-href="{{GetLink()}}">
+			<a class="item item-icon-left item-icon-right" ng-href="{{control.getLink()}}">
 				<i class="icon ion-android-download"></i>
 				Audioteca Nueva Luz
-				<i ng-class="{ 'icon ion-ios-arrow-right': IsAuthenticated(), 'icon ion-locked': !IsAuthenticated() }"></i>
+				<i ng-class="{ 'icon ion-ios-arrow-right': control.isAuthenticated(), 'icon ion-locked': !control.isAuthenticated() }"></i>
 			</a>
 		</div>
 	</ion-content>
