@@ -2,12 +2,7 @@
 
 module NuevaLuz {
     
-    export interface ISessionService {
-        getSession() : string;
-        setSession(session : string);
-    }
-    
-    export class SessionService implements ISessionService {
+    export class SessionService {
         
         private session : string = "";
         

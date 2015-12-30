@@ -104,11 +104,14 @@ module NuevaLuz {
     app.service("RadioSvc",() => new RadioService());
     app.service("SessionSvc",() => new SessionService());
     app.service('MyABooksSvc', ($scope : ng.IScope) => new MyABooksService($scope))
-    app.service('DownloadSvc', ($scope : IDownloadScope, $rootScope : ng.IScope, $interval : ng.IIntervalService, $cordovaFile : any, MyABooksSvc : MyABooksService) =>
+    app.service('DownloadSvc', ($scope : IDownloadScope, $rootScope : ng.IScope, $interval : ng.IIntervalService, 
+        $cordovaFile : any, MyABooksSvc : MyABooksService) =>
         new DownloadService($scope, $rootScope, $interval, $cordovaFile, MyABooksSvc))
     
     // Register Controllers
-    app.controller("AuthorsBooksCtrl", ($scope : IAuthorsBooksScope, $http : ng.IHttpService, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, $stateParams : any, SessionSvc : SessionService) => 
+    app.controller("AuthorsBooksCtrl", ($scope : IAuthorsBooksScope, $http : ng.IHttpService, 
+        $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, 
+        $stateParams : any, SessionSvc : SessionService) => 
         new AuthorsBooksController($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc));
         
     app.controller("AuthorsCtrl", ($scope : IAuthorsScope, $timeout : ng.ITimeoutService, 
@@ -124,7 +127,9 @@ module NuevaLuz {
         new ABooksDetailController($scope, $timeout, $http, $location, $ionicLoading, $stateParams, 
         $ionicPopup, SessionSvc, DownloadSvc, MyABooksSvc));
             
-    app.controller("LoginCtrl", ($scope : ILoginScope, $location : ng.ILocationService, $timeout : ng.ITimeoutService, $http : ng.IHttpService, $ionicLoading : ionic.loading.IonicLoadingService, $ionicHistory : ionic.navigation.IonicHistoryService, SessionSvc : ISessionService) => 
+    app.controller("LoginCtrl", ($scope : ILoginScope, $location : ng.ILocationService, $timeout : ng.ITimeoutService, 
+        $http : ng.IHttpService, $ionicLoading : ionic.loading.IonicLoadingService, 
+        $ionicHistory : ionic.navigation.IonicHistoryService, SessionSvc : SessionService) => 
         new LoginController($scope, $location, $timeout, $http, $ionicLoading, $ionicHistory, SessionSvc));
 
     app.controller("ABooksTitlesCtrl", ($scope : IABooksTitlesScope, $timeout : ng.ITimeoutService, 
@@ -132,7 +137,8 @@ module NuevaLuz {
         $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, SessionSvc : SessionService) => 
         new ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc));
  
-    app.controller("ABooksCtrl", ($scope : IABooksScope, $timeout : ng.ITimeoutService, $http : ng.IHttpService, MyAbooksSvc : MyABooksService) => 
+    app.controller("ABooksCtrl", ($scope : IABooksScope, $timeout : ng.ITimeoutService, 
+        $http : ng.IHttpService, MyAbooksSvc : MyABooksService) => 
         new ABooksController($scope, $timeout, $http, MyAbooksSvc));
 
     app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, $cordovaMedia : any) => 

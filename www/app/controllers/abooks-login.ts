@@ -16,13 +16,13 @@ module NuevaLuz {
         timeout : ng.ITimeoutService;
         ionicLoading : ionic.loading.IonicLoadingService;
         http : ng.IHttpService;
-        sessionService : ISessionService;
+        sessionService : SessionService;
         ionicHistory : ionic.navigation.IonicHistoryService;
         
         constructor($scope : ILoginScope, $location : ng.ILocationService, 
             $timeout : ng.ITimeoutService, $http : ng.IHttpService,
             $ionicLoading : ionic.loading.IonicLoadingService, $ionicHistory : ionic.navigation.IonicHistoryService, 
-            sessionService : ISessionService) {
+            sessionService : SessionService) {
             
             this.scope = $scope;
             this.scope.control = this;
