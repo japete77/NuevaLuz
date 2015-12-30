@@ -24,7 +24,7 @@ var NuevaLuz;
             this.scope.$watch('filterText', function () {
                 _this.scope.stopLoading = true;
                 if (_this.timer) {
-                    _this.timeout.cancel(this.timer);
+                    _this.timeout.cancel(_this.timer);
                 }
                 // delay to avoid many requests when writing search text
                 _this.timer = _this.timeout(function () {
