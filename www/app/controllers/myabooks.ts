@@ -2,7 +2,7 @@
 
 module NuevaLuz {
     
-    export interface IABooksScope {
+    export interface IABooksScope extends ng.IScope {
         control : ABooksController;
         abooks : any;
     }
@@ -20,11 +20,9 @@ module NuevaLuz {
             this.http = $http;
             this.myABooksSvc = myAbooksSvc;
             
-            var _this = this;
-            
             // Retrieve all my audio books
-            this.myABooksSvc.getBooks(function(response) {
-                _this.scope.abooks = response.data;
+            this.myABooksSvc.getBooks((response : any) => {
+                this.scope.abooks = response;
             });
         }
         

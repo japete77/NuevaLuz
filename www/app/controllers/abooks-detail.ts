@@ -42,31 +42,33 @@ module NuevaLuz {
             this.scope.downloadInfo = null;
             this.scope.showDetail = false;
             
+            var _this = this;
+            
             this.scope.$on('downloading', function(event, download) {
-                if (this.stateParams.abookId==download.id) {
+                if (_this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = download;
                 }
             });
             
             this.scope.$on('downloaded', function(event, download) {
-                if ($stateParams.abookId==download.id) {
+                if (_this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = null;
                 }
             });
             
             this.scope.$on('cancelled', function(event, download) {
-                if ($stateParams.abookId==download.id) {
+                if (_this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = null;
                 }
             });
 
             this.scope.$on('error', function(event, download) {
-                if ($stateParams.abookId==download.id) {
-                    $ionicPopup.alert({
+                if (_this.stateParams.abookId==download.id) {
+                    _this.ionicPopup.alert({
                         title: 'Error en la descarga',
                         template: download.downloadStatus
                     });
-                    $scope.downloadInfo = null;
+                    _this.scope.downloadInfo = null;
                 }
             });
 
@@ -92,12 +94,26 @@ module NuevaLuz {
         }
         
         public play(id : string) {
-            this.location.path('#/myabooks/player/' + id);
+            this.location.path('/myabooks/player/' + id);
         }
         
-        public isDownloaded(id : string) : boolean {
-            return this.myABooksSvc.existsABook(id);
+        public isDownloadable(id : string) : boolean {
+            var index : number = this.myABooksSvc.getABookIndex(id);
+            if (index>=0) {
+                return (this.myABooksSvc.abooks[index].status!=="downloading" &&
+                        this.myABooksSvc.abooks[index].status!=="downloaded");
+            }
+            return true;
         }
+        
+        public isAvailable(id : string) : boolean {
+            var index : number = this.myABooksSvc.getABookIndex(id);
+            if (index>=0) {
+                return this.myABooksSvc.abooks[index].status==="downloaded";
+            }
+            return false;            
+        }
+
         public downloadBook(id : string, title : string, downloadId : string) {
             this.downloadSvc.download(id, title, downloadId);
         }

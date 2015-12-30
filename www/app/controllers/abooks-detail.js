@@ -16,28 +16,29 @@ var NuevaLuz;
             this.myABooksSvc = MyABooksSvc;
             this.scope.downloadInfo = null;
             this.scope.showDetail = false;
+            var _this = this;
             this.scope.$on('downloading', function (event, download) {
-                if (this.stateParams.abookId == download.id) {
+                if (_this.stateParams.abookId == download.id) {
                     $scope.downloadInfo = download;
                 }
             });
             this.scope.$on('downloaded', function (event, download) {
-                if ($stateParams.abookId == download.id) {
+                if (_this.stateParams.abookId == download.id) {
                     $scope.downloadInfo = null;
                 }
             });
             this.scope.$on('cancelled', function (event, download) {
-                if ($stateParams.abookId == download.id) {
+                if (_this.stateParams.abookId == download.id) {
                     $scope.downloadInfo = null;
                 }
             });
             this.scope.$on('error', function (event, download) {
-                if ($stateParams.abookId == download.id) {
-                    $ionicPopup.alert({
+                if (_this.stateParams.abookId == download.id) {
+                    _this.ionicPopup.alert({
                         title: 'Error en la descarga',
                         template: download.downloadStatus
                     });
-                    $scope.downloadInfo = null;
+                    _this.scope.downloadInfo = null;
                 }
             });
             this.initialize();
@@ -58,10 +59,22 @@ var NuevaLuz;
             });
         };
         ABooksDetailController.prototype.play = function (id) {
-            this.location.path('#/myabooks/player/' + id);
+            this.location.path('/myabooks/player/' + id);
         };
-        ABooksDetailController.prototype.isDownloaded = function (id) {
-            return this.myABooksSvc.existsABook(id);
+        ABooksDetailController.prototype.isDownloadable = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            if (index >= 0) {
+                return (this.myABooksSvc.abooks[index].status !== "downloading" &&
+                    this.myABooksSvc.abooks[index].status !== "downloaded");
+            }
+            return true;
+        };
+        ABooksDetailController.prototype.isAvailable = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            if (index >= 0) {
+                return this.myABooksSvc.abooks[index].status === "downloaded";
+            }
+            return false;
         };
         ABooksDetailController.prototype.downloadBook = function (id, title, downloadId) {
             this.downloadSvc.download(id, title, downloadId);

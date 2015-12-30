@@ -14,10 +14,10 @@
 				</p>
 			</div>
 		</div>
-		<button ng-if="showDetail" ng-show="!control.isDownloaded(detail.Id)" class="button button-full button-positive" ng-click="control.downloadBook(detail.Id, detail.Title, detail.Number)">
+		<button ng-if="showDetail" ng-show="control.isDownloadable(detail.Id)" class="button button-full button-positive" ng-click="control.downloadBook(detail.Id, detail.Title, detail.Number)">
 			Descargar
 		</button>
-		<button ng-if="showDetail" ng-show="control.isDownloaded(detail.Id)" class="button button-full button-balanced" ng-click="control.play(detail.Id)">
+		<button ng-if="showDetail" ng-show="control.isAvailable(detail.Id)" class="button button-full button-balanced" ng-click="control.play(detail.Id)">
 			Escuchar
 		</button>
 		<div ng-if="showDetail" ng-show="downloadInfo!=null">

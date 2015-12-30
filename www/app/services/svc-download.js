@@ -3,7 +3,7 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var DownloadService = (function () {
-        function DownloadService($scope, $rootScope, $interval, $cordovaFile, myABooksSvc) {
+        function DownloadService($rootScope, $interval, $cordovaFile, myABooksSvc) {
             this.ready = false;
             this.downloads = [];
             this.targetFolder = "";
@@ -51,8 +51,6 @@ var NuevaLuz;
                     }
                 }
             };
-            this.scope = $scope;
-            this.scope.control = this;
             this.rootScope = $rootScope;
             this.interval = $interval;
             this.cordovaFile = $cordovaFile;
@@ -61,20 +59,6 @@ var NuevaLuz;
             // Check when device is ready to be used...
             ionic.Platform.ready(function () {
                 _this.ready = true;
-                var userAgent;
-                userAgent = navigator.userAgent.match(/iPad/i);
-                if (userAgent && userAgent.toString() === "iPad") {
-                    NuevaLuz.workingDir = cordova.file.documentsDirectory;
-                }
-                else {
-                    userAgent = navigator.userAgent.match(/iPhone/i);
-                    if (userAgent && userAgent.toString() === "iPhone") {
-                        NuevaLuz.workingDir = cordova.file.documentsDirectory;
-                    }
-                    else {
-                        NuevaLuz.workingDir = cordova.file.dataDirectory;
-                    }
-                }
             });
             // broadcast download status every 1 sec
             this.interval(function () {
@@ -95,9 +79,9 @@ var NuevaLuz;
             var currentDownload = this.downloads[0];
             // Instantiate new FileTransfer object
             currentDownload.transfer = new FileTransfer();
-            currentDownload.transfer.onprogress = function (progressEvent) {
-                if (progressEvent.lengthComputable) {
-                    currentDownload.progress = (progressEvent.loaded / progressEvent.total) * 100;
+            currentDownload.transfer.onprogress = function (event) {
+                if (event.lengthComputable) {
+                    currentDownload.progress = (event.loaded / event.total) * 100;
                     currentDownload.downloadStatus = Math.floor(currentDownload.progress) + '% descargado...';
                 }
             };
@@ -106,9 +90,9 @@ var NuevaLuz;
                 currentDownload.status = 'Descarga completada';
                 _this.rootScope.$broadcast('downloaded', currentDownload);
                 // Save my audio books list
-                //_this.myABooksSvc.addUpdateBook(currentDownload);
+                _this.myABooksSvc.addUpdateBook(currentDownload);
                 // remove item from download list
-                _this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
+                _this.downloads.splice(_this.getDownloadIndex(currentDownload.id), 1);
                 // Unzip file
                 _this.unzip(currentDownload.downloadId);
             }, function (error) {
@@ -152,14 +136,14 @@ var NuevaLuz;
                 var i = 0;
                 for (i = 0; i < entries.length; i++) {
                     if (entries[i].isDirectory === true) {
-                        // Recursive -- call back into this subdirectory
-                        this.addFileEntry(entries[i]);
+                        // Recursive -- calback into this subdirectory
+                        _this.addFileEntry(entries[i]);
                     }
                     else {
                         var r = /[^\/]*$/;
                         var sourcePath = entries[i].fullPath.replace(r, '');
                         var filename = entries[i].name;
-                        this.cordovaFile.moveFile(NuevaLuz.workingDir + sourcePath, filename, NuevaLuz.workingDir + '/' + this.rootScope.targetFolder + '/', filename)
+                        _this.cordovaFile.moveFile(NuevaLuz.workingDir + sourcePath, filename, NuevaLuz.workingDir + '/' + _this.targetFolder + '/', filename)
                             .then(function (success) {
                             // Delete tmp folder at the end...
                             if (i == entries.length) {
@@ -167,7 +151,7 @@ var NuevaLuz;
                             }
                         }, function (error) {
                             // clean tmp folder in case of error
-                            this.cordovaFile.removeRecursively(NuevaLuz.workingDir, _this.tmpFolder);
+                            _this.cordovaFile.removeRecursively(NuevaLuz.workingDir, _this.tmpFolder);
                         });
                     }
                 }
@@ -189,7 +173,7 @@ var NuevaLuz;
                     // Create target dir
                     var res = _this.cordovaFile.createDir(NuevaLuz.workingDir, '/' + _this.targetFolder + '/', true);
                     // Read files from tmp folder to move them to target dir
-                    window.resolveLocalFileSystemURI(NuevaLuz.workingDir + _this.tmpFolder, _this.addFileEntry, function (error) {
+                    window.resolveLocalFileSystemURI(NuevaLuz.workingDir + _this.tmpFolder, function (entry) { _this.addFileEntry(entry); }, function (error) {
                         alert(error);
                         _this.processDownloadQueue();
                     });

@@ -19,8 +19,8 @@ var NuevaLuz;
 (function (NuevaLuz) {
     // Global variables
     NuevaLuz.baseUrl = "http://nluz.dyndns.org:8081/AudioBookService/";
-    // export var abookBaseUrl : string = "http://bibliasbraille.com/ClubLibro/";
-    NuevaLuz.abookBaseUrl = "http://www.ibgracia.es/";
+    NuevaLuz.abookBaseUrl = "http://bibliasbraille.com/ClubLibro/";
+    // export var abookBaseUrl : string = "http://www.ibgracia.es/";
     NuevaLuz.workingDir = "";
     NuevaLuz.radioStreamingUrl = "http://nlradio.dyndns.org:8294/;";
     // main angular app
@@ -34,6 +34,20 @@ var NuevaLuz;
                 return str.substring(0, prefix.length) == prefix;
             }
             $ionicPlatform.ready(function () {
+                var userAgent;
+                userAgent = navigator.userAgent.match(/iPad/i);
+                if (userAgent && userAgent.toString() === "iPad") {
+                    NuevaLuz.workingDir = cordova.file.documentsDirectory;
+                }
+                else {
+                    userAgent = navigator.userAgent.match(/iPhone/i);
+                    if (userAgent && userAgent.toString() === "iPhone") {
+                        NuevaLuz.workingDir = cordova.file.documentsDirectory;
+                    }
+                    else {
+                        NuevaLuz.workingDir = cordova.file.dataDirectory;
+                    }
+                }
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
                 if (Keyboard) {
@@ -89,11 +103,11 @@ var NuevaLuz;
         });
     });
     // Register Services
-    NuevaLuz.app.service("RadioSvc", function () { return new NuevaLuz.RadioService(); });
-    NuevaLuz.app.service("SessionSvc", function () { return new NuevaLuz.SessionService(); });
-    NuevaLuz.app.service('MyABooksSvc', function ($scope) { return new NuevaLuz.MyABooksService($scope); });
-    NuevaLuz.app.service('DownloadSvc', function ($scope, $rootScope, $interval, $cordovaFile, MyABooksSvc) {
-        return new NuevaLuz.DownloadService($scope, $rootScope, $interval, $cordovaFile, MyABooksSvc);
+    NuevaLuz.app.factory("RadioSvc", function () { return new NuevaLuz.RadioService(); });
+    NuevaLuz.app.factory("SessionSvc", function () { return new NuevaLuz.SessionService(); });
+    NuevaLuz.app.factory('MyABooksSvc', function ($cordovaFile) { return new NuevaLuz.MyABooksService($cordovaFile); });
+    NuevaLuz.app.factory('DownloadSvc', function ($rootScope, $interval, $cordovaFile, MyABooksSvc) {
+        return new NuevaLuz.DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc);
     });
     // Register Controllers
     NuevaLuz.app.controller("AuthorsBooksCtrl", function ($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc) {
@@ -111,8 +125,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksTitlesCtrl", function ($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc) {
         return new NuevaLuz.ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc);
     });
-    NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyAbooksSvc) {
-        return new NuevaLuz.ABooksController($scope, $timeout, $http, MyAbooksSvc);
+    NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc) {
+        return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc);
     });
     NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $cordovaMedia) {
         return new NuevaLuz.ABooksPlayerController($scope, $cordovaMedia);

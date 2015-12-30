@@ -22,8 +22,8 @@ module NuevaLuz {
     
     // Global variables
     export var baseUrl : string = "http://nluz.dyndns.org:8081/AudioBookService/"; 
-    // export var abookBaseUrl : string = "http://bibliasbraille.com/ClubLibro/";
-    export var abookBaseUrl : string = "http://www.ibgracia.es/";
+    export var abookBaseUrl : string = "http://bibliasbraille.com/ClubLibro/";
+    // export var abookBaseUrl : string = "http://www.ibgracia.es/";
     export var workingDir : string = "";
     export var radioStreamingUrl : string = "http://nlradio.dyndns.org:8294/;";
 
@@ -41,7 +41,22 @@ module NuevaLuz {
             return str.substring(0, prefix.length) == prefix;
         }
         
-        $ionicPlatform.ready(function() {
+        $ionicPlatform.ready(() => {
+            var userAgent : RegExpMatchArray;
+            userAgent = navigator.userAgent.match(/iPad/i);
+            if (userAgent && userAgent.toString()==="iPad") {
+                workingDir = cordova.file.documentsDirectory;            
+            }
+            else {
+                userAgent = navigator.userAgent.match(/iPhone/i);
+                if (userAgent && userAgent.toString()==="iPhone") {
+                    workingDir = cordova.file.documentsDirectory;            
+                }
+                else {
+                    workingDir = cordova.file.dataDirectory;
+                }            
+            }
+
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
             if(Keyboard) {
@@ -101,12 +116,11 @@ module NuevaLuz {
     );
     
     // Register Services
-    app.service("RadioSvc",() => new RadioService());
-    app.service("SessionSvc",() => new SessionService());
-    app.service('MyABooksSvc', ($scope : ng.IScope) => new MyABooksService($scope))
-    app.service('DownloadSvc', ($scope : IDownloadScope, $rootScope : ng.IScope, $interval : ng.IIntervalService, 
-        $cordovaFile : any, MyABooksSvc : MyABooksService) =>
-        new DownloadService($scope, $rootScope, $interval, $cordovaFile, MyABooksSvc))
+    app.factory("RadioSvc",() => new RadioService());
+    app.factory("SessionSvc",() => new SessionService());
+    app.factory('MyABooksSvc', ($cordovaFile : any) => new MyABooksService($cordovaFile));
+    app.factory('DownloadSvc', ($rootScope : ng.IScope, $interval : ng.IIntervalService, 
+        $cordovaFile : any, MyABooksSvc : MyABooksService) => new DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc));
     
     // Register Controllers
     app.controller("AuthorsBooksCtrl", ($scope : IAuthorsBooksScope, $http : ng.IHttpService, 
@@ -138,8 +152,8 @@ module NuevaLuz {
         new ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc));
  
     app.controller("ABooksCtrl", ($scope : IABooksScope, $timeout : ng.ITimeoutService, 
-        $http : ng.IHttpService, MyAbooksSvc : MyABooksService) => 
-        new ABooksController($scope, $timeout, $http, MyAbooksSvc));
+        $http : ng.IHttpService, MyABooksSvc : MyABooksService) => 
+        new ABooksController($scope, $timeout, $http, MyABooksSvc));
 
     app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, $cordovaMedia : any) => 
         new ABooksPlayerController($scope, $cordovaMedia));

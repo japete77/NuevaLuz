@@ -2,7 +2,7 @@
 
 module NuevaLuz {
     
-    export interface IABooksPlayerScope {
+    export interface IABooksPlayerScope extends ng.IScope {
         control : ABooksPlayerController;
     }
     
