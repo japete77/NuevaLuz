@@ -31,11 +31,11 @@ module NuevaLuz {
             this.cordovaFile = $cordovaFile;
             this.myABooksSvc = myABooksSvc;
             
-            var _control = this;
+            var _this = this;
             
             // Check when device is ready to be used...
             ionic.Platform.ready(() => {
-                _control.ready = true;
+                _this.ready = true;
 
                 var userAgent : RegExpMatchArray;
                 userAgent = navigator.userAgent.match(/iPad/i);
@@ -55,9 +55,9 @@ module NuevaLuz {
                 
             // broadcast download status every 1 sec
             this.interval(() => {
-                if (_control.downloads.length>0) {
-                    _control.downloads.forEach(function(item : DownloadItem) {
-                        _control.rootScope.$broadcast('downloading', item);				
+                if (_this.downloads.length>0) {
+                    _this.downloads.forEach(function(item : DownloadItem) {
+                        _this.rootScope.$broadcast('downloading', item);				
                     });
                 }
             }, 1000);
@@ -65,7 +65,7 @@ module NuevaLuz {
         
         
         private processDownloadQueue() {
-            var _control = this;
+            var _this = this;
             
             // Check that is not downloading and are still pending downloads
             if (this.downloads.length==0 || this.downloads[0].transfer) {
@@ -88,16 +88,16 @@ module NuevaLuz {
                 function (entry : FileEntry) {				
                     // Notify downloaded
                     currentDownload.status = 'Descarga completada';
-                    _control.rootScope.$broadcast('downloaded', currentDownload);
+                    _this.rootScope.$broadcast('downloaded', currentDownload);
                     
                     // Save my audio books list
-                    //_control.myABooksSvc.addUpdateBook(currentDownload);
+                    //_this.myABooksSvc.addUpdateBook(currentDownload);
 
                     // remove item from download list
-                    _control.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
+                    _this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
 
                     // Unzip file
-                    _control.unzip(currentDownload.downloadId);
+                    _this.unzip(currentDownload.downloadId);
                     
                 }, function (error) {			
                     
@@ -108,40 +108,40 @@ module NuevaLuz {
                     switch (error.code) {
                         case FileTransferError.FILE_NOT_FOUND_ERR:
                             currentDownload.downloadStatus = 'Audio libro no encontrado';
-                            _control.rootScope.$broadcast('error', currentDownload);
+                            _this.rootScope.$broadcast('error', currentDownload);
                             break;
                         case FileTransferError.INVALID_URL_ERR:
                             currentDownload.downloadStatus = 'URL incorrecta';
-                            _control.rootScope.$broadcast('error', currentDownload);
+                            _this.rootScope.$broadcast('error', currentDownload);
                             break;
                         case FileTransferError.CONNECTION_ERR:
                             currentDownload.downloadStatus = 'Error en la conexión';
-                            _control.rootScope.$broadcast('error', currentDownload);
+                            _this.rootScope.$broadcast('error', currentDownload);
                             break;
                         case FileTransferError.ABORT_ERR:
                             currentDownload.downloadStatus = 'Cancelada la descarga';
-                            _control.rootScope.$broadcast('cancelled', currentDownload);
+                            _this.rootScope.$broadcast('cancelled', currentDownload);
                             break;
                         case FileTransferError.NOT_MODIFIED_ERR:
                             currentDownload.downloadStatus = 'Error en archivo local descargdo';
-                            _control.rootScope.$broadcast('error', currentDownload);
+                            _this.rootScope.$broadcast('error', currentDownload);
                             break;
                     }				
         
                     // Delete book from list
-                    _control.myABooksSvc.deleteBook(currentDownload.id);
+                    _this.myABooksSvc.deleteBook(currentDownload.id);
 
                     // Delete from download list
-                    _control.downloads.splice(_control.getDownloadIndex(currentDownload.id), 1);
+                    _this.downloads.splice(_this.getDownloadIndex(currentDownload.id), 1);
                     
                     // go for next item to process...
-                    _control.processDownloadQueue();
+                    _this.processDownloadQueue();
                         
                 });
         }
                 
         private addFileEntry(entry : DirectoryEntry) {	
-            var _control = this;	
+            var _this = this;	
             var dirReader = entry.createReader();       
             dirReader.readEntries(
                 function (entries : DirectoryEntry[]) {
@@ -159,12 +159,12 @@ module NuevaLuz {
                                 .then(function (success) {
                                     // Delete tmp folder at the end...
                                     if (i==entries.length) {
-                                        _control.cordovaFile.removeRecursively(workingDir, _control.tmpFolder);
+                                        _this.cordovaFile.removeRecursively(workingDir, _this.tmpFolder);
                                     }
                                 },
                                 function (error) {
                                     // clean tmp folder in case of error
-                                    this.cordovaFile.removeRecursively(workingDir, _control.tmpFolder);
+                                    this.cordovaFile.removeRecursively(workingDir, _this.tmpFolder);
                                 }
                             );
                         }
@@ -174,7 +174,7 @@ module NuevaLuz {
         }
         
         private unzip(downloadId : string) {
-            var _control = this;
+            var _this = this;
             
             // Generate tmp folder
             var d = new Date();
@@ -191,24 +191,24 @@ module NuevaLuz {
                 function(result) {
                     if (result>-1) {
                         // Delete .zip
-                        _control.cordovaFile.removeFile(workingDir, _control.sourceZip);
+                        _this.cordovaFile.removeFile(workingDir, _this.sourceZip);
 
                         // Create target dir
-                        var res = _control.cordovaFile.createDir(workingDir, '/' + _control.targetFolder + '/', true);
+                        var res = _this.cordovaFile.createDir(workingDir, '/' + _this.targetFolder + '/', true);
                                         
                         // Read files from tmp folder to move them to target dir
                         window.resolveLocalFileSystemURI(
-                            workingDir + _control.tmpFolder, 
-                            _control.addFileEntry,
+                            workingDir + _this.tmpFolder, 
+                            _this.addFileEntry,
                             function(error) {
                                 alert(error);
-                                _control.processDownloadQueue();							
+                                _this.processDownloadQueue();							
                             }
                         );					
                     }
                     else {										
                         alert('Unzip Error!');
-                        _control.processDownloadQueue();
+                        _this.processDownloadQueue();
                     }
                 },
                 function (progress) {

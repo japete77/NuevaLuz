@@ -16,9 +16,11 @@ var NuevaLuz;
             this.stateParams = $stateParams;
             this.stateParams = $stateParams;
             this.sessionSvc = sessionSvc;
+            this.scope.showScroll = true;
+            this.scope.stopLoading = false;
         }
         AuthorsBooksController.prototype.getNextTitles = function () {
-            var _control = this;
+            var _this = this;
             if (this.index < this.maxTitles) {
                 this.scope.showScroll = true;
                 this.http({
@@ -26,14 +28,14 @@ var NuevaLuz;
                     url: NuevaLuz.baseUrl + 'GetTitlesByAuthor?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.authorId + '&Index=' + this.index + '&Count=' + this.pageSize
                 })
                     .then(function success(response) {
-                    _control.maxTitles = response.data.GetTitlesByAuthorResult.Total;
+                    _this.maxTitles = response.data.GetTitlesByAuthorResult.Total;
                     response.data.GetTitlesByAuthorResult.Titles.forEach(function (element) {
-                        _control.scope.titles.push(element);
-                    }, _control);
-                    _control.index += _control.pageSize;
-                    _control.timer = null;
-                    _control.scope.stopLoading = false;
-                    _control.scope.$broadcast('scroll.infiniteScrollComplete');
+                        _this.scope.titles.push(element);
+                    }, _this);
+                    _this.index += _this.pageSize;
+                    _this.timer = null;
+                    _this.scope.stopLoading = false;
+                    _this.scope.$broadcast('scroll.infiniteScrollComplete');
                 });
             }
             else {

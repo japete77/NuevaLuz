@@ -41,30 +41,30 @@ module NuevaLuz {
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.sessionSvc = sessionSvc;
             
-            var _control = this;
+            var _this = this;
             
             // Filter
             this.scope.$watch('filterText', function() {
-                _control.scope.stopLoading = true;
+                _this.scope.stopLoading = true;
                 
-                if (_control.timer) {
-                    _control.timeout.cancel(this.timer);
+                if (_this.timer) {
+                    _this.timeout.cancel(this.timer);
                 }
                 
                 // delay to avoid many requests when writing search text
-                _control.timer = _control.timeout(() => {
-                    _control.index = 1;
-                    _control.maxAuthors = 9999999;
-                    _control.scope.authors = [];
-                    _control.ionicScrollDelegate.scrollTop();
-                    _control.getNextAuthors();
+                _this.timer = _this.timeout(() => {
+                    _this.index = 1;
+                    _this.maxAuthors = 9999999;
+                    _this.scope.authors = [];
+                    _this.ionicScrollDelegate.scrollTop();
+                    _this.getNextAuthors();
                 }, 1000);
             });
          }
          
          public getNextAuthors() {
         
-            var _control = this;
+            var _this = this;
             
             if (this.index<this.maxAuthors) {
                 this.scope.showScroll = true;		
@@ -76,17 +76,17 @@ module NuevaLuz {
                     })
                     .then(function success(response : any) {
                     
-                        _control.maxAuthors = response.data.GetAuthorsResult.Total;
+                        _this.maxAuthors = response.data.GetAuthorsResult.Total;
                         
                         response.data.GetAuthorsResult.Authors.forEach(function(element) {
-                            _control.scope.authors.push(element);
-                        }, _control);
+                            _this.scope.authors.push(element);
+                        }, _this);
                         
-                        _control.index += _control.pageSize;
+                        _this.index += _this.pageSize;
                         
-                        _control.timer = null;
-                        _control.scope.stopLoading = false;
-                        _control.scope.$broadcast('scroll.infiniteScrollComplete');
+                        _this.timer = null;
+                        _this.scope.stopLoading = false;
+                        _this.scope.$broadcast('scroll.infiniteScrollComplete');
                     })
                 }
                 else {
@@ -96,17 +96,17 @@ module NuevaLuz {
                     })
                     .then(function success(response : any) {
                     
-                        _control.maxAuthors = response.data.SearchAuthorsResult.Total;
+                        _this.maxAuthors = response.data.SearchAuthorsResult.Total;
                         
                         response.data.SearchAuthorsResult.Authors.forEach(function(element) {
-                            _control.scope.authors.push(element);
-                        }, _control);
+                            _this.scope.authors.push(element);
+                        }, _this);
                         
-                        _control.index += _control.pageSize;
+                        _this.index += _this.pageSize;
                         
-                        _control.timer = null;
-                        _control.scope.stopLoading = false;
-                        _control.scope.$broadcast('scroll.infiniteScrollComplete');
+                        _this.timer = null;
+                        _this.scope.stopLoading = false;
+                        _this.scope.$broadcast('scroll.infiniteScrollComplete');
                     })              
                 }
             }
@@ -115,9 +115,9 @@ module NuevaLuz {
             }
         }
 
-        public loadMore = function() {
+        public loadMore() {
             if (!this.scope.stopLoading) {
-                this.scope.GetNextAuthors();
+                this.getNextAuthors();
             }
         } 
     }

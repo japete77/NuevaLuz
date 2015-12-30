@@ -18,10 +18,10 @@ var NuevaLuz;
         }
         // Login
         LoginController.prototype.login = function (username, password) {
-            var _control = this;
+            var _this = this;
             this.scope.errorMessage = "";
             this.timeout(function () {
-                _control.ionicLoading.show({
+                _this.ionicLoading.show({
                     template: 'Verificando credenciales...'
                 });
             }, 0);
@@ -31,28 +31,28 @@ var NuevaLuz;
             })
                 .then(function success(response) {
                 if (response.data.LoginResult.Success) {
-                    _control.sessionService.setSession(response.data.LoginResult.Session);
-                    _control.scope.showErrorLogin = false;
-                    _control.ionicHistory.nextViewOptions({
+                    _this.sessionService.setSession(response.data.LoginResult.Session);
+                    _this.scope.showErrorLogin = false;
+                    _this.ionicHistory.nextViewOptions({
                         disableAnimate: true,
                         disableBack: true
                     });
-                    _control.location.path("/");
+                    _this.location.path("/");
                 }
                 else {
-                    _control.scope.errorMessage = 'Acceso denegado';
-                    _control.scope.showErrorLogin = true;
+                    _this.scope.errorMessage = 'Acceso denegado';
+                    _this.scope.showErrorLogin = true;
                 }
                 // Close dialog  
-                _control.timeout(function () {
-                    _control.ionicLoading.hide();
+                _this.timeout(function () {
+                    _this.ionicLoading.hide();
                 }, 0);
             }, function error(response) {
                 this.timeout(function () {
-                    _control.ionicLoading.hide();
+                    _this.ionicLoading.hide();
                 }, 0);
-                _control.scope.errorMessage = 'Biblioteca de audio libros fuera de servicio';
-                _control.scope.showErrorLogin = true;
+                _this.scope.errorMessage = 'Biblioteca de audio libros fuera de servicio';
+                _this.scope.showErrorLogin = true;
             });
         };
         // Get the link to next screen based on auth info

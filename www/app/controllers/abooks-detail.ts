@@ -74,7 +74,7 @@ module NuevaLuz {
         }
         
         initialize() {
-            var _control = this;
+            var _this = this;
             
             this.ionicLoading.show({
                 template: 'Cargando...'
@@ -85,9 +85,9 @@ module NuevaLuz {
                 url: baseUrl + 'GetAudioBookDetail?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.abookId
             })
             .then(function success(response : any) {
-                _control.scope.detail = response.data.GetAudioBookDetailResult;
-                _control.ionicLoading.hide();
-                _control.scope.showDetail = true;
+                _this.scope.detail = response.data.GetAudioBookDetailResult;
+                _this.ionicLoading.hide();
+                _this.scope.showDetail = true;
             })
         }
         

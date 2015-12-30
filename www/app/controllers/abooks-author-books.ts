@@ -33,10 +33,13 @@ module NuevaLuz {
                 this.stateParams = $stateParams;
                 this.stateParams = $stateParams;
                 this.sessionSvc = sessionSvc;
+                
+                this.scope.showScroll = true;
+                this.scope.stopLoading = false;
         }
         
         public getNextTitles() {
-            var _control = this;
+            var _this = this;
             
             if (this.index<this.maxTitles) {
                 this.scope.showScroll = true;
@@ -47,17 +50,17 @@ module NuevaLuz {
                 })
                 .then(function success(response : any) {
                 
-                    _control.maxTitles = response.data.GetTitlesByAuthorResult.Total;
+                    _this.maxTitles = response.data.GetTitlesByAuthorResult.Total;
                     
                     response.data.GetTitlesByAuthorResult.Titles.forEach(function(element : any) {
-                        _control.scope.titles.push(element);
-                    }, _control);
+                        _this.scope.titles.push(element);
+                    }, _this);
                     
-                    _control.index += _control.pageSize;
+                    _this.index += _this.pageSize;
                     
-                    _control.timer = null;
-                    _control.scope.stopLoading = false;
-                    _control.scope.$broadcast('scroll.infiniteScrollComplete');
+                    _this.timer = null;
+                    _this.scope.stopLoading = false;
+                    _this.scope.$broadcast('scroll.infiniteScrollComplete');
                 })
             }
             else {

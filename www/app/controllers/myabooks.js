@@ -8,10 +8,10 @@ var NuevaLuz;
             this.timeout = $timeout;
             this.http = $http;
             this.myABooksSvc = myAbooksSvc;
-            var _control = this;
+            var _this = this;
             // Retrieve all my audio books
             this.myABooksSvc.getBooks(function (response) {
-                _control.scope.abooks = response.data;
+                _this.scope.abooks = response.data;
             });
         }
         ABooksController.prototype.getLink = function (id) {
