@@ -2,10 +2,12 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var ABooksPlayerController = (function () {
-        function ABooksPlayerController($scope, $cordovaMedia) {
+        function ABooksPlayerController($scope, $cordovaMedia, $cordovaFile) {
             this.scope = $scope;
             this.scope.control = this;
             this.cordovaMedia = $cordovaMedia;
+            this.currentBook = new DaisyBook($cordovaFile);
+            this.currentBook.readDaisyBook("1145");
         }
         ABooksPlayerController.prototype.test = function (id) {
             var m = this.cordovaMedia.newMedia("documents://1108/a000009.mp3");
@@ -14,4 +16,27 @@ var NuevaLuz;
         return ABooksPlayerController;
     })();
     NuevaLuz.ABooksPlayerController = ABooksPlayerController;
+    var DaisyBook = (function () {
+        function DaisyBook($cordovaFile) {
+            this.cordovaFile = $cordovaFile;
+        }
+        DaisyBook.prototype.readDaisyBook = function (id) {
+            var _this = this;
+            var bdir = NuevaLuz.workingDir + id + "/";
+            var bfile = "ncc.html";
+            this.cordovaFile.checkFile(bdir, bfile)
+                .then(function (success) {
+                _this.cordovaFile.readAsText(bdir, bfile)
+                    .then(function (success) {
+                    _this.htmlContent = success;
+                }, function (error) {
+                    console.log(error);
+                });
+            }, function (error) {
+                alert("Audio libro no encontrado: " + error);
+            });
+        };
+        return DaisyBook;
+    })();
+    NuevaLuz.DaisyBook = DaisyBook;
 })(NuevaLuz || (NuevaLuz = {}));

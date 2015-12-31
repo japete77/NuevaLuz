@@ -85,11 +85,11 @@ module NuevaLuz {
                 this.cordovaFile.checkFile(workingDir, this.abooksIndexFilename)
                 .then((success) => {
                     this.cordovaFile.readAsText(workingDir, this.abooksIndexFilename)
-                    .then(function(result : any) {
+                    .then((result : any) => {
                         this.abooks = JSON.parse(result);
                         callback(this.abooks);
                     },
-                    function(error) {
+                    (error) => {
                         console.log(error);
                     });
                 }, 

@@ -12,7 +12,7 @@ module NuevaLuz {
         timeout : ng.ITimeoutService;
         http : ng.IHttpService;
         myABooksSvc : MyABooksService;
-    
+        
         constructor($scope : IABooksScope, $timeout : ng.ITimeoutService, $http : ng.IHttpService, myAbooksSvc : MyABooksService) {
             this.scope = $scope;
             this.scope.control = this;

@@ -34,7 +34,7 @@ module NuevaLuz {
     function($ionicPlatform, $cordovaSplashscreen) {
     
         setTimeout(function() {
-            $cordovaSplashscreen.hide()
+            $cordovaSplashscreen.hide();
         }, 3000);
             
         function stringStartsWith (str, prefix) {
@@ -155,8 +155,8 @@ module NuevaLuz {
         $http : ng.IHttpService, MyABooksSvc : MyABooksService) => 
         new ABooksController($scope, $timeout, $http, MyABooksSvc));
 
-    app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, $cordovaMedia : any) => 
-        new ABooksPlayerController($scope, $cordovaMedia));
+    app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, $cordovaMedia : any, $cordovaFile : any) => 
+        new ABooksPlayerController($scope, $cordovaMedia, $cordovaFile));
         
     app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService) => 
         new RadioController($scope, RadioSvc));
