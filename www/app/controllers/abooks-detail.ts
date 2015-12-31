@@ -42,33 +42,31 @@ module NuevaLuz {
             this.scope.downloadInfo = null;
             this.scope.showDetail = false;
             
-            var _this = this;
-            
-            this.scope.$on('downloading', function(event, download) {
-                if (_this.stateParams.abookId==download.id) {
+            this.scope.$on('downloading', (event, download) => {
+                if (this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = download;
                 }
             });
             
-            this.scope.$on('downloaded', function(event, download) {
-                if (_this.stateParams.abookId==download.id) {
+            this.scope.$on('downloaded', (event, download) => {
+                if (this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = null;
                 }
             });
             
-            this.scope.$on('cancelled', function(event, download) {
-                if (_this.stateParams.abookId==download.id) {
+            this.scope.$on('cancelled', (event, download) => {
+                if (this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = null;
                 }
             });
 
-            this.scope.$on('error', function(event, download) {
-                if (_this.stateParams.abookId==download.id) {
-                    _this.ionicPopup.alert({
+            this.scope.$on('error', (event, download) => {
+                if (this.stateParams.abookId==download.id) {
+                    this.ionicPopup.alert({
                         title: 'Error en la descarga',
                         template: download.downloadStatus
                     });
-                    _this.scope.downloadInfo = null;
+                    this.scope.downloadInfo = null;
                 }
             });
 
@@ -76,8 +74,7 @@ module NuevaLuz {
         }
         
         initialize() {
-            var _this = this;
-            
+                        
             this.ionicLoading.show({
                 template: 'Cargando...'
             });
@@ -86,10 +83,10 @@ module NuevaLuz {
                 method: 'GET',
                 url: baseUrl + 'GetAudioBookDetail?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.abookId
             })
-            .then(function success(response : any) {
-                _this.scope.detail = response.data.GetAudioBookDetailResult;
-                _this.ionicLoading.hide();
-                _this.scope.showDetail = true;
+            .then((response : any) => {
+                this.scope.detail = response.data.GetAudioBookDetailResult;
+                this.ionicLoading.hide();
+                this.scope.showDetail = true;
             })
         }
         
@@ -114,8 +111,8 @@ module NuevaLuz {
             return false;            
         }
 
-        public downloadBook(id : string, title : string, downloadId : string) {
-            this.downloadSvc.download(id, title, downloadId);
+        public downloadBook(id : string, title : string) {
+            this.downloadSvc.download(id, title);
         }
         
         public cancelDownload(id : string) {

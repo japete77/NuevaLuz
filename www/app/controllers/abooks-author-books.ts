@@ -39,7 +39,6 @@ module NuevaLuz {
         }
         
         public getNextTitles() {
-            var _this = this;
             
             if (this.index<this.maxTitles) {
                 this.scope.showScroll = true;
@@ -48,19 +47,19 @@ module NuevaLuz {
                     method: 'GET',
                     url: baseUrl + 'GetTitlesByAuthor?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.authorId + '&Index=' + this.index + '&Count=' + this.pageSize
                 })
-                .then(function success(response : any) {
+                .then((response : any) => {
                 
-                    _this.maxTitles = response.data.GetTitlesByAuthorResult.Total;
+                    this.maxTitles = response.data.GetTitlesByAuthorResult.Total;
                     
-                    response.data.GetTitlesByAuthorResult.Titles.forEach(function(element : any) {
-                        _this.scope.titles.push(element);
-                    }, _this);
+                    response.data.GetTitlesByAuthorResult.Titles.forEach((element : any) => {
+                        this.scope.titles.push(element);
+                    }, this);
                     
-                    _this.index += _this.pageSize;
+                    this.index += this.pageSize;
                     
-                    _this.timer = null;
-                    _this.scope.stopLoading = false;
-                    _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                    this.timer = null;
+                    this.scope.stopLoading = false;
+                    this.scope.$broadcast('scroll.infiniteScrollComplete');
                 })
             }
             else {

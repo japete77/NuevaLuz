@@ -3,6 +3,7 @@ var NuevaLuz;
 (function (NuevaLuz) {
     var ABooksTitlesController = (function () {
         function ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, sessionSvc) {
+            var _this = this;
             this.index = 1;
             this.maxTitles = 9999999;
             this.pageSize = 15;
@@ -18,7 +19,6 @@ var NuevaLuz;
             this.ionicLoading = $ionicLoading;
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.sessionSvc = sessionSvc;
-            var _this = this;
             // Filter watch
             this.scope.$watch('filterText', function () {
                 _this.scope.stopLoading = true;
@@ -44,7 +44,7 @@ var NuevaLuz;
                         method: 'GET',
                         url: NuevaLuz.baseUrl + 'GetTitles?Session=' + this.sessionSvc.getSession() + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
-                        .then(function success(response) {
+                        .then(function (response) {
                         _this.maxTitles = response.data.GetTitlesResult.Total;
                         response.data.GetTitlesResult.Titles.forEach(function (element) {
                             _this.scope.titles.push(element);
@@ -60,7 +60,7 @@ var NuevaLuz;
                         method: 'GET',
                         url: NuevaLuz.baseUrl + 'SearchTitles?Session=' + this.sessionSvc.getSession() + '&Text=' + this.scope.filterText + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
-                        .then(function success(response) {
+                        .then(function (response) {
                         _this.maxTitles = response.data.SearchTitlesResult.Total;
                         response.data.SearchTitlesResult.Titles.forEach(function (element) {
                             _this.scope.titles.push(element);

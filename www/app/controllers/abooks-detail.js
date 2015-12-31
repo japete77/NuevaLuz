@@ -3,6 +3,7 @@ var NuevaLuz;
 (function (NuevaLuz) {
     var ABooksDetailController = (function () {
         function ABooksDetailController($scope, $timeout, $http, $location, $ionicLoading, $stateParams, $ionicPopup, sessionSvc, DownloadSvc, MyABooksSvc) {
+            var _this = this;
             this.scope = $scope;
             this.scope.control = this;
             this.timeout = $timeout;
@@ -16,7 +17,6 @@ var NuevaLuz;
             this.myABooksSvc = MyABooksSvc;
             this.scope.downloadInfo = null;
             this.scope.showDetail = false;
-            var _this = this;
             this.scope.$on('downloading', function (event, download) {
                 if (_this.stateParams.abookId == download.id) {
                     $scope.downloadInfo = download;
@@ -52,7 +52,7 @@ var NuevaLuz;
                 method: 'GET',
                 url: NuevaLuz.baseUrl + 'GetAudioBookDetail?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.abookId
             })
-                .then(function success(response) {
+                .then(function (response) {
                 _this.scope.detail = response.data.GetAudioBookDetailResult;
                 _this.ionicLoading.hide();
                 _this.scope.showDetail = true;
@@ -76,8 +76,8 @@ var NuevaLuz;
             }
             return false;
         };
-        ABooksDetailController.prototype.downloadBook = function (id, title, downloadId) {
-            this.downloadSvc.download(id, title, downloadId);
+        ABooksDetailController.prototype.downloadBook = function (id, title) {
+            this.downloadSvc.download(id, title);
         };
         ABooksDetailController.prototype.cancelDownload = function (id) {
             this.downloadSvc.cancel(id);

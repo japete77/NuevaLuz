@@ -74,7 +74,7 @@ module NuevaLuz {
                     this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
 
                     // Unzip file
-                    this.unzip(currentDownload.downloadId);
+                    this.unzip(currentDownload.id);
                     
                 }, (error : FileTransferError) => {			
                     
@@ -198,11 +198,11 @@ module NuevaLuz {
             return ionic.Platform.version();
         }
         
-        public download = function(id : string, title : string, downloadId : string) {  
+        public download = function(id : string, title : string) {  
                   			
             if (!this.ready) return;
             
-            var url : string = abookBaseUrl + downloadId + ".zip";
+            var url : string = abookBaseUrl + id + ".zip";
             
             // File name only
             var filename : string = url.split("/").pop();
@@ -210,7 +210,6 @@ module NuevaLuz {
             // Add item to the queue
             var downloadItem : DownloadItem = {
                 id : id,
-                downloadId : downloadId,
                 title: title,
                 url : url,
                 path : workingDir,

@@ -39,12 +39,11 @@ module NuevaLuz {
         
         // Login
         login(username : string, password : string) {
-            var _this = this;
-            
+
             this.scope.errorMessage = "";
             
-            this.timeout(function() {
-                _this.ionicLoading.show({
+            this.timeout(() => {
+                this.ionicLoading.show({
                     template: 'Verificando credenciales...'
                 });
             }, 0)
@@ -53,38 +52,38 @@ module NuevaLuz {
                 method: 'GET',
                 url: baseUrl + 'Login?Username=' + username + '&Password=' + password
             })
-            .then(function success(response : any) {
+            .then((response : any) => {
                 if (response.data.LoginResult.Success) {           
                 
-                    _this.sessionService.setSession(response.data.LoginResult.Session);
+                    this.sessionService.setSession(response.data.LoginResult.Session);
             
-                    _this.scope.showErrorLogin = false;
+                    this.scope.showErrorLogin = false;
                     
-                    _this.ionicHistory.nextViewOptions({
+                    this.ionicHistory.nextViewOptions({
                         disableAnimate: true,
                         disableBack: true
                     });
                     
-                    _this.location.path("/");
+                    this.location.path("/");
                 }
                 else {           
-                    _this.scope.errorMessage = 'Acceso denegado';
-                    _this.scope.showErrorLogin = true;
+                    this.scope.errorMessage = 'Acceso denegado';
+                    this.scope.showErrorLogin = true;
                 }
             
                 // Close dialog  
-                _this.timeout(function() {
-                    _this.ionicLoading.hide();
+                this.timeout(() => {
+                    this.ionicLoading.hide();
                 }, 0);			
             },
-            function error(response) {
+            (response) => {
                 
-                this.timeout(function() {
-                    _this.ionicLoading.hide();
+                this.timeout(() => {
+                    this.ionicLoading.hide();
                 }, 0);
                             
-                _this.scope.errorMessage = 'Biblioteca de audio libros fuera de servicio';
-                _this.scope.showErrorLogin = true;
+                this.scope.errorMessage = 'Biblioteca de audio libros fuera de servicio';
+                this.scope.showErrorLogin = true;
             })
         }
         

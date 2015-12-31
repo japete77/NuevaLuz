@@ -27,7 +27,7 @@ var NuevaLuz;
                     method: 'GET',
                     url: NuevaLuz.baseUrl + 'GetTitlesByAuthor?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.authorId + '&Index=' + this.index + '&Count=' + this.pageSize
                 })
-                    .then(function success(response) {
+                    .then(function (response) {
                     _this.maxTitles = response.data.GetTitlesByAuthorResult.Total;
                     response.data.GetTitlesByAuthorResult.Titles.forEach(function (element) {
                         _this.scope.titles.push(element);

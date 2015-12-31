@@ -3,6 +3,7 @@ var NuevaLuz;
 (function (NuevaLuz) {
     var AuthorsController = (function () {
         function AuthorsController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, sessionSvc) {
+            var _this = this;
             this.index = 1;
             this.maxAuthors = 9999999;
             this.pageSize = 15;
@@ -19,7 +20,6 @@ var NuevaLuz;
             this.ionicLoading = $ionicLoading;
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.sessionSvc = sessionSvc;
-            var _this = this;
             // Filter
             this.scope.$watch('filterText', function () {
                 _this.scope.stopLoading = true;
@@ -45,7 +45,7 @@ var NuevaLuz;
                         method: 'GET',
                         url: NuevaLuz.baseUrl + 'GetAuthors?Session=' + this.sessionSvc.getSession() + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
-                        .then(function success(response) {
+                        .then(function (response) {
                         _this.maxAuthors = response.data.GetAuthorsResult.Total;
                         response.data.GetAuthorsResult.Authors.forEach(function (element) {
                             _this.scope.authors.push(element);
@@ -61,7 +61,7 @@ var NuevaLuz;
                         method: 'GET',
                         url: NuevaLuz.baseUrl + 'SearchAuthors?Session=' + this.sessionSvc.getSession() + '&Text=' + this.scope.filterText + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
-                        .then(function success(response) {
+                        .then(function (response) {
                         _this.maxAuthors = response.data.SearchAuthorsResult.Total;
                         response.data.SearchAuthorsResult.Authors.forEach(function (element) {
                             _this.scope.authors.push(element);

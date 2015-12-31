@@ -24,3 +24,4 @@
 /// <reference path="jquery/jquery.d.ts" />
 /// <reference path="nluz/nluz.d.ts" />
 /// <reference path="ng-cordova/tsd.d.ts" />
+/// <reference path="x2js/xml2json.d.ts" />

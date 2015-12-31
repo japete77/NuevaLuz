@@ -41,30 +41,26 @@ module NuevaLuz {
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.sessionSvc = sessionSvc;
             
-            var _this = this;
-            
             // Filter
-            this.scope.$watch('filterText', function() {
-                _this.scope.stopLoading = true;
+            this.scope.$watch('filterText', () => {
+                this.scope.stopLoading = true;
                 
-                if (_this.timer) {
-                    _this.timeout.cancel(_this.timer);
+                if (this.timer) {
+                    this.timeout.cancel(this.timer);
                 }
                 
                 // delay to avoid many requests when writing search text
-                _this.timer = _this.timeout(() => {
-                    _this.index = 1;
-                    _this.maxAuthors = 9999999;
-                    _this.scope.authors = [];
-                    _this.ionicScrollDelegate.scrollTop();
-                    _this.getNextAuthors();
+                this.timer = this.timeout(() => {
+                    this.index = 1;
+                    this.maxAuthors = 9999999;
+                    this.scope.authors = [];
+                    this.ionicScrollDelegate.scrollTop();
+                    this.getNextAuthors();
                 }, 1000);
             });
          }
          
          public getNextAuthors() {
-        
-            var _this = this;
             
             if (this.index<this.maxAuthors) {
                 this.scope.showScroll = true;		
@@ -74,19 +70,19 @@ module NuevaLuz {
                         method: 'GET',
                         url: baseUrl + 'GetAuthors?Session=' + this.sessionSvc.getSession() + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
-                    .then(function success(response : any) {
+                    .then((response : any) => {
                     
-                        _this.maxAuthors = response.data.GetAuthorsResult.Total;
+                        this.maxAuthors = response.data.GetAuthorsResult.Total;
                         
-                        response.data.GetAuthorsResult.Authors.forEach(function(element) {
-                            _this.scope.authors.push(element);
-                        }, _this);
+                        response.data.GetAuthorsResult.Authors.forEach((element) => {
+                            this.scope.authors.push(element);
+                        }, this);
                         
-                        _this.index += _this.pageSize;
+                        this.index += this.pageSize;
                         
-                        _this.timer = null;
-                        _this.scope.stopLoading = false;
-                        _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        this.timer = null;
+                        this.scope.stopLoading = false;
+                        this.scope.$broadcast('scroll.infiniteScrollComplete');
                     })
                 }
                 else {
@@ -94,19 +90,19 @@ module NuevaLuz {
                         method: 'GET',
                         url: baseUrl + 'SearchAuthors?Session=' + this.sessionSvc.getSession() + '&Text=' + this.scope.filterText + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
-                    .then(function success(response : any) {
+                    .then((response : any) => {
                     
-                        _this.maxAuthors = response.data.SearchAuthorsResult.Total;
+                        this.maxAuthors = response.data.SearchAuthorsResult.Total;
                         
-                        response.data.SearchAuthorsResult.Authors.forEach(function(element) {
-                            _this.scope.authors.push(element);
-                        }, _this);
+                        response.data.SearchAuthorsResult.Authors.forEach((element) => {
+                            this.scope.authors.push(element);
+                        }, this);
                         
-                        _this.index += _this.pageSize;
+                        this.index += this.pageSize;
                         
-                        _this.timer = null;
-                        _this.scope.stopLoading = false;
-                        _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        this.timer = null;
+                        this.scope.stopLoading = false;
+                        this.scope.$broadcast('scroll.infiniteScrollComplete');
                     })              
                 }
             }

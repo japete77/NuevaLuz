@@ -2,7 +2,6 @@
 
 declare class DownloadItem {
     public id : string;
-    public downloadId : string;
     public title: string;
     public url : string;
     public path : string;

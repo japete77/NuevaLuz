@@ -29,7 +29,7 @@ var NuevaLuz;
                 method: 'GET',
                 url: NuevaLuz.baseUrl + 'Login?Username=' + username + '&Password=' + password
             })
-                .then(function success(response) {
+                .then(function (response) {
                 if (response.data.LoginResult.Success) {
                     _this.sessionService.setSession(response.data.LoginResult.Session);
                     _this.scope.showErrorLogin = false;
@@ -47,8 +47,8 @@ var NuevaLuz;
                 _this.timeout(function () {
                     _this.ionicLoading.hide();
                 }, 0);
-            }, function error(response) {
-                this.timeout(function () {
+            }, function (response) {
+                _this.timeout(function () {
                     _this.ionicLoading.hide();
                 }, 0);
                 _this.scope.errorMessage = 'Biblioteca de audio libros fuera de servicio';

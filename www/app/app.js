@@ -128,8 +128,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc) {
         return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc);
     });
-    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $cordovaMedia, $cordovaFile) {
-        return new NuevaLuz.ABooksPlayerController($scope, $cordovaMedia, $cordovaFile);
+    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $cordovaMedia, $cordovaFile, $stateParams) {
+        return new NuevaLuz.ABooksPlayerController($scope, $cordovaMedia, $cordovaFile, $stateParams);
     });
     NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc) {
         return new NuevaLuz.RadioController($scope, RadioSvc);

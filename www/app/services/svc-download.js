@@ -15,16 +15,15 @@ var NuevaLuz;
             this.getVersion = function () {
                 return ionic.Platform.version();
             };
-            this.download = function (id, title, downloadId) {
+            this.download = function (id, title) {
                 if (!this.ready)
                     return;
-                var url = NuevaLuz.abookBaseUrl + downloadId + ".zip";
+                var url = NuevaLuz.abookBaseUrl + id + ".zip";
                 // File name only
                 var filename = url.split("/").pop();
                 // Add item to the queue
                 var downloadItem = {
                     id: id,
-                    downloadId: downloadId,
                     title: title,
                     url: url,
                     path: NuevaLuz.workingDir,
@@ -94,7 +93,7 @@ var NuevaLuz;
                 // remove item from download list
                 _this.downloads.splice(_this.getDownloadIndex(currentDownload.id), 1);
                 // Unzip file
-                _this.unzip(currentDownload.downloadId);
+                _this.unzip(currentDownload.id);
             }, function (error) {
                 currentDownload.errorCode = error.code;
                 console.log(error);

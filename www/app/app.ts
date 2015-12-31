@@ -118,7 +118,7 @@ module NuevaLuz {
     // Register Services
     app.factory("RadioSvc",() => new RadioService());
     app.factory("SessionSvc",() => new SessionService());
-    app.factory('MyABooksSvc', ($cordovaFile : any) => new MyABooksService($cordovaFile));
+    app.factory('MyABooksSvc', ($cordovaFile : ngCordova.IFileService) => new MyABooksService($cordovaFile));
     app.factory('DownloadSvc', ($rootScope : ng.IScope, $interval : ng.IIntervalService, 
         $cordovaFile : any, MyABooksSvc : MyABooksService) => new DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc));
     
@@ -155,8 +155,9 @@ module NuevaLuz {
         $http : ng.IHttpService, MyABooksSvc : MyABooksService) => 
         new ABooksController($scope, $timeout, $http, MyABooksSvc));
 
-    app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, $cordovaMedia : any, $cordovaFile : any) => 
-        new ABooksPlayerController($scope, $cordovaMedia, $cordovaFile));
+    app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, $cordovaMedia : any, 
+        $cordovaFile : ngCordova.IFileService, $stateParams : any) => 
+        new ABooksPlayerController($scope, $cordovaMedia, $cordovaFile, $stateParams));
         
     app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService) => 
         new RadioController($scope, RadioSvc));
