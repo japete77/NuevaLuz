@@ -1,0 +1,22 @@
+<ion-view title="Info" ng-controller="ABookInfoCtrl">
+	<ion-nav-buttons side="right">
+        <a class="button button-icon icon ion-home" href="#/"></a>
+    </ion-nav-buttons>
+	<ion-content class="padding">
+        <div class="list">
+            <a ng-if="currentBook.title" class="item" href="#">Título<span class="item-note">{{currentBook.title}}</span></a>
+            <a ng-if="currentBook.subject" class="item" href="#">Tema<span class="item-note">{{currentBook.subject}}</span></a>
+            <a ng-if="currentBook.totalTime" class="item" href="#">Duración<span class="item-note">{{currentBook.totalTime}}</span></a>
+            <a ng-if="currentBook.date" class="item" href="#">Fecha<span class="item-note">{{currentBook.date}}</span></a>
+            <a ng-if="currentBook.creator" class="item" href="#">Autor<span class="item-note">{{currentBook.creator}}</span></a>
+            <a ng-if="currentBook.narrator" class="item" href="#">Narrador<span class="item-note">{{currentBook.narrator}}</span></a>
+            <a ng-if="currentBook.publisher" class="item" href="#">Publicado por<span class="item-note">{{currentBook.publisher}}</span></a>
+            <a ng-if="currentBook.producer" class="item" href="#">Producido por<span class="item-note">{{currentBook.producer}}</span></a>
+            <a ng-if="currentBook.source" class="item" href="#">Fuente<span class="item-note">{{currentBook.source}}</span></a>
+            <a ng-if="currentBook.format" class="item" href="#">Formato<span class="item-note">{{currentBook.format}}</span></a>
+            <a ng-if="currentBook.identifier" class="item" href="#">Identificador<span class="item-note">{{currentBook.identifier}}</span></a>
+            <a ng-if="currentBook.charset" class="item" href="#">Juego caracteres<span class="item-note">{{currentBook.charset}}</span></a>
+            <a ng-if="currentBook.generator" class="item" href="#">Generado por<span class="item-note">{{currentBook.generator}}</span></a>
+        </div>
+	</ion-content>
+</ion-view>

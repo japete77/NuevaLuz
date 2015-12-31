@@ -8,7 +8,7 @@
 				<button class="button button-full button-dark icon ion-ios-rewind"></button>
 			</div>
 			<div class="col col-50">
-				<button class="button button-full button-dark icon ion-play" ng-click="control.test()"></button>
+				<button class="button button-full button-dark icon ion-play" ng-click="control.test(currentBook.id)"></button>
 			</div>
 			<div class="col col-25">
 				<button class="button button-full button-dark icon ion-ios-fastforward"></button>
@@ -34,7 +34,7 @@
 			<i class="icon ion-ios-browsers"></i>
 			Navegación
 		</a>
-		<a class="tab-item">
+		<a class="tab-item" ng-click="control.showInfo(currentBook.id)">
 			<i class="icon ion-ios-information"></i>
 			Info
 		</a>

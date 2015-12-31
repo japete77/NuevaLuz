@@ -1,8 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="./services/svc-radio.ts" />
-/// <reference path="./services/svc-session.ts" />
-/// <reference path="./services/svc-myabooks.ts" />
 /// <reference path="./services/svc-download.ts" />
+/// <reference path="./services/svc-myabooks.ts" />
+/// <reference path="./services/svc-player.ts" />
+/// <reference path="./services/svc-session.ts" />
+/// <reference path="./services/svc-radio.ts" />
+/// <reference path="./controllers/abook-info.ts" />
 /// <reference path="./controllers/abooks-author-books.ts" />
 /// <reference path="./controllers/abooks-authors.ts" />
 /// <reference path="./controllers/abooks-detail.ts" />
@@ -100,11 +102,16 @@ var NuevaLuz;
             .state('myabooks-player', {
             url: '/myabooks/player/:abookId',
             templateUrl: 'templates/myabooks-player.html'
+        })
+            .state('myabooks-info', {
+            url: '/myabooks/info/:abookId',
+            templateUrl: 'templates/abook-info.html'
         });
     });
     // Register Services
     NuevaLuz.app.factory("RadioSvc", function () { return new NuevaLuz.RadioService(); });
     NuevaLuz.app.factory("SessionSvc", function () { return new NuevaLuz.SessionService(); });
+    NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile) { return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile); });
     NuevaLuz.app.factory('MyABooksSvc', function ($cordovaFile) { return new NuevaLuz.MyABooksService($cordovaFile); });
     NuevaLuz.app.factory('DownloadSvc', function ($rootScope, $interval, $cordovaFile, MyABooksSvc) {
         return new NuevaLuz.DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc);
@@ -128,10 +135,13 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc) {
         return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc);
     });
-    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $cordovaMedia, $cordovaFile, $stateParams) {
-        return new NuevaLuz.ABooksPlayerController($scope, $cordovaMedia, $cordovaFile, $stateParams);
+    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, DaisyPlayerSvc) {
+        return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, DaisyPlayerSvc);
     });
     NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc) {
         return new NuevaLuz.RadioController($scope, RadioSvc);
+    });
+    NuevaLuz.app.controller("ABookInfoCtrl", function ($scope, DaisyPlayerSvc) {
+        return new NuevaLuz.ABookInfoController($scope, DaisyPlayerSvc);
     });
 })(NuevaLuz || (NuevaLuz = {}));

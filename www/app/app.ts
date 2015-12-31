@@ -1,8 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="./services/svc-radio.ts" />
-/// <reference path="./services/svc-session.ts" />
-/// <reference path="./services/svc-myabooks.ts" />
 /// <reference path="./services/svc-download.ts" />
+/// <reference path="./services/svc-myabooks.ts" />
+/// <reference path="./services/svc-player.ts" />
+/// <reference path="./services/svc-session.ts" />
+/// <reference path="./services/svc-radio.ts" />
+/// <reference path="./controllers/abook-info.ts" />
 /// <reference path="./controllers/abooks-author-books.ts" />
 /// <reference path="./controllers/abooks-authors.ts" />
 /// <reference path="./controllers/abooks-detail.ts" />
@@ -112,12 +114,17 @@ module NuevaLuz {
             url: '/myabooks/player/:abookId',
             templateUrl: 'templates/myabooks-player.html'
             })
+            .state('myabooks-info', {
+            url: '/myabooks/info/:abookId',
+            templateUrl: 'templates/abook-info.html'
+            })
         }
     );
     
     // Register Services
     app.factory("RadioSvc",() => new RadioService());
     app.factory("SessionSvc",() => new SessionService());
+    app.factory("DaisyPlayerSvc", ($cordovaMedia : any, $cordovaFile : ngCordova.IFileService) => new DaisyPlayerService($cordovaMedia, $cordovaFile));
     app.factory('MyABooksSvc', ($cordovaFile : ngCordova.IFileService) => new MyABooksService($cordovaFile));
     app.factory('DownloadSvc', ($rootScope : ng.IScope, $interval : ng.IIntervalService, 
         $cordovaFile : any, MyABooksSvc : MyABooksService) => new DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc));
@@ -155,10 +162,13 @@ module NuevaLuz {
         $http : ng.IHttpService, MyABooksSvc : MyABooksService) => 
         new ABooksController($scope, $timeout, $http, MyABooksSvc));
 
-    app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, $cordovaMedia : any, 
-        $cordovaFile : ngCordova.IFileService, $stateParams : any) => 
-        new ABooksPlayerController($scope, $cordovaMedia, $cordovaFile, $stateParams));
+    app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, 
+        $stateParams : any, $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) => 
+        new ABooksPlayerController($scope, $stateParams, $location, DaisyPlayerSvc));
         
     app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService) => 
         new RadioController($scope, RadioSvc));
+
+    app.controller("ABookInfoCtrl", ($scope : IABookInfoScope, DaisyPlayerSvc : DaisyPlayerService) => 
+        new ABookInfoController($scope, DaisyPlayerSvc));
 }
