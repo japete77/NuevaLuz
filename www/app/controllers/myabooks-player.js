@@ -27,13 +27,14 @@ var NuevaLuz;
             this.cordovaFile.checkFile(bdir, bfile)
                 .then(function (success) {
                 _this.cordovaFile.readAsText(bdir, bfile)
-                    .then(function (success) {
-                    _this.htmlContent = success;
-                }, function (error) {
-                    console.log(error);
+                    .then(function (result) {
+                    _this.htmlContent = result;
+                }, function (reason) {
+                    console.log(reason);
                 });
-            }, function (error) {
-                alert("Audio libro no encontrado: " + error);
+            }, function (reason) {
+                console.log(reason);
+                alert("Audio libro no encontrado");
             });
         };
         return DaisyBook;

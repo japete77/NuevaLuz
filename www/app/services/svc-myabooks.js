@@ -71,8 +71,8 @@ var NuevaLuz;
                     .then(function (success) {
                     _this.cordovaFile.readAsText(NuevaLuz.workingDir, _this.abooksIndexFilename)
                         .then(function (result) {
-                        this.abooks = JSON.parse(result);
-                        callback(this.abooks);
+                        _this.abooks = JSON.parse(result);
+                        callback(_this.abooks);
                     }, function (error) {
                         console.log(error);
                     });

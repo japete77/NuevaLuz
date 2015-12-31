@@ -23,3 +23,4 @@
 /// <reference path="ionic/ionic.d.ts" />
 /// <reference path="jquery/jquery.d.ts" />
 /// <reference path="nluz/nluz.d.ts" />
+/// <reference path="ng-cordova/tsd.d.ts" />

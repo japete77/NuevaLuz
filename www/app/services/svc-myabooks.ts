@@ -9,9 +9,9 @@ module NuevaLuz {
         abooksIndexFilename : string = "abooks-index.json";
         abooks = new Array<AudioBook>();
         ready : boolean = false;
-        cordovaFile : any;
+        cordovaFile : ngCordova.IFileService;
 
-        constructor($cordovaFile : any) {
+        constructor($cordovaFile : ngCordova.IFileService) {
             
             this.cordovaFile = $cordovaFile;
 
@@ -27,9 +27,9 @@ module NuevaLuz {
         updateABooksFile() {
             if (this.ready) {
                 this.cordovaFile.writeFile(workingDir, this.abooksIndexFilename, JSON.stringify(this.abooks), true)
-                    .then(function (success : any) {				
-                    }, 
-                    function (error : any) {
+                    .then((success : any) => {				
+                    },
+                    (error : any) => {
                         console.log(error);
                     });
             }

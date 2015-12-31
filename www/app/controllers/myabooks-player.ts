@@ -27,10 +27,10 @@ module NuevaLuz {
     }
     
     export class DaisyBook {
-        private cordovaFile : IFileService;
+        private cordovaFile : ngCordova.IFileService;
         private htmlContent : string;
         
-        constructor($cordovaFile : any) {
+        constructor($cordovaFile : ngCordova.IFileService) {
             this.cordovaFile = $cordovaFile;
         }
         
@@ -39,17 +39,18 @@ module NuevaLuz {
             var bfile = "ncc.html";
              
             this.cordovaFile.checkFile(bdir, bfile)
-            .then((success) => {
+            .then((success : FileEntry) => {
                 this.cordovaFile.readAsText(bdir, bfile)
-                .then((success) => {
-                    this.htmlContent = success;
+                .then((result : string) => {
+                    this.htmlContent = result;
                 },
-                (error) => {
-                    console.log(error);
+                (reason : any) => {
+                    console.log(reason);
                 });                   
             },
-            (error) => {
-                alert("Audio libro no encontrado: " + error);
+            (reason : any) => {
+                console.log(reason);
+                alert("Audio libro no encontrado");
             });
         }
     }

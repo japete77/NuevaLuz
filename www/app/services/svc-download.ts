@@ -8,7 +8,7 @@ module NuevaLuz {
     export class DownloadService {
         rootScope : ng.IScope;
         interval : ng.IIntervalService;
-        cordovaFile : any;
+        cordovaFile : ngCordova.IFileService;
         myABooksSvc : MyABooksService;
            
         ready : boolean = false;
@@ -18,7 +18,7 @@ module NuevaLuz {
         sourceZip : string = "";
 
         
-        constructor($rootScope : ng.IScope, $interval : ng.IIntervalService, $cordovaFile : any, myABooksSvc : MyABooksService) {
+        constructor($rootScope : ng.IScope, $interval : ng.IIntervalService, $cordovaFile : ngCordova.IFileService, myABooksSvc : MyABooksService) {
             this.rootScope = $rootScope;
             this.interval = $interval;
             this.cordovaFile = $cordovaFile;
@@ -201,7 +201,7 @@ module NuevaLuz {
         public download = function(id : string, title : string, downloadId : string) {  
                   			
             if (!this.ready) return;
-                        
+            
             var url : string = abookBaseUrl + downloadId + ".zip";
             
             // File name only
