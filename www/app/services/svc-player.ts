@@ -8,12 +8,21 @@ module NuevaLuz {
         private cordovaFile : ngCordova.IFileService;
         private player : Media;
         private book : DaisyBook;
+        private rootScope : ng.IScope;
+        private interval : ng.IIntervalService;
+        private playerInfo : PlayerInfo;
         
-        constructor($cordovaMedia : any, $cordovaFile : ngCordova.IFileService) {
+        constructor($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, $interval : ng.IIntervalService, $rootScope : ng.IScope) {
             this.cordovaMedia = $cordovaMedia;
             this.cordovaFile = $cordovaFile;
+            this.rootScope = $rootScope;
+            this.interval = $interval;
+            this.playerInfo = new PlayerInfo();
             
             // Timer
+            this.interval(() => {
+                this.rootScope.$broadcast('playerInfo', this.playerInfo);                    
+            }, 500);
         }
         
         loadBook(id : string) : DaisyBook {
@@ -24,9 +33,24 @@ module NuevaLuz {
             if (this.player) {
                 this.player.stop();
             }
-
-            this.player = this.cordovaMedia.newMedia("documents://" + this.book.id + "/a000009.mp3");
             
+            // Initialize player
+            this.player = new Media("documents://" + this.book.id + "/a000009.mp3", 
+                () => {
+                    
+                }, 
+                (error : MediaError) => {
+                    
+                }, 
+                (status : number) => {
+                    this.playerInfo.status = status;
+                }
+            );
+            
+            // Save book and player info
+            this.playerInfo.book = this.book;
+            this.playerInfo.media = this.player;
+
             return this.book;
         }
         
@@ -45,6 +69,18 @@ module NuevaLuz {
                 this.player.stop();
             }
         }
+        
+        pause() {
+            if (this.player) {
+                this.player.pause();
+            }
+        }
+    }
+    
+    export class PlayerInfo {
+        book : DaisyBook;
+        media : Media;
+        status : number;
     }
     
     export class DaisyBook {

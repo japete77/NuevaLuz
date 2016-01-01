@@ -124,7 +124,9 @@ module NuevaLuz {
     // Register Services
     app.factory("RadioSvc",() => new RadioService());
     app.factory("SessionSvc",() => new SessionService());
-    app.factory("DaisyPlayerSvc", ($cordovaMedia : any, $cordovaFile : ngCordova.IFileService) => new DaisyPlayerService($cordovaMedia, $cordovaFile));
+    app.factory("DaisyPlayerSvc", ($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, 
+        $interval : ng.IIntervalService, $rootScope : ng.IScope) => 
+        new DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope));
     app.factory('MyABooksSvc', ($cordovaFile : ngCordova.IFileService) => new MyABooksService($cordovaFile));
     app.factory('DownloadSvc', ($rootScope : ng.IScope, $interval : ng.IIntervalService, 
         $cordovaFile : any, MyABooksSvc : MyABooksService) => new DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc));
@@ -163,8 +165,8 @@ module NuevaLuz {
         new ABooksController($scope, $timeout, $http, MyABooksSvc));
 
     app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, 
-        $stateParams : any, $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) => 
-        new ABooksPlayerController($scope, $stateParams, $location, DaisyPlayerSvc));
+        $stateParams : any, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, DaisyPlayerSvc : DaisyPlayerService) => 
+        new ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, DaisyPlayerSvc));
         
     app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService) => 
         new RadioController($scope, RadioSvc));

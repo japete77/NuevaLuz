@@ -4,6 +4,7 @@ var NuevaLuz;
 (function (NuevaLuz) {
     var DownloadService = (function () {
         function DownloadService($rootScope, $interval, $cordovaFile, myABooksSvc) {
+            var _this = this;
             this.ready = false;
             this.downloads = [];
             this.targetFolder = "";
@@ -54,7 +55,6 @@ var NuevaLuz;
             this.interval = $interval;
             this.cordovaFile = $cordovaFile;
             this.myABooksSvc = myABooksSvc;
-            var _this = this;
             // Check when device is ready to be used...
             ionic.Platform.ready(function () {
                 _this.ready = true;

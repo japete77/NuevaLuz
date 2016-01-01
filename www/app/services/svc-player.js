@@ -2,19 +2,35 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var DaisyPlayerService = (function () {
-        function DaisyPlayerService($cordovaMedia, $cordovaFile) {
+        function DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope) {
+            var _this = this;
             this.cordovaMedia = $cordovaMedia;
             this.cordovaFile = $cordovaFile;
+            this.rootScope = $rootScope;
+            this.interval = $interval;
+            this.playerInfo = new PlayerInfo();
             // Timer
+            this.interval(function () {
+                _this.rootScope.$broadcast('playerInfo', _this.playerInfo);
+            }, 500);
         }
         DaisyPlayerService.prototype.loadBook = function (id) {
+            var _this = this;
             // Load Audio Book
             this.book = new DaisyBook(this.cordovaFile);
             this.book.readDaisyBook(id);
             if (this.player) {
                 this.player.stop();
             }
-            this.player = this.cordovaMedia.newMedia("documents://" + this.book.id + "/a000009.mp3");
+            // Initialize player
+            this.player = new Media("documents://" + this.book.id + "/a000009.mp3", function () {
+            }, function (error) {
+            }, function (status) {
+                _this.playerInfo.status = status;
+            });
+            // Save book and player info
+            this.playerInfo.book = this.book;
+            this.playerInfo.media = this.player;
             return this.book;
         };
         DaisyPlayerService.prototype.getCurrentBook = function () {
@@ -30,9 +46,20 @@ var NuevaLuz;
                 this.player.stop();
             }
         };
+        DaisyPlayerService.prototype.pause = function () {
+            if (this.player) {
+                this.player.pause();
+            }
+        };
         return DaisyPlayerService;
     })();
     NuevaLuz.DaisyPlayerService = DaisyPlayerService;
+    var PlayerInfo = (function () {
+        function PlayerInfo() {
+        }
+        return PlayerInfo;
+    })();
+    NuevaLuz.PlayerInfo = PlayerInfo;
     var DaisyBook = (function () {
         function DaisyBook($cordovaFile) {
             this.cordovaFile = $cordovaFile;

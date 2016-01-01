@@ -24,18 +24,16 @@ module NuevaLuz {
             this.cordovaFile = $cordovaFile;
             this.myABooksSvc = myABooksSvc;
             
-            var _this = this;
-            
             // Check when device is ready to be used...
             ionic.Platform.ready(() => {
-                _this.ready = true;
+                this.ready = true;
             });
                 
             // broadcast download status every 1 sec
             this.interval(() => {
-                if (_this.downloads.length>0) {
-                    _this.downloads.forEach(function(item : DownloadItem) {
-                        _this.rootScope.$broadcast('downloading', item);				
+                if (this.downloads.length>0) {
+                    this.downloads.forEach((item : DownloadItem) => {
+                        this.rootScope.$broadcast('downloading', item);				
                     });
                 }
             }, 1000);

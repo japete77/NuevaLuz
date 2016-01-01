@@ -111,7 +111,9 @@ var NuevaLuz;
     // Register Services
     NuevaLuz.app.factory("RadioSvc", function () { return new NuevaLuz.RadioService(); });
     NuevaLuz.app.factory("SessionSvc", function () { return new NuevaLuz.SessionService(); });
-    NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile) { return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile); });
+    NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile, $interval, $rootScope) {
+        return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope);
+    });
     NuevaLuz.app.factory('MyABooksSvc', function ($cordovaFile) { return new NuevaLuz.MyABooksService($cordovaFile); });
     NuevaLuz.app.factory('DownloadSvc', function ($rootScope, $interval, $cordovaFile, MyABooksSvc) {
         return new NuevaLuz.DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc);
@@ -135,8 +137,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc) {
         return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc);
     });
-    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, DaisyPlayerSvc) {
-        return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, DaisyPlayerSvc);
+    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, $ionicLoading, DaisyPlayerSvc) {
+        return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, DaisyPlayerSvc);
     });
     NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc) {
         return new NuevaLuz.RadioController($scope, RadioSvc);

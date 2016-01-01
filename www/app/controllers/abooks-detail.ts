@@ -42,25 +42,25 @@ module NuevaLuz {
             this.scope.downloadInfo = null;
             this.scope.showDetail = false;
             
-            this.scope.$on('downloading', (event, download) => {
+            this.scope.$on('downloading', (event : ng.IAngularEvent, download : DownloadItem) => {
                 if (this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = download;
                 }
             });
             
-            this.scope.$on('downloaded', (event, download) => {
+            this.scope.$on('downloaded', (event : ng.IAngularEvent, download : DownloadItem) => {
                 if (this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = null;
                 }
             });
             
-            this.scope.$on('cancelled', (event, download) => {
+            this.scope.$on('cancelled', (event : ng.IAngularEvent, download : DownloadItem) => {
                 if (this.stateParams.abookId==download.id) {
                     $scope.downloadInfo = null;
                 }
             });
 
-            this.scope.$on('error', (event, download) => {
+            this.scope.$on('error', (event : ng.IAngularEvent, download : DownloadItem) => {
                 if (this.stateParams.abookId==download.id) {
                     this.ionicPopup.alert({
                         title: 'Error en la descarga',
