@@ -19,10 +19,6 @@ module NuevaLuz {
         switchRadio() {
             this.svcRadio.switchRadio();
         }
-        
-        getStatus() {
-            this.svcRadio.getStatus();
-        }
     }
     
 }

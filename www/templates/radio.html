@@ -7,7 +7,7 @@
 			<li class="item item-toggle">
 				{{ control.getStatus() ? 'Apagar' : 'Encender' }}
 				<label class="toggle toggle-balanced">
-				<input type="checkbox" ng-model="radioOn" ng-change="control.switchRadio()">
+				<input type="checkbox" ng-model="control.svcRadio.status" ng-change="control.switchRadio()">
 				<div class="track">
 					<div class="handle"></div>
 				</div>

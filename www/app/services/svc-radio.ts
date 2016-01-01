@@ -6,13 +6,13 @@ module NuevaLuz {
     
     export interface IRadioService {
         switchRadio();
-        getStatus() : boolean;
+        status : boolean;
     }
     
     export class RadioService implements IRadioService {
         
         private stream : any = null;
-        private status : boolean = false;
+        status = false;
         
         constructor() { 
             
@@ -21,19 +21,14 @@ module NuevaLuz {
         // Turns On/Off radio steaming
         public switchRadio() {
             if (this.status) {
-                this.stream.stop();
+                this.initializeStream(true);
+                this.stream.play();                
             }
             else {
-                this.initializeStream(true);
-                this.stream.play();
-            }
-
-            this.status = !this.status;            
-        }
-        
-        // Get radio streaming status
-        public getStatus() : boolean {
-            return this.status;
+                if (this.stream) {
+                    this.stream.stop();
+                }    
+            }       
         }
         
         // Initialize streaming

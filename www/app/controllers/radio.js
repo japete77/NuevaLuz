@@ -10,9 +10,6 @@ var NuevaLuz;
         RadioController.prototype.switchRadio = function () {
             this.svcRadio.switchRadio();
         };
-        RadioController.prototype.getStatus = function () {
-            this.svcRadio.getStatus();
-        };
         return RadioController;
     })();
     NuevaLuz.RadioController = RadioController;
