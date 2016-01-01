@@ -141,7 +141,7 @@ var NuevaLuz;
     NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc) {
         return new NuevaLuz.RadioController($scope, RadioSvc);
     });
-    NuevaLuz.app.controller("ABookInfoCtrl", function ($scope, DaisyPlayerSvc) {
-        return new NuevaLuz.ABookInfoController($scope, DaisyPlayerSvc);
+    NuevaLuz.app.controller("ABookInfoCtrl", function ($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc) {
+        return new NuevaLuz.ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc);
     });
 })(NuevaLuz || (NuevaLuz = {}));

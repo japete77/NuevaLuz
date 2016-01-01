@@ -76,6 +76,7 @@ module NuevaLuz {
         }
         
         deleteBook(id : string) {
+            this.cordovaFile.removeRecursively(workingDir, id);
             this.abooks.splice(this.getABookIndex(id), 1);	
             this.updateABooksFile();
         }

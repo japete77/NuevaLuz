@@ -94,6 +94,7 @@ module NuevaLuz {
                            else if (s._name==="dc:format") this.format = s._content;
                            else if (s._name==="dc:identifier") this.identifier = s._content;
                            else if (s._name==="dc:publisher") this.publisher = s._content;
+                           else if (s._name==="dc:subject") this.subject = s._content;
                            else if (s._name==="dc:source") this.source = s._content;
                            else if (s._name==="dc:title") this.title = s._content;
                            else if (s._name==="ncc:charset") this.charset = s._content;

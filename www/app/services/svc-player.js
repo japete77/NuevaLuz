@@ -62,6 +62,8 @@ var NuevaLuz;
                                 _this.identifier = s._content;
                             else if (s._name === "dc:publisher")
                                 _this.publisher = s._content;
+                            else if (s._name === "dc:subject")
+                                _this.subject = s._content;
                             else if (s._name === "dc:source")
                                 _this.source = s._content;
                             else if (s._name === "dc:title")

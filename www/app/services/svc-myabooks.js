@@ -61,6 +61,7 @@ var NuevaLuz;
             this.updateABooksFile();
         };
         MyABooksService.prototype.deleteBook = function (id) {
+            this.cordovaFile.removeRecursively(NuevaLuz.workingDir, id);
             this.abooks.splice(this.getABookIndex(id), 1);
             this.updateABooksFile();
         };
