@@ -16,24 +16,33 @@ var NuevaLuz;
             // Prepare audio player
             if (this.player.getCurrentBook() && this.player.getCurrentBook().id === $stateParams.abookId) {
                 this.scope.currentBook = this.player.getCurrentBook();
+                this.ionicLoading.hide();
+                this.scope.ready = true;
             }
             else {
-                this.scope.currentBook = this.player.loadBook($stateParams.abookId);
-            }
-            this.scope.$on('playerInfo', function (event, info) {
-                if (info.book.id === _this.scope.currentBook.id) {
-                    _this.scope.showPlay = !info.status ||
-                        info.status === Media.MEDIA_NONE ||
-                        info.status === Media.MEDIA_PAUSED ||
-                        info.status === Media.MEDIA_STOPPED;
-                    // Only update current position if playing media
-                    if (!_this.scope.showPlay) {
-                        info.media.getCurrentPosition(function (position) {
-                            _this.scope.currentPosition = _this.seconds2TC(position);
-                        });
-                    }
+                // Load daisy book...
+                this.player.loadBook($stateParams.abookId)
+                    .then(function (book) {
+                    _this.scope.currentBook = book;
                     _this.ionicLoading.hide();
                     _this.scope.ready = true;
+                })
+                    .catch(function (reason) {
+                    _this.ionicLoading.hide();
+                    alert(reason);
+                });
+            }
+            this.scope.currentPosition = this.seconds2TC(0);
+            this.scope.showPlay = true;
+            this.scope.$on('playerInfo', function (event, info) {
+                _this.scope.showPlay = !info.status ||
+                    info.status === Media.MEDIA_NONE ||
+                    info.status === Media.MEDIA_PAUSED ||
+                    info.status === Media.MEDIA_STOPPED;
+                // Only update current position if playing media
+                if (!_this.scope.showPlay && info.sinfo) {
+                    _this.scope.currentPosition = _this.seconds2TC(info.sinfo.currentTC);
+                    _this.scope.currentTitle = info.sinfo.currentTitle;
                 }
             });
         }
@@ -60,8 +69,8 @@ var NuevaLuz;
         ABooksPlayerController.prototype.pause = function () {
             this.player.pause();
         };
-        ABooksPlayerController.prototype.showPlayIcon = function () {
-            return;
+        ABooksPlayerController.prototype.next = function () {
+            this.player.next(1);
         };
         ABooksPlayerController.prototype.showInfo = function (id) {
             this.location.path("/myabooks/info/" + this.scope.currentBook.id);

@@ -111,8 +111,8 @@ var NuevaLuz;
     // Register Services
     NuevaLuz.app.factory("RadioSvc", function () { return new NuevaLuz.RadioService(); });
     NuevaLuz.app.factory("SessionSvc", function () { return new NuevaLuz.SessionService(); });
-    NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile, $interval, $rootScope) {
-        return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope);
+    NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile, $interval, $rootScope, $q) {
+        return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q);
     });
     NuevaLuz.app.factory('MyABooksSvc', function ($cordovaFile) { return new NuevaLuz.MyABooksService($cordovaFile); });
     NuevaLuz.app.factory('DownloadSvc', function ($rootScope, $interval, $cordovaFile, MyABooksSvc) {

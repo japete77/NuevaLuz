@@ -125,8 +125,8 @@ module NuevaLuz {
     app.factory("RadioSvc",() => new RadioService());
     app.factory("SessionSvc",() => new SessionService());
     app.factory("DaisyPlayerSvc", ($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, 
-        $interval : ng.IIntervalService, $rootScope : ng.IScope) => 
-        new DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope));
+        $interval : ng.IIntervalService, $rootScope : ng.IScope, $q : ng.IQService) => 
+        new DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q));
     app.factory('MyABooksSvc', ($cordovaFile : ngCordova.IFileService) => new MyABooksService($cordovaFile));
     app.factory('DownloadSvc', ($rootScope : ng.IScope, $interval : ng.IIntervalService, 
         $cordovaFile : any, MyABooksSvc : MyABooksService) => new DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc));

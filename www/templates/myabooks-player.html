@@ -2,7 +2,7 @@
 	<ion-nav-buttons side="right">
         <a class="button button-icon icon ion-home" href="#/"></a>
     </ion-nav-buttons>
-	<div class="bar bar-subheader player" ng-if="ready">
+	<div class="bar bar-subheader player" ng-show="ready">
 		<div class="row">
 			<div class="col col-25">
 				<button class="button button-full button-dark icon ion-ios-rewind"></button>
@@ -12,15 +12,14 @@
 				<button ng-if="!showPlay" class="button button-full button-dark icon ion-pause" ng-click="control.pause()"></button>
 			</div>
 			<div class="col col-25">
-				<button class="button button-full button-dark icon ion-ios-fastforward"></button>
+				<button class="button button-full button-dark icon ion-ios-fastforward" ng-click="control.next()"></button>
 			</div>
 		</div>
 		<div style="text-align:center">{{currentPosition}} / {{currentBook.totalTime}}</div>
 	</div>
-	<ion-content class="padding has-subheader player" ng-if="ready">
+	<ion-content class="padding has-subheader player">
 		<h4 style="text-align:center">{{currentBook.title}}</h4>
-		<p>Descripción detallada del audio libro
-		</p>
+		<p>{{currentTitle}}</p>
 	</ion-content>
 	<div class="tabs tabs-icon-top">
 		<a class="tab-item">

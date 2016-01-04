@@ -6,6 +6,7 @@ module NuevaLuz {
         control : ABooksPlayerController;
         currentBook : DaisyBook;
         currentPosition : string;
+        currentTitle : string;
         showPlay : boolean;
         ready : boolean;
     }
@@ -31,28 +32,40 @@ module NuevaLuz {
             // Prepare audio player
             if (this.player.getCurrentBook() && this.player.getCurrentBook().id===$stateParams.abookId) {
                 this.scope.currentBook = this.player.getCurrentBook();
+                this.ionicLoading.hide();
+                this.scope.ready = true;
             }
             else {
-                this.scope.currentBook = this.player.loadBook($stateParams.abookId);
-            }
-            
-            this.scope.$on('playerInfo', (event : ng.IAngularEvent, info : PlayerInfo) => {
-                if (info.book.id===this.scope.currentBook.id) {
-                    this.scope.showPlay = !info.status ||
-                                          info.status===Media.MEDIA_NONE ||
-                                          info.status===Media.MEDIA_PAUSED ||
-                                          info.status===Media.MEDIA_STOPPED;
-                                          
-                    // Only update current position if playing media
-                    if (!this.scope.showPlay) {
-                        info.media.getCurrentPosition((position : number) => {
-                            this.scope.currentPosition = this.seconds2TC(position);                        
-                        });
-                    }
+                // Load daisy book...
+                this.player.loadBook($stateParams.abookId)
+                .then((book : DaisyBook) => {
+                    this.scope.currentBook = book;
                     
                     this.ionicLoading.hide();
                     this.scope.ready = true;
+                })
+                .catch((reason : any) => {
+                    this.ionicLoading.hide();
+                    alert(reason);                    
+                });
+            }
+            
+            this.scope.currentPosition = this.seconds2TC(0);
+            this.scope.showPlay = true;
+            
+            this.scope.$on('playerInfo', (event : ng.IAngularEvent, info : PlayerInfo) => {
+
+                this.scope.showPlay = !info.status ||
+                                        info.status===Media.MEDIA_NONE ||
+                                        info.status===Media.MEDIA_PAUSED ||
+                                        info.status===Media.MEDIA_STOPPED;
+                
+                // Only update current position if playing media
+                if (!this.scope.showPlay && info.sinfo) {
+                    this.scope.currentPosition = this.seconds2TC(info.sinfo.currentTC);
+                    this.scope.currentTitle = info.sinfo.currentTitle;
                 }
+
             });
         }
         
@@ -64,7 +77,7 @@ module NuevaLuz {
                 this.padleft(Math.floor(seconds%60).toString(), 2, "0");
         }
         
-        private padleft(str : string, count : number, char : string) {
+        private padleft(str : string, count : number, char : string) : string {
             var pad = "";
             for (var i = 0; i<count; i++) { pad += char; }
             return pad.substring(0, pad.length - str.length) + str
@@ -82,8 +95,8 @@ module NuevaLuz {
             this.player.pause();
         }
         
-        showPlayIcon() {
-            return 
+        next() {
+            this.player.next(1);
         }
         
         showInfo(id : string) {
