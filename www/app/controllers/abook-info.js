@@ -14,15 +14,14 @@ var NuevaLuz;
         }
         ABookInfoController.prototype.delete = function (id) {
             var _this = this;
-            var confirmPopup;
-            confirmPopup = this.ionicPopup.confirm({
+            this.ionicPopup.confirm({
                 title: "Borrar Audio Libro",
                 template: "El audio libro se eliminará definitivamente, ¿está seguro?"
-            });
-            confirmPopup.then(function (result) {
+            })
+                .then(function (result) {
                 if (result) {
-                    // Stop playing
-                    _this.playerSvc.stop();
+                    // Release player
+                    _this.playerSvc.release();
                     // Delete book
                     _this.myABooksSvc.deleteBook(id);
                     // Redirect to my audio books

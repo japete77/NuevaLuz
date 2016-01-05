@@ -2,7 +2,7 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var ABooksPlayerController = (function () {
-        function ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, player) {
+        function ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, player) {
             var _this = this;
             this.scope = $scope;
             this.scope.ready = false;
@@ -10,20 +10,26 @@ var NuevaLuz;
             this.player = player;
             this.location = $location;
             this.ionicLoading = $ionicLoading;
+            this.ionicPopup = $ionicPopup;
             this.ionicLoading.show({
                 template: 'Cargando...'
             });
             // Prepare audio player
             if (this.player.getCurrentBook() && this.player.getCurrentBook().id === $stateParams.abookId) {
                 this.scope.currentBook = this.player.getCurrentBook();
+                this.scope.currentStatus = this.player.getPlayerInfo();
                 this.ionicLoading.hide();
                 this.scope.ready = true;
             }
             else {
+                this.player.release();
+                this.scope.currentStatus = new NuevaLuz.PlayerInfo();
+                this.scope.currentStatus.position = new NuevaLuz.SeekInfo();
                 // Load daisy book...
                 this.player.loadBook($stateParams.abookId)
                     .then(function (book) {
                     _this.scope.currentBook = book;
+                    _this.scope.currentStatus = _this.player.getPlayerInfo();
                     _this.ionicLoading.hide();
                     _this.scope.ready = true;
                 })
@@ -32,17 +38,20 @@ var NuevaLuz;
                     alert(reason);
                 });
             }
-            this.scope.currentPosition = this.seconds2TC(0);
             this.scope.showPlay = true;
             this.scope.$on('playerInfo', function (event, info) {
                 _this.scope.showPlay = !info.status ||
                     info.status === Media.MEDIA_NONE ||
                     info.status === Media.MEDIA_PAUSED ||
                     info.status === Media.MEDIA_STOPPED;
-                // Only update current position if playing media
-                if (!_this.scope.showPlay && info.sinfo) {
-                    _this.scope.currentPosition = _this.seconds2TC(info.sinfo.currentTC);
-                    _this.scope.currentTitle = info.sinfo.currentTitle;
+                if (_this.scope.currentStatus && _this.scope.currentStatus.position) {
+                    _this.scope.currentStatus.position.currentIndex = info.position.currentIndex;
+                    _this.scope.currentStatus.position.currentSOM = info.position.currentSOM;
+                    _this.scope.currentStatus.position.currentTitle = info.position.currentTitle;
+                    if (info.position.currentTC > -1) {
+                        _this.scope.currentStatus.position.currentTC = info.position.currentTC;
+                        _this.scope.currentStatus.position.absoluteTC = _this.seconds2TC(_this.scope.currentStatus.position.currentTC + _this.scope.currentStatus.position.currentSOM);
+                    }
                 }
             });
         }
@@ -61,19 +70,46 @@ var NuevaLuz;
             return pad.substring(0, pad.length - str.length) + str;
         };
         ABooksPlayerController.prototype.play = function () {
-            this.player.play();
+            this.player.play(this.scope.currentStatus.position);
         };
         ABooksPlayerController.prototype.stop = function () {
             this.player.stop();
         };
         ABooksPlayerController.prototype.pause = function () {
+            this.player.saveStatus(this.scope.currentStatus);
             this.player.pause();
         };
         ABooksPlayerController.prototype.next = function () {
-            this.player.next(1);
+            this.player.next();
+        };
+        ABooksPlayerController.prototype.prev = function () {
+            this.player.prev();
         };
         ABooksPlayerController.prototype.showInfo = function (id) {
             this.location.path("/myabooks/info/" + this.scope.currentBook.id);
+        };
+        ABooksPlayerController.prototype.selectLevel = function () {
+            var _this = this;
+            var currenLevel;
+            var myPopup = this.ionicPopup.show({
+                template: '<ion-list>' +
+                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="1">Nivel 1</ion-radio>' +
+                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="2">Nivel 2</ion-radio>' +
+                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="3">Nivel 3</ion-radio>' +
+                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="4">Nivel 4</ion-radio>' +
+                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="5">Nivel 5</ion-radio>' +
+                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="6">Nivel 6</ion-radio>' +
+                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="7">Frase</ion-radio>' +
+                    '</ion-list>',
+                title: 'Selecciona nivel de navegación',
+                scope: this.scope,
+                buttons: [
+                    { text: 'Cerrar' },
+                ]
+            });
+            myPopup.then(function () {
+                _this.player.saveStatus(_this.scope.currentStatus);
+            });
         };
         return ABooksPlayerController;
     })();

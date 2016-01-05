@@ -27,16 +27,15 @@ module NuevaLuz {
         }
         
         delete(id : string) {
-            var confirmPopup : ionic.popup.IonicPopupConfirmPromise;
-            confirmPopup = this.ionicPopup.confirm({
+            this.ionicPopup.confirm({
                 title: "Borrar Audio Libro",
                 template: "El audio libro se eliminará definitivamente, ¿está seguro?"
-            });
-            
-            confirmPopup.then((result : boolean) => {
+            })
+            .then((result : boolean) => {
                 if (result) {
-                    // Stop playing
-                    this.playerSvc.stop();
+                    
+                    // Release player
+                    this.playerSvc.release();
                     
                     // Delete book
                     this.myABooksSvc.deleteBook(id);

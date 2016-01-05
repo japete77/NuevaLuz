@@ -11,22 +11,51 @@ var NuevaLuz;
             this.q = $q;
             this.loading = true; // prevent player info broadcast
             this.interval(function () {
-                if (!_this.loading) {
-                    // refresh player position
-                    _this.player.getCurrentPosition(function (position) {
-                        _this.playerInfo.sinfo.currentTC = position;
+                if (!_this.loading && _this.playerInfo && _this.playerInfo.media) {
+                    // refresh player info
+                    _this.playerInfo.media.getCurrentPosition(function (position) {
+                        if (position > -1) {
+                            _this.playerInfo.position.currentTC = position;
+                        }
+                        if (_this.book.sequence[_this.playerInfo.position.currentIndex].tcout < position) {
+                            _this.playerInfo.position.currentIndex++;
+                            _this.playerInfo.position.currentTitle = _this.book.sequence[_this.playerInfo.position.currentIndex].title;
+                        }
                         _this.rootScope.$broadcast('playerInfo', _this.playerInfo);
                     });
                 }
             }, 250);
         }
+        DaisyPlayerService.prototype.loadNextFile = function (autoplay) {
+            var _this = this;
+            if (this.book.sequence.length > this.playerInfo.position.currentIndex + 1) {
+                this.playerInfo.position.currentIndex++;
+                this.playerInfo.position.currentSOM = this.book.sequence[this.playerInfo.position.currentIndex].som;
+                this.playerInfo.position.currentTC = 0;
+                this.playerInfo.position.currentTitle = this.book.sequence[this.playerInfo.position.currentIndex].title;
+                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[this.playerInfo.position.currentIndex].filename, function () {
+                }, function (error) {
+                    _this.loading = false;
+                }, function (status) {
+                    _this.playerInfo.status = status;
+                    if (!_this.loading && status === Media.MEDIA_STOPPED) {
+                        // If stopped, try to load next file if exists...
+                        _this.loadNextFile(true);
+                    }
+                });
+                if (autoplay) {
+                    this.play(this.playerInfo.position);
+                }
+            }
+        };
         DaisyPlayerService.prototype.loadBook = function (id) {
             var _this = this;
-            var defer = this.q.defer();
             this.loading = true;
-            if (this.player) {
-                this.player.stop();
-            }
+            var defer = this.q.defer();
+            this.playerInfo = new PlayerInfo();
+            this.playerInfo.position = new SeekInfo();
+            this.playerInfo.position.currentIndex = -1;
+            this.release();
             var bdir = NuevaLuz.workingDir + id + "/";
             var bfile = "ncc.html";
             this.cordovaFile.readAsBinaryString(bdir, bfile)
@@ -44,21 +73,21 @@ var NuevaLuz;
                     for (var i = 0; i < result.length; i++) {
                         _this.book.parseSmils(result[i], _this.book.body[i].id, _this.book.body[i].title, _this.book.body[i].level);
                     }
-                    // Initialize player info                    
-                    _this.playerInfo = new PlayerInfo();
-                    _this.playerInfo.sinfo = new SeekInfo();
-                    _this.playerInfo.sinfo.currentIndex = 0;
-                    _this.playerInfo.sinfo.currentTC = _this.book.sequence[_this.playerInfo.sinfo.currentIndex].som;
-                    _this.playerInfo.sinfo.currentTitle = _this.book.sequence[_this.playerInfo.sinfo.currentIndex].title;
-                    _this.player = new Media("documents://" + _this.book.id + "/" + _this.book.sequence[_this.playerInfo.sinfo.currentIndex].filename, function () {
-                    }, function (error) {
+                    // Initialize player info   
+                    _this.loadStatus()
+                        .then(function (result) {
+                        _this.playerInfo = result;
+                        // Initialize media player
+                        _this.playerInfo.media = new Media("documents://" + _this.book.id + "/" + _this.book.sequence[_this.playerInfo.position.currentIndex].filename, function () { }, function (error) { }, function (status) {
+                            _this.playerInfo.status = status;
+                            if (!_this.loading && status === Media.MEDIA_STOPPED) {
+                                // If stopped, try to load next file if exists...
+                                _this.loadNextFile(true);
+                            }
+                        });
                         _this.loading = false;
-                        defer.reject("Error cargando fichero de audio");
-                    }, function (status) {
-                        _this.playerInfo.status = status;
+                        defer.resolve(_this.book);
                     });
-                    _this.loading = false;
-                    defer.resolve(_this.book);
                 });
             });
             return defer.promise;
@@ -66,29 +95,76 @@ var NuevaLuz;
         DaisyPlayerService.prototype.getCurrentBook = function () {
             return this.book;
         };
-        DaisyPlayerService.prototype.play = function () {
-            if (this.player) {
-                this.player.play();
+        DaisyPlayerService.prototype.getPlayerInfo = function () {
+            return this.playerInfo;
+        };
+        DaisyPlayerService.prototype.play = function (position) {
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.play();
+                this.playerInfo.media.seekTo(position.currentTC * 1000);
             }
         };
         DaisyPlayerService.prototype.stop = function () {
-            if (this.player) {
-                this.player.stop();
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.stop();
             }
         };
         DaisyPlayerService.prototype.pause = function () {
-            if (this.player) {
-                this.player.pause();
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.pause();
             }
         };
-        DaisyPlayerService.prototype.next = function (level) {
-            var _this = this;
-            this.player.seekTo(5000);
-            this.player.getCurrentPosition(function (position) {
-                _this.rootScope.$broadcast('playerInfo', _this.playerInfo);
-            });
+        DaisyPlayerService.prototype.release = function () {
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.stop();
+                this.playerInfo.media.release();
+            }
         };
-        DaisyPlayerService.prototype.prev = function (level) {
+        DaisyPlayerService.prototype.next = function () {
+        };
+        DaisyPlayerService.prototype.prev = function () {
+        };
+        DaisyPlayerService.prototype.loadStatus = function () {
+            var _this = this;
+            var p = this.q.defer();
+            var bdir = NuevaLuz.workingDir + this.book.id + "/";
+            var bfile = "status.json";
+            this.cordovaFile.checkFile(bdir, bfile)
+                .then(function (entry) {
+                _this.cordovaFile.readAsBinaryString(bdir, bfile)
+                    .then(function (result) {
+                    _this.playerInfo.position = JSON.parse(decodeURI(result));
+                    p.resolve(_this.playerInfo);
+                });
+            }, function (error) {
+                _this.playerInfo.position = new SeekInfo();
+                _this.playerInfo.position.navigationLevel = 1;
+                _this.playerInfo.position.currentIndex = 0;
+                _this.playerInfo.position.currentSOM = _this.book.sequence[0].som;
+                _this.playerInfo.position.currentTC = _this.book.sequence[0].som;
+                _this.playerInfo.position.currentTitle = _this.book.sequence[0].title;
+                _this.playerInfo.position.absoluteTC = "0:00:00";
+                p.resolve(_this.playerInfo);
+            });
+            return p.promise;
+        };
+        DaisyPlayerService.prototype.saveStatus = function (pinfo) {
+            var p = this.q.defer();
+            this.playerInfo = pinfo;
+            try {
+                var bdir = NuevaLuz.workingDir + this.book.id + "/";
+                var bfile = "status.json";
+                this.cordovaFile.writeFile(bdir, bfile, encodeURI(JSON.stringify(this.playerInfo.position)), true)
+                    .then(function (event) {
+                    if (event.loaded === event.total) {
+                        p.resolve();
+                    }
+                });
+            }
+            catch (e) {
+                p.reject("Error saving status: " + e);
+            }
+            return p.promise;
         };
         return DaisyPlayerService;
     })();
@@ -100,7 +176,6 @@ var NuevaLuz;
         return PlayerInfo;
     })();
     NuevaLuz.PlayerInfo = PlayerInfo;
-    // Helper for seeking audio book
     var SeekInfo = (function () {
         function SeekInfo() {
         }

@@ -137,8 +137,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc) {
         return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc);
     });
-    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, $ionicLoading, DaisyPlayerSvc) {
-        return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, DaisyPlayerSvc);
+    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc) {
+        return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc);
     });
     NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc) {
         return new NuevaLuz.RadioController($scope, RadioSvc);

@@ -165,8 +165,8 @@ module NuevaLuz {
         new ABooksController($scope, $timeout, $http, MyABooksSvc));
 
     app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, 
-        $stateParams : any, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, DaisyPlayerSvc : DaisyPlayerService) => 
-        new ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, DaisyPlayerSvc));
+        $stateParams : any, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService) => 
+        new ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc));
         
     app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService) => 
         new RadioController($scope, RadioSvc));

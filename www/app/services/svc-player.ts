@@ -10,7 +10,6 @@ module NuevaLuz {
         private interval : ng.IIntervalService;
         private q : ng.IQService;
         
-        private player : Media;
         private book : DaisyBook;
         private playerInfo : PlayerInfo;
         private loading : boolean;
@@ -22,28 +21,65 @@ module NuevaLuz {
             this.rootScope = $rootScope;
             this.interval = $interval;
             this.q = $q;
-             
+                                     
             this.loading = true; // prevent player info broadcast
             this.interval(() => {
-                if (!this.loading) {
-                    // refresh player position
-                    this.player.getCurrentPosition((position : number) => {
-                        this.playerInfo.sinfo.currentTC = position;
+                if (!this.loading && this.playerInfo && this.playerInfo.media) {
+                    // refresh player info
+                    this.playerInfo.media.getCurrentPosition((position : number) => {
+                        
+                        if (position>-1) {
+                            this.playerInfo.position.currentTC = position;
+                        }
+
+                        if (this.book.sequence[this.playerInfo.position.currentIndex].tcout<position) {
+                            this.playerInfo.position.currentIndex++;
+                            this.playerInfo.position.currentTitle = this.book.sequence[this.playerInfo.position.currentIndex].title;
+                        }
+                                                
                         this.rootScope.$broadcast('playerInfo', this.playerInfo); 
                     });
                 }                
             }, 250);
         }
         
+        private loadNextFile(autoplay : boolean) {
+            if (this.book.sequence.length>this.playerInfo.position.currentIndex+1) {
+                this.playerInfo.position.currentIndex++;
+                this.playerInfo.position.currentSOM = this.book.sequence[this.playerInfo.position.currentIndex].som;
+                this.playerInfo.position.currentTC = 0;
+                this.playerInfo.position.currentTitle = this.book.sequence[this.playerInfo.position.currentIndex].title;
+                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[this.playerInfo.position.currentIndex].filename, 
+                    () => {
+                    }, 
+                    (error : MediaError) => {
+                        this.loading = false;
+                    }, 
+                    (status : number) => {
+                        this.playerInfo.status = status;
+                        if (!this.loading && status===Media.MEDIA_STOPPED) {
+                            // If stopped, try to load next file if exists...
+                            this.loadNextFile(true);
+                        }
+                    });
+                    
+                if (autoplay) {
+                    this.play(this.playerInfo.position);
+                }
+            }
+        }
+        
         loadBook(id : string) : ng.IPromise<DaisyBook> {
+            
+            this.loading = true; 
             
             var defer = this.q.defer();
             
-            this.loading = true;
-            
-            if (this.player) {
-                this.player.stop();
-            }
+            this.playerInfo = new PlayerInfo();
+            this.playerInfo.position = new SeekInfo();
+            this.playerInfo.position.currentIndex = -1;
+                  
+            this.release();
             
             var bdir = workingDir + id + "/";
             var bfile = "ncc.html";
@@ -66,25 +102,26 @@ module NuevaLuz {
                         this.book.parseSmils(result[i], this.book.body[i].id, this.book.body[i].title, this.book.body[i].level);     
                     }
                     
-                    // Initialize player info                    
-                    this.playerInfo = new PlayerInfo();
-                    this.playerInfo.sinfo = new SeekInfo();
-                    this.playerInfo.sinfo.currentIndex = 0;
-                    this.playerInfo.sinfo.currentTC = this.book.sequence[this.playerInfo.sinfo.currentIndex].som;
-                    this.playerInfo.sinfo.currentTitle = this.book.sequence[this.playerInfo.sinfo.currentIndex].title;
-                    this.player = new Media("documents://" + this.book.id + "/" + this.book.sequence[this.playerInfo.sinfo.currentIndex].filename, 
-                        () => {
-                        }, 
-                        (error : MediaError) => {
-                            this.loading = false;
-                            defer.reject("Error cargando fichero de audio");
-                        }, 
-                        (status : number) => {
-                            this.playerInfo.status = status;
-                        });                    
+                    // Initialize player info   
+                    this.loadStatus()
+                    .then((result : PlayerInfo) => { 
+                        this.playerInfo = result;
 
-                    this.loading = false;
-                    defer.resolve(this.book);
+                        // Initialize media player
+                        this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[this.playerInfo.position.currentIndex].filename, 
+                            () => {},
+                            (error) => {},
+                            (status : number) => {
+                                this.playerInfo.status = status;
+                                if (!this.loading && status===Media.MEDIA_STOPPED) {
+                                    // If stopped, try to load next file if exists...
+                                    this.loadNextFile(true);
+                                }
+                            });
+
+                        this.loading = false;                       
+                        defer.resolve(this.book);
+                    });                    
                 });               
             });
             
@@ -95,50 +132,111 @@ module NuevaLuz {
             return this.book;
         }
         
-        play() {
-            if (this.player) {
-                this.player.play();                
+        getPlayerInfo() : PlayerInfo {
+            return this.playerInfo;
+        }
+        
+        play(position : SeekInfo) {
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.play();   
+                this.playerInfo.media.seekTo(position.currentTC*1000);
             }
         }
         
         stop() {
-            if (this.player) {
-                this.player.stop();
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.stop();
             }
         }
         
         pause() {
-            if (this.player) {
-                this.player.pause();
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.pause();
             }
         }
         
-        next(level : number) {
-            this.player.seekTo(5000);
-            this.player.getCurrentPosition((position : number) => {
-               this.rootScope.$broadcast('playerInfo', this.playerInfo);
-            });
+        release() {
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.stop();
+                this.playerInfo.media.release();
+            }
         }
         
-        prev(level : number) {
+        next() {
+
+        }
+        
+        prev() {
             
+        }
+        
+        loadStatus() : ng.IPromise<PlayerInfo> {
+            var p = this.q.defer();
+            
+            var bdir = workingDir + this.book.id + "/";
+            var bfile = "status.json";
+            
+            this.cordovaFile.checkFile(bdir, bfile)
+            .then((entry : FileEntry) => {
+                this.cordovaFile.readAsBinaryString(bdir, bfile)
+                .then((result : string) => {
+                    this.playerInfo.position = JSON.parse(decodeURI(result));
+                    p.resolve(this.playerInfo);
+                });                
+            }, (error : ngCordova.IFileError) => {
+                this.playerInfo.position = new SeekInfo();
+                this.playerInfo.position.navigationLevel = 1;
+                this.playerInfo.position.currentIndex = 0;
+                this.playerInfo.position.currentSOM = this.book.sequence[0].som;
+                this.playerInfo.position.currentTC = this.book.sequence[0].som;
+                this.playerInfo.position.currentTitle = this.book.sequence[0].title;
+                this.playerInfo.position.absoluteTC = "0:00:00";
+                p.resolve(this.playerInfo);
+            });
+            
+            return p.promise;
+        }
+        
+        saveStatus(pinfo : PlayerInfo) : ng.IPromise<{}> {
+            var p = this.q.defer();
+            
+            this.playerInfo = pinfo;
+            
+            try {
+                var bdir = workingDir + this.book.id + "/";
+                var bfile = "status.json";
+                
+                
+                this.cordovaFile.writeFile(bdir, bfile, encodeURI(JSON.stringify(this.playerInfo.position)), true)
+                .then((event : ProgressEvent) => {
+                    if (event.loaded===event.total) {
+                        p.resolve();
+                    }
+                });
+            } 
+            catch (e) {
+                p.reject("Error saving status: " + e);
+            }
+            
+            return p.promise;
         }
     }
     
     // Player info object
     export class PlayerInfo {
-        media : Media;
+        media : Media; 
         status : number;
-        sinfo : SeekInfo;
+        position : SeekInfo;    
         bookmarks : Array<Bookmark>;
     }
     
-    // Helper for seeking audio book
     export class SeekInfo {
         currentIndex : number;
         currentTitle : string;
         currentTC : number;
-        navigationLevel : number; 
+        absoluteTC : string;
+        currentSOM : number;
+        navigationLevel : number;
     }
     
     // Daisy audio book navigation info

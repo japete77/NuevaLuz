@@ -15,11 +15,20 @@
 				<button class="button button-full button-dark icon ion-ios-fastforward" ng-click="control.next()"></button>
 			</div>
 		</div>
-		<div style="text-align:center">{{currentPosition}} / {{currentBook.totalTime}}</div>
+        <div class="row">
+            <div class="col col-25">
+            </div>
+            <div class="col col-50" style="text-align:center">
+                {{currentStatus.position.absoluteTC}} / {{currentBook.totalTime}}
+            </div>
+            <div class="col col-25" style="text-align:center">
+                Nivel {{currentStatus.position.navigationLevel}}
+            </div>
+		</div>
 	</div>
 	<ion-content class="padding has-subheader player">
 		<h4 style="text-align:center">{{currentBook.title}}</h4>
-		<p>{{currentTitle}}</p>
+		<p>{{currentStatus.position.currentTitle}}</p>
 	</ion-content>
 	<div class="tabs tabs-icon-top">
 		<a class="tab-item">
@@ -30,7 +39,7 @@
 			<i class="icon ion-ios-bookmarks"></i>
 			Ir a marca
 		</a>
-		<a class="tab-item">
+		<a class="tab-item" ng-click="control.selectLevel()">
 			<i class="icon ion-ios-browsers"></i>
 			Navegación
 		</a>
