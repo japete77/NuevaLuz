@@ -50,25 +50,11 @@ var NuevaLuz;
                     _this.scope.currentStatus.position.currentTitle = info.position.currentTitle;
                     if (info.position.currentTC > -1) {
                         _this.scope.currentStatus.position.currentTC = info.position.currentTC;
-                        _this.scope.currentStatus.position.absoluteTC = _this.seconds2TC(_this.scope.currentStatus.position.currentTC + _this.scope.currentStatus.position.currentSOM);
+                        _this.scope.currentStatus.position.absoluteTC = _this.player.seconds2TC(_this.scope.currentStatus.position.currentTC + _this.scope.currentStatus.position.currentSOM);
                     }
                 }
             });
         }
-        ABooksPlayerController.prototype.seconds2TC = function (seconds) {
-            if (seconds < 0)
-                seconds = 0;
-            return Math.floor(seconds / 3600).toString() + ":" +
-                this.padleft(Math.floor((seconds / 60) % 60).toString(), 2, "0") + ":" +
-                this.padleft(Math.floor(seconds % 60).toString(), 2, "0");
-        };
-        ABooksPlayerController.prototype.padleft = function (str, count, char) {
-            var pad = "";
-            for (var i = 0; i < count; i++) {
-                pad += char;
-            }
-            return pad.substring(0, pad.length - str.length) + str;
-        };
         ABooksPlayerController.prototype.play = function () {
             this.player.play(this.scope.currentStatus.position);
         };

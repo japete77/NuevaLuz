@@ -5,7 +5,7 @@
 	<div class="bar bar-subheader player" ng-show="ready">
 		<div class="row">
 			<div class="col col-25">
-				<button class="button button-full button-dark icon ion-ios-rewind"></button>
+				<button class="button button-full button-dark icon ion-ios-rewind" ng-click="control.prev()"></button>
 			</div>
 			<div class="col col-50">
 				<button ng-if="showPlay" class="button button-full button-dark icon ion-play" ng-click="control.play()"></button>

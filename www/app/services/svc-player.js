@@ -26,6 +26,18 @@ var NuevaLuz;
                 }
             }, 250);
         }
+        DaisyPlayerService.prototype.processPlayerStatusChange = function (status) {
+            console.log("############################");
+            console.log("Player Status: " + status);
+            console.log("CurrentTC: " + this.playerInfo.position.currentTC);
+            console.log("Media Duration: " + this.playerInfo.media.getDuration());
+            this.playerInfo.status = status;
+            // If stopped due to end of the file is reached, try to load next file if exists...
+            if (!this.loading && status === Media.MEDIA_STOPPED &&
+                this.playerInfo.media.getDuration() != -1) {
+                this.loadNextFile(true);
+            }
+        };
         DaisyPlayerService.prototype.loadNextFile = function (autoplay) {
             var _this = this;
             if (this.book.sequence.length > this.playerInfo.position.currentIndex + 1) {
@@ -37,11 +49,7 @@ var NuevaLuz;
                 }, function (error) {
                     _this.loading = false;
                 }, function (status) {
-                    _this.playerInfo.status = status;
-                    if (!_this.loading && status === Media.MEDIA_STOPPED) {
-                        // If stopped, try to load next file if exists...
-                        _this.loadNextFile(true);
-                    }
+                    _this.processPlayerStatusChange(status);
                 });
                 if (autoplay) {
                     this.play(this.playerInfo.position);
@@ -79,11 +87,7 @@ var NuevaLuz;
                         _this.playerInfo = result;
                         // Initialize media player
                         _this.playerInfo.media = new Media("documents://" + _this.book.id + "/" + _this.book.sequence[_this.playerInfo.position.currentIndex].filename, function () { }, function (error) { }, function (status) {
-                            _this.playerInfo.status = status;
-                            if (!_this.loading && status === Media.MEDIA_STOPPED) {
-                                // If stopped, try to load next file if exists...
-                                _this.loadNextFile(true);
-                            }
+                            _this.processPlayerStatusChange(status);
                         });
                         _this.loading = false;
                         defer.resolve(_this.book);
@@ -121,8 +125,84 @@ var NuevaLuz;
             }
         };
         DaisyPlayerService.prototype.next = function () {
+            var _this = this;
+            var index = this.playerInfo.position.currentIndex;
+            // protect bounds...
+            if (index >= 0 && this.book.sequence.length <= index)
+                return;
+            var filename = this.book.sequence[index].filename;
+            var level = this.playerInfo.position.navigationLevel;
+            do {
+                index++;
+            } while (index < this.book.sequence.length && this.book.sequence[index].level > level);
+            // protect bounds...
+            if (index < 0) {
+                index = 0;
+                return;
+            }
+            if (index >= this.book.sequence.length) {
+                index = this.book.sequence.length - 1;
+                return;
+            }
+            this.playerInfo.position.currentIndex = index;
+            this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+            this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+            this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+            this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            if (this.book.sequence[index].filename !== filename) {
+                this.release();
+                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[index].filename, function () {
+                }, function (error) {
+                    _this.loading = false;
+                }, function (status) {
+                    _this.processPlayerStatusChange(status);
+                });
+            }
+            this.saveStatus(this.playerInfo);
+            if (this.playerInfo.status === Media.MEDIA_RUNNING) {
+                this.playerInfo.media.play();
+            }
+            this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
         };
         DaisyPlayerService.prototype.prev = function () {
+            var _this = this;
+            var index = this.playerInfo.position.currentIndex;
+            // protect bounds...
+            if (index >= 0 && this.book.sequence.length <= index)
+                return;
+            var filename = this.book.sequence[index].filename;
+            var level = this.playerInfo.position.navigationLevel;
+            do {
+                index--;
+            } while (index > 0 && this.book.sequence[index].level > level);
+            // protect bounds...
+            if (index < 0) {
+                index = 0;
+                return;
+            }
+            if (index >= this.book.sequence.length) {
+                index = this.book.sequence.length - 1;
+                return;
+            }
+            this.playerInfo.position.currentIndex = index;
+            this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+            this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+            this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+            this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            if (this.book.sequence[this.playerInfo.position.currentIndex].filename !== filename) {
+                this.release();
+                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[index].filename, function () {
+                }, function (error) {
+                    _this.loading = false;
+                }, function (status) {
+                    _this.processPlayerStatusChange(status);
+                });
+            }
+            this.saveStatus(this.playerInfo);
+            if (this.playerInfo.status === Media.MEDIA_RUNNING) {
+                this.playerInfo.media.play();
+            }
+            this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
         };
         DaisyPlayerService.prototype.loadStatus = function () {
             var _this = this;
@@ -133,7 +213,8 @@ var NuevaLuz;
                 .then(function (entry) {
                 _this.cordovaFile.readAsBinaryString(bdir, bfile)
                     .then(function (result) {
-                    _this.playerInfo.position = JSON.parse(decodeURI(result));
+                    // this.playerInfo.position = JSON.parse(decodeURI(result));
+                    _this.playerInfo.position = JSON.parse(result);
                     p.resolve(_this.playerInfo);
                 });
             }, function (error) {
@@ -154,7 +235,8 @@ var NuevaLuz;
             try {
                 var bdir = NuevaLuz.workingDir + this.book.id + "/";
                 var bfile = "status.json";
-                this.cordovaFile.writeFile(bdir, bfile, encodeURI(JSON.stringify(this.playerInfo.position)), true)
+                //this.cordovaFile.writeFile(bdir, bfile, encodeURI(JSON.stringify(this.playerInfo.position)), true)
+                this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.position), true)
                     .then(function (event) {
                     if (event.loaded === event.total) {
                         p.resolve();
@@ -165,6 +247,20 @@ var NuevaLuz;
                 p.reject("Error saving status: " + e);
             }
             return p.promise;
+        };
+        DaisyPlayerService.prototype.seconds2TC = function (seconds) {
+            if (seconds < 0)
+                seconds = 0;
+            return Math.floor(seconds / 3600).toString() + ":" +
+                this.padleft(Math.floor((seconds / 60) % 60).toString(), 2, "0") + ":" +
+                this.padleft(Math.floor(seconds % 60).toString(), 2, "0");
+        };
+        DaisyPlayerService.prototype.padleft = function (str, count, char) {
+            var pad = "";
+            for (var i = 0; i < count; i++) {
+                pad += char;
+            }
+            return pad.substring(0, pad.length - str.length) + str;
         };
         return DaisyPlayerService;
     })();
@@ -298,12 +394,11 @@ var NuevaLuz;
                 this.sequence.push({
                     filename: audioElements.item(i).attributes.getNamedItem("src").value,
                     title: title,
-                    level: level,
+                    level: i === 0 ? level : 7,
                     som: som,
                     tcin: tcin,
                     tcout: tcout
                 });
-                som += (tcout - tcin);
             }
         };
         DaisyBook.prototype.ntp2number = function (value) {

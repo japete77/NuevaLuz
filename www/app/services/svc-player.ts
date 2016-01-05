@@ -43,6 +43,19 @@ module NuevaLuz {
             }, 250);
         }
         
+        private processPlayerStatusChange(status : number) {
+            console.log("############################");
+            console.log("Player Status: " + status);
+            console.log("CurrentTC: " + this.playerInfo.position.currentTC);
+            console.log("Media Duration: " + this.playerInfo.media.getDuration());
+            this.playerInfo.status = status;
+            // If stopped due to end of the file is reached, try to load next file if exists...
+            if (!this.loading && status===Media.MEDIA_STOPPED &&
+                this.playerInfo.media.getDuration()!=-1) {
+                this.loadNextFile(true);
+            }
+        }
+        
         private loadNextFile(autoplay : boolean) {
             if (this.book.sequence.length>this.playerInfo.position.currentIndex+1) {
                 this.playerInfo.position.currentIndex++;
@@ -56,11 +69,7 @@ module NuevaLuz {
                         this.loading = false;
                     }, 
                     (status : number) => {
-                        this.playerInfo.status = status;
-                        if (!this.loading && status===Media.MEDIA_STOPPED) {
-                            // If stopped, try to load next file if exists...
-                            this.loadNextFile(true);
-                        }
+                        this.processPlayerStatusChange(status);
                     });
                     
                 if (autoplay) {
@@ -112,11 +121,7 @@ module NuevaLuz {
                             () => {},
                             (error) => {},
                             (status : number) => {
-                                this.playerInfo.status = status;
-                                if (!this.loading && status===Media.MEDIA_STOPPED) {
-                                    // If stopped, try to load next file if exists...
-                                    this.loadNextFile(true);
-                                }
+                                this.processPlayerStatusChange(status);
                             });
 
                         this.loading = false;                       
@@ -163,11 +168,101 @@ module NuevaLuz {
         }
         
         next() {
-
+            var index : number = this.playerInfo.position.currentIndex;
+            
+            // protect bounds...
+            if (index>=0 && this.book.sequence.length<=index) return;
+            
+            var filename : string = this.book.sequence[index].filename;
+            var level : number = this.playerInfo.position.navigationLevel;
+            
+            do {
+                index++;
+            } while (index<this.book.sequence.length && this.book.sequence[index].level>level);
+            
+            // protect bounds...
+            if (index<0) {
+                index = 0;
+                return;
+            }
+            if (index>=this.book.sequence.length) {
+                index = this.book.sequence.length-1;
+                return;
+            }
+            
+            this.playerInfo.position.currentIndex = index;
+            this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+            this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+            this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+            this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            
+            if (this.book.sequence[index].filename!==filename) {
+                this.release();
+                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[index].filename, 
+                    () => {
+                    }, 
+                    (error : MediaError) => {
+                        this.loading = false;
+                    }, 
+                    (status : number) => {
+                        this.processPlayerStatusChange(status);
+                    });
+            }
+            
+            this.saveStatus(this.playerInfo);
+            if (this.playerInfo.status===Media.MEDIA_RUNNING) {
+                this.playerInfo.media.play();
+            }
+            this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
         }
         
         prev() {
+            var index : number = this.playerInfo.position.currentIndex;
             
+            // protect bounds...
+            if (index>=0 && this.book.sequence.length<=index) return;
+            
+            var filename : string = this.book.sequence[index].filename;
+            var level : number = this.playerInfo.position.navigationLevel;
+            
+            do {
+                index--;
+            } while (index>0 && this.book.sequence[index].level>level);
+            
+            // protect bounds...
+            if (index<0) {
+                index = 0;
+                return;
+            }
+            if (index>=this.book.sequence.length) {
+                index = this.book.sequence.length-1;
+                return;
+            }
+       
+            this.playerInfo.position.currentIndex = index;
+            this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+            this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+            this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+            this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            
+            if (this.book.sequence[this.playerInfo.position.currentIndex].filename!==filename) {
+                this.release();
+                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[index].filename, 
+                    () => {
+                    }, 
+                    (error : MediaError) => {
+                        this.loading = false;
+                    }, 
+                    (status : number) => {
+                        this.processPlayerStatusChange(status);
+                    });
+            }
+            
+            this.saveStatus(this.playerInfo);
+            if (this.playerInfo.status===Media.MEDIA_RUNNING) {
+                this.playerInfo.media.play();
+            }           
+            this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
         }
         
         loadStatus() : ng.IPromise<PlayerInfo> {
@@ -180,7 +275,8 @@ module NuevaLuz {
             .then((entry : FileEntry) => {
                 this.cordovaFile.readAsBinaryString(bdir, bfile)
                 .then((result : string) => {
-                    this.playerInfo.position = JSON.parse(decodeURI(result));
+                    // this.playerInfo.position = JSON.parse(decodeURI(result));
+                    this.playerInfo.position = JSON.parse(result);
                     p.resolve(this.playerInfo);
                 });                
             }, (error : ngCordova.IFileError) => {
@@ -204,10 +300,10 @@ module NuevaLuz {
             
             try {
                 var bdir = workingDir + this.book.id + "/";
-                var bfile = "status.json";
+                var bfile = "status.json";        
                 
-                
-                this.cordovaFile.writeFile(bdir, bfile, encodeURI(JSON.stringify(this.playerInfo.position)), true)
+                //this.cordovaFile.writeFile(bdir, bfile, encodeURI(JSON.stringify(this.playerInfo.position)), true)
+                this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.position), true)
                 .then((event : ProgressEvent) => {
                     if (event.loaded===event.total) {
                         p.resolve();
@@ -219,6 +315,20 @@ module NuevaLuz {
             }
             
             return p.promise;
+        }
+                
+        seconds2TC(seconds : number) : string {
+            if (seconds<0) seconds = 0;
+            
+            return Math.floor(seconds/3600).toString() + ":" + 
+                this.padleft(Math.floor((seconds/60)%60).toString(), 2, "0") + ":" + 
+                this.padleft(Math.floor(seconds%60).toString(), 2, "0");
+        }
+        
+        private padleft(str : string, count : number, char : string) : string {
+            var pad = "";
+            for (var i = 0; i<count; i++) { pad += char; }
+            return pad.substring(0, pad.length - str.length) + str
         }
     }
     
@@ -391,12 +501,11 @@ module NuevaLuz {
                 this.sequence.push({
                      filename : audioElements.item(i).attributes.getNamedItem("src").value,
                      title : title,
-                     level : level,
+                     level : i===0?level:7,
                      som : som,
                      tcin : tcin,
                      tcout : tcout
-                });             
-                som += (tcout-tcin);
+                });
             }
         }
         

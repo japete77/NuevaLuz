@@ -76,25 +76,11 @@ module NuevaLuz {
                     this.scope.currentStatus.position.currentTitle = info.position.currentTitle;
                     if (info.position.currentTC>-1) {
                         this.scope.currentStatus.position.currentTC = info.position.currentTC;
-                        this.scope.currentStatus.position.absoluteTC = this.seconds2TC(this.scope.currentStatus.position.currentTC + this.scope.currentStatus.position.currentSOM);                    
+                        this.scope.currentStatus.position.absoluteTC = this.player.seconds2TC(this.scope.currentStatus.position.currentTC + this.scope.currentStatus.position.currentSOM);                    
                     }
                 }
                 
             });
-        }
-        
-        private seconds2TC(seconds : number) : string {
-            if (seconds<0) seconds = 0;
-            
-            return Math.floor(seconds/3600).toString() + ":" + 
-                this.padleft(Math.floor((seconds/60)%60).toString(), 2, "0") + ":" + 
-                this.padleft(Math.floor(seconds%60).toString(), 2, "0");
-        }
-        
-        private padleft(str : string, count : number, char : string) : string {
-            var pad = "";
-            for (var i = 0; i<count; i++) { pad += char; }
-            return pad.substring(0, pad.length - str.length) + str
         }
         
         play() {
