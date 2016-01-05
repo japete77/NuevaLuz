@@ -213,8 +213,7 @@ var NuevaLuz;
                 .then(function (entry) {
                 _this.cordovaFile.readAsBinaryString(bdir, bfile)
                     .then(function (result) {
-                    // this.playerInfo.position = JSON.parse(decodeURI(result));
-                    _this.playerInfo.position = JSON.parse(result);
+                    _this.playerInfo.position = JSON.parse(atob(result));
                     p.resolve(_this.playerInfo);
                 });
             }, function (error) {
@@ -235,8 +234,7 @@ var NuevaLuz;
             try {
                 var bdir = NuevaLuz.workingDir + this.book.id + "/";
                 var bfile = "status.json";
-                //this.cordovaFile.writeFile(bdir, bfile, encodeURI(JSON.stringify(this.playerInfo.position)), true)
-                this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.position), true)
+                this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.position)), true)
                     .then(function (event) {
                     if (event.loaded === event.total) {
                         p.resolve();

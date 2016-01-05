@@ -275,8 +275,7 @@ module NuevaLuz {
             .then((entry : FileEntry) => {
                 this.cordovaFile.readAsBinaryString(bdir, bfile)
                 .then((result : string) => {
-                    // this.playerInfo.position = JSON.parse(decodeURI(result));
-                    this.playerInfo.position = JSON.parse(result);
+                    this.playerInfo.position = JSON.parse(atob(result));
                     p.resolve(this.playerInfo);
                 });                
             }, (error : ngCordova.IFileError) => {
@@ -302,8 +301,7 @@ module NuevaLuz {
                 var bdir = workingDir + this.book.id + "/";
                 var bfile = "status.json";        
                 
-                //this.cordovaFile.writeFile(bdir, bfile, encodeURI(JSON.stringify(this.playerInfo.position)), true)
-                this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.position), true)
+                this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.position)), true)
                 .then((event : ProgressEvent) => {
                     if (event.loaded===event.total) {
                         p.resolve();
