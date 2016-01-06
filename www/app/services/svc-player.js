@@ -27,10 +27,6 @@ var NuevaLuz;
             }, 250);
         }
         DaisyPlayerService.prototype.processPlayerStatusChange = function (status) {
-            console.log("############################");
-            console.log("Player Status: " + status);
-            console.log("CurrentTC: " + this.playerInfo.position.currentTC);
-            console.log("Media Duration: " + this.playerInfo.media.getDuration());
             this.playerInfo.status = status;
             // If stopped due to end of the file is reached, try to load next file if exists...
             if (!this.loading && status === Media.MEDIA_STOPPED &&
@@ -89,8 +85,13 @@ var NuevaLuz;
                         _this.playerInfo.media = new Media("documents://" + _this.book.id + "/" + _this.book.sequence[_this.playerInfo.position.currentIndex].filename, function () { }, function (error) { }, function (status) {
                             _this.processPlayerStatusChange(status);
                         });
-                        _this.loading = false;
-                        defer.resolve(_this.book);
+                        // load bookmarks
+                        _this.loadBookmarks()
+                            .then(function (bookmarks) {
+                            _this.playerInfo.bookmarks = bookmarks;
+                            _this.loading = false;
+                            defer.resolve(_this.book);
+                        });
                     });
                 });
             });
@@ -203,6 +204,70 @@ var NuevaLuz;
                 this.playerInfo.media.play();
             }
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
+        };
+        DaisyPlayerService.prototype.seek = function (bookmark) {
+            var _this = this;
+            // If filename is not currently laoded, load the right one
+            if (this.book.sequence[bookmark.index].filename != this.book.sequence[this.playerInfo.position.currentIndex].filename) {
+                this.release();
+                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[bookmark.index].filename, function () {
+                }, function (error) {
+                    _this.loading = false;
+                }, function (status) {
+                    _this.processPlayerStatusChange(status);
+                });
+            }
+            else {
+            }
+            // play if running
+            if (this.playerInfo.status === Media.MEDIA_RUNNING) {
+                this.playerInfo.media.play();
+            }
+            // update status
+            this.playerInfo.position.absoluteTC = bookmark.absoluteTC;
+            this.playerInfo.position.currentIndex = bookmark.index;
+            this.playerInfo.position.currentSOM = bookmark.som;
+            this.playerInfo.position.currentTC = bookmark.tc;
+            this.playerInfo.position.currentTitle = this.book.sequence[bookmark.index].title;
+            // Seek to the position in the player
+            this.playerInfo.media.seekTo(bookmark.tc * 1000);
+        };
+        DaisyPlayerService.prototype.loadBookmarks = function () {
+            var _this = this;
+            var p = this.q.defer();
+            var bdir = NuevaLuz.workingDir + this.book.id + "/";
+            var bfile = "bookmarks.json";
+            this.cordovaFile.checkFile(bdir, bfile)
+                .then(function (entry) {
+                _this.cordovaFile.readAsBinaryString(bdir, bfile)
+                    .then(function (result) {
+                    // this.playerInfo.bookmarks = JSON.parse(atob(result));
+                    _this.playerInfo.bookmarks = JSON.parse(result);
+                    p.resolve(_this.playerInfo.bookmarks);
+                });
+            }, function (error) {
+                p.resolve(new Array());
+            });
+            return p.promise;
+        };
+        DaisyPlayerService.prototype.saveBooksmarks = function (bookmarks) {
+            var p = this.q.defer();
+            this.playerInfo.bookmarks = bookmarks;
+            try {
+                var bdir = NuevaLuz.workingDir + this.book.id + "/";
+                var bfile = "bookmarks.json";
+                //                this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.bookmarks)), true)
+                this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.bookmarks), true)
+                    .then(function (event) {
+                    if (event.loaded === event.total) {
+                        p.resolve();
+                    }
+                });
+            }
+            catch (e) {
+                p.reject("Error saving bookmarks: " + e);
+            }
+            return p.promise;
         };
         DaisyPlayerService.prototype.loadStatus = function () {
             var _this = this;

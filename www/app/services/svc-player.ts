@@ -44,10 +44,6 @@ module NuevaLuz {
         }
         
         private processPlayerStatusChange(status : number) {
-            console.log("############################");
-            console.log("Player Status: " + status);
-            console.log("CurrentTC: " + this.playerInfo.position.currentTC);
-            console.log("Media Duration: " + this.playerInfo.media.getDuration());
             this.playerInfo.status = status;
             // If stopped due to end of the file is reached, try to load next file if exists...
             if (!this.loading && status===Media.MEDIA_STOPPED &&
@@ -123,9 +119,15 @@ module NuevaLuz {
                             (status : number) => {
                                 this.processPlayerStatusChange(status);
                             });
-
-                        this.loading = false;                       
-                        defer.resolve(this.book);
+                            
+                        // load bookmarks
+                        this.loadBookmarks()
+                        .then((bookmarks : Array<Bookmark>) => {
+                            this.playerInfo.bookmarks = bookmarks;  
+                            
+                            this.loading = false;                       
+                            defer.resolve(this.book);                          
+                        });
                     });                    
                 });               
             });
@@ -265,6 +267,84 @@ module NuevaLuz {
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
         }
         
+        seek(bookmark : Bookmark) {            
+            // If filename is not currently laoded, load the right one
+            if (this.book.sequence[bookmark.index].filename!=this.book.sequence[this.playerInfo.position.currentIndex].filename) {
+                this.release();
+                this.playerInfo.media = new Media("documents://" + this.book.id + "/" +  this.book.sequence[bookmark.index].filename, 
+                    () => {
+                    }, 
+                    (error : MediaError) => {
+                        this.loading = false;
+                    }, 
+                    (status : number) => {
+                        this.processPlayerStatusChange(status);
+                    });
+            }
+            else {
+            }
+
+            // play if running
+            if (this.playerInfo.status===Media.MEDIA_RUNNING) {
+                this.playerInfo.media.play();
+            }
+            
+            // update status
+            this.playerInfo.position.absoluteTC = bookmark.absoluteTC;
+            this.playerInfo.position.currentIndex = bookmark.index;
+            this.playerInfo.position.currentSOM = bookmark.som;
+            this.playerInfo.position.currentTC = bookmark.tc;
+            this.playerInfo.position.currentTitle = this.book.sequence[bookmark.index].title;
+            
+            // Seek to the position in the player
+            this.playerInfo.media.seekTo(bookmark.tc*1000);                
+        }
+        
+        loadBookmarks() : ng.IPromise<Array<Bookmark>> {
+            var p = this.q.defer();
+            
+            var bdir = workingDir + this.book.id + "/";
+            var bfile = "bookmarks.json";
+            
+            this.cordovaFile.checkFile(bdir, bfile)
+            .then((entry : FileEntry) => {
+                this.cordovaFile.readAsBinaryString(bdir, bfile)
+                .then((result : string) => {
+                    // this.playerInfo.bookmarks = JSON.parse(atob(result));
+                    this.playerInfo.bookmarks = JSON.parse(result);
+                    p.resolve(this.playerInfo.bookmarks);
+                });
+            }, (error : ngCordova.IFileError) => {
+                p.resolve(new Array<Bookmark>());
+            });
+            
+            return p.promise;
+        }
+        
+        saveBooksmarks(bookmarks : Array<Bookmark>) : ng.IPromise<{}> {
+            var p = this.q.defer();
+            
+            this.playerInfo.bookmarks = bookmarks;
+            
+            try {
+                var bdir = workingDir + this.book.id + "/";
+                var bfile = "bookmarks.json";        
+                
+//                this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.bookmarks)), true)
+                this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.bookmarks), true)
+                .then((event : ProgressEvent) => {
+                    if (event.loaded===event.total) {
+                        p.resolve();
+                    }
+                });
+            } 
+            catch (e) {
+                p.reject("Error saving bookmarks: " + e);
+            }
+            
+            return p.promise;
+        }
+        
         loadStatus() : ng.IPromise<PlayerInfo> {
             var p = this.q.defer();
             
@@ -367,9 +447,12 @@ module NuevaLuz {
     
     // Bookmark info
     export class Bookmark {
+        id : number;
         index : number;
         title : string;
         tc : number;
+        som : number;
+        absoluteTC : string;
     }
     
     export class DaisyBook {

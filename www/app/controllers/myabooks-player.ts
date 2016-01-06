@@ -1,12 +1,22 @@
 /// <reference path="../app.ts" />
 
 module NuevaLuz {
+    const BOOKMARK_NONE : number = 0;
+    const BOOKMARK_GO : number = 1;
+    const BOOKMARK_DELETE : number = 2;
     
+    class BookmarkEvent {
+        type : number;
+        boomark : Bookmark;
+    }
+
     export interface IABooksPlayerScope extends ng.IScope {
         control : ABooksPlayerController;
         
         currentBook : DaisyBook;        
         currentStatus : PlayerInfo;
+        
+        tmpBookmark : Bookmark;
         
         showPlay : boolean;
         ready : boolean;
@@ -42,9 +52,6 @@ module NuevaLuz {
             }
             else {
                 this.player.release();
-                
-                this.scope.currentStatus = new PlayerInfo();
-                this.scope.currentStatus.position = new SeekInfo();
                 
                 // Load daisy book...
                 this.player.loadBook($stateParams.abookId)
@@ -132,6 +139,124 @@ module NuevaLuz {
             });
         }
         
-    }
+        addBookmark() {
+            var s : SeekInfo = this.player.getPlayerInfo().position;
+            
+            this.scope.tmpBookmark = new Bookmark();
+            this.scope.tmpBookmark.index = s.currentIndex;
+            this.scope.tmpBookmark.tc = s.currentTC;
+            this.scope.tmpBookmark.som = s.currentSOM;
+            this.scope.tmpBookmark.absoluteTC = s.absoluteTC;
+            
+            var counter : number = 1;
+            if (this.scope.currentStatus.bookmarks && this.scope.currentStatus.bookmarks.length>0) {
+                counter = this.scope.currentStatus.bookmarks[this.scope.currentStatus.bookmarks.length-1].id+1;
+            }
+            this.scope.tmpBookmark.id = counter;
+            this.scope.tmpBookmark.title = "Marcador " + counter;
+            
+            var myPopup = this.ionicPopup.show({
+                template: '<div><input type="text" ng-model="tmpBookmark.title" autofocus></input></div>',
+                title: 'Añadir marca',
+                scope: this.scope,
+                buttons: [
+                {   text: 'Cancelar',
+                    onTap: () => { return false; }
+                },
+                {   text: '<b>Guardar</b>',
+                    type: 'button-positive',
+                    onTap: () => { return true; }
+                }
+                ]
+            });
+            
+            myPopup.then((result : boolean) => {
+                if (result) {
+                    this.scope.currentStatus.bookmarks.push(this.scope.tmpBookmark);
+                    this.player.saveBooksmarks(this.scope.currentStatus.bookmarks);                    
+                }
+            });            
+        }
+        
+        private deleteBookmark(id : number) {
+            var count : number = 0;
+            var pos : number = -1;
+            this.scope.currentStatus.bookmarks.forEach(s => {
+                if (s.id===id) {
+                    pos = count;
+                }
+                count++;
+            });
+            
+            if (pos!=-1) {
+                this.scope.currentStatus.bookmarks.splice(pos, 1);                
+            }
+        }
+        
+        private getBookmark(id : number) : Bookmark {
+            var count : number = 0;
+            var pos : number = -1;
+            this.scope.currentStatus.bookmarks.forEach(s => {
+                if (s.id===id) {
+                    pos = count;
+                }
+                count++;
+            });
+            
+            if (pos!=-1) {
+                return this.scope.currentStatus.bookmarks[pos];
+            }
+            else {
+                return null;
+            }
+        }
 
+        showBookmarks() {
+            this.scope.tmpBookmark = new Bookmark();
+            
+            var myPopup = this.ionicPopup.show({
+                template: '<ion-list>' + 
+                            ' <ion-radio ng-model="tmpBookmark.id" ng-repeat="bookmark in currentStatus.bookmarks" ng-value="{{bookmark.id}}">{{bookmark.title}}</ion-radio>' +
+                          '</ion-list>',
+                title: 'Selecciona marca',
+                scope: this.scope,
+                buttons: [
+                { text: '<b>Ir</b>',
+                  type: 'button-positive',
+                  onTap: (e : MouseEvent) => {
+                      var result : BookmarkEvent = {
+                          type : BOOKMARK_GO,
+                          boomark : this.getBookmark(this.scope.tmpBookmark.id)
+                      }
+                      return result;
+                  }
+                },
+                { text: 'Cerrar',
+                  onTap: (e : MouseEvent) => {
+                      var result : BookmarkEvent = {
+                          type : BOOKMARK_NONE,
+                          boomark : this.getBookmark(this.scope.tmpBookmark.id)
+                      }
+                      return result;                                          
+                  }
+                },
+                { text: 'Borrar',
+                  type: 'button-assertive',
+                  onTap: (e : MouseEvent) => {
+                      this.deleteBookmark(this.scope.tmpBookmark.id);
+                      this.player.saveBooksmarks(this.scope.currentStatus.bookmarks);
+                      e.preventDefault();
+                  }
+                }
+                ]
+            });
+            
+            myPopup.then((e : BookmarkEvent) => {
+                if (e.type===BOOKMARK_GO) {
+                    // Seek to the position
+                    this.player.seek(e.boomark);
+                }
+            });             
+        }
+    }
 }
