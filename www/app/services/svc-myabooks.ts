@@ -10,29 +10,47 @@ module NuevaLuz {
         abooks = new Array<AudioBook>();
         ready : boolean = false;
         cordovaFile : ngCordova.IFileService;
+        q : ng.IQService;
 
-        constructor($cordovaFile : ngCordova.IFileService) {
+        constructor($cordovaFile : ngCordova.IFileService, $q : ng.IQService) {
             
             this.cordovaFile = $cordovaFile;
+            this.q = $q;
 
             ionic.Platform.ready(() => {
                 this.ready = true;
 
                 // Load my audio books
-                this.getBooks((abooks : Array<AudioBook>) => { this.abooks = abooks; })
-            })
+                this.getBooks((abooks : Array<AudioBook>) => { 
+                    this.abooks = abooks; 
+                    
+                    // Remove all unconsistent books
+                    this.abooks.forEach((item : AudioBook, index : number, object : Array<AudioBook>) => {
+                        if (item.statusKey!=STATUS_COMPLETED) {
+                            object.splice(index, 1);                        
+                        }
+                    });
 
+                    this.updateABooksFile();
+                });                
+            });
         }
 
-        updateABooksFile() {
+        updateABooksFile() : ng.IPromise<{}> {
+            var q = this.q.defer();
+            
             if (this.ready) {
                 this.cordovaFile.writeFile(workingDir, this.abooksIndexFilename, JSON.stringify(this.abooks), true)
-                    .then((success : any) => {				
+                    .then((success : any) => {
+                        q.resolve();	
                     },
                     (error : any) => {
                         console.log(error);
+                        q.reject();
                     });
             }
+            
+            return q.promise;
         }
         
         getABookIndex(id : string) {
@@ -57,36 +75,53 @@ module NuevaLuz {
             return false;
         }
         
-        addUpdateBook(book : DownloadItem) {
+        addUpdateBook(book : DownloadItem) : ng.IPromise<{}> {
+            var q = this.q.defer();
+            
             var index = this.getABookIndex(book.id); 
             if (index<0) {
                 this.abooks.push({
                     id: book.id,
                     title: book.title,
-                    status: book.progress<100?'downloading':'downloaded'
-                });
-                
-                // Create audio book info file			
+                    statusKey: book.statusKey
+                });                
             }
             else {
                 // update book status
-                this.abooks[index].status = book.progress<100?'downloading':'downloaded';	
+                this.abooks[index].statusKey = book.statusKey;	
             }
-            this.updateABooksFile();			
+            
+            this.updateABooksFile()
+                .then(() => {
+                    q.resolve();
+                })
+                .catch(() => {
+                    q.reject();
+                });
+            
+            return q.promise;
         }
         
-        deleteBook(id : string) {
+        deleteBook(id : string) : ng.IPromise<{}> {
+            var q = this.q.defer();
+            
+            this.cordovaFile.removeFile(workingDir, id + ".zip");
             this.cordovaFile.removeRecursively(workingDir, id);
             this.abooks.splice(this.getABookIndex(id), 1);	
-            this.updateABooksFile();
+            this.updateABooksFile()
+            .then(() => {
+                q.resolve(); 
+            });                
+            
+            return q.promise;
         }
         
-        getBooks(callback) {            
+        getBooks(callback : (response : Array<AudioBook>) => any) {            
             if (this.ready) {
                 this.cordovaFile.checkFile(workingDir, this.abooksIndexFilename)
                 .then((success) => {
                     this.cordovaFile.readAsText(workingDir, this.abooksIndexFilename)
-                    .then((result : any) => {
+                    .then((result : string) => {
                         this.abooks = JSON.parse(result);
                         callback(this.abooks);
                     },

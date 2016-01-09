@@ -14,22 +14,25 @@
 				</p>
 			</div>
 		</div>
-		<button ng-if="showDetail" ng-show="control.isDownloadable(detail.Id)" class="button button-full button-positive" ng-click="control.downloadBook(detail.Id, detail.Title)">
-			Descargar
-		</button>
-		<button ng-if="showDetail" ng-show="control.isAvailable(detail.Id)" class="button button-full button-balanced" ng-click="control.play(detail.Id)">
-			Escuchar
-		</button>
-		<div ng-if="showDetail" ng-show="downloadInfo!=null">
-			<div class="row row-center">
-				<div class="col" style="text-align:center;">{{downloadInfo.downloadStatus}}</div>
-			</div>
-			<div  class="row">
-				<progress ng-show="true" value="{{downloadInfo.progress}}" max="100"></progress>
-			</div>
-			<button class="button button-full button-assertive" ng-click="control.cancelDownload(detail.Id)">
-				Cancelar descarga
-			</button>
-		</div>
+        <div ng-if="showDetail">
+            <div class="row row-center" ng-show="control.showDescription(detail.Id)">
+                <div class="col" style="text-align:center;">{{downloadInfo.statusDescription}}</div>
+            </div>
+            <div class="row" ng-show="control.isProgressing(detail.Id)">
+                <progress ng-show="true" value="{{downloadInfo.progress}}" max="100"></progress>
+            </div>
+            <button ng-show="control.isDownloadable(detail.Id)" class="button button-full button-positive" ng-click="control.downloadBook(detail.Id, detail.Title)">
+                Descargar
+            </button>
+            <button ng-show="control.isCancellable(detail.Id)" class="button button-full button-assertive" ng-click="control.cancelDownload(detail.Id)">
+                Cancelar descarga
+            </button>
+            <button ng-show="control.isAvailable(detail.Id)" class="button button-full button-balanced" ng-click="control.play(detail.Id)">
+                Escuchar
+            </button>
+            <button ng-show="control.isErasable(detail.Id)" class="button button-full button-assertive" ng-click="control.delete(detail.Id)">
+                Eliminar
+            </button>
+        </div>
 	</ion-content>
 </ion-view>

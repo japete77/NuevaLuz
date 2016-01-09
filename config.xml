@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.nuevaluz667548" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ionicframework.nuevaluz667548" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>NuevaLuz</name>
   <description>
         Club del Libro Nueva Luz
@@ -10,6 +10,9 @@
   <content src="index.html"/>
   <access origin="*"/>
   <allow-navigation href="*" />
+  <gap:config-file platform="android" parent="/manifest">
+     <application android:debuggable="true" />
+  </gap:config-file>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

@@ -13,6 +13,7 @@ module NuevaLuz {
         private book : DaisyBook;
         private playerInfo : PlayerInfo;
         private loading : boolean;
+        private wasPlaying = false;
         
         constructor($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, $interval : ng.IIntervalService, $rootScope : ng.IScope, $q : ng.IQService) {
             
@@ -45,9 +46,7 @@ module NuevaLuz {
         
         private processPlayerStatusChange(status : number) {
             this.playerInfo.status = status;
-            // If stopped due to end of the file is reached, try to load next file if exists...
-            if (!this.loading && status===Media.MEDIA_STOPPED &&
-                this.playerInfo.media.getDuration()!=-1) {
+            if (!this.loading && status===Media.MEDIA_STOPPED && this.wasPlaying) {
                 this.loadNextFile(true);
             }
         }
@@ -88,13 +87,13 @@ module NuevaLuz {
             
             var bdir = workingDir + id + "/";
             var bfile = "ncc.html";
-            
+                        
             this.cordovaFile.readAsBinaryString(bdir, bfile)
             .then((result : string) => {
                 this.book = new DaisyBook();
                 this.book.id = id;
                 this.book.parseDaisyBook(result);
-                
+                                
                 // Read all smil files...
                 var promises : Array<ng.IPromise<string>> = new Array<ng.IPromise<string>>();
                 this.book.body.forEach(s => {
@@ -130,6 +129,8 @@ module NuevaLuz {
                         });
                     });                    
                 });               
+            }, (error : any) => {
+                console.log(error);
             });
             
             return defer.promise;
@@ -147,18 +148,21 @@ module NuevaLuz {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.play();   
                 this.playerInfo.media.seekTo(position.currentTC*1000);
+                this.wasPlaying = true;
             }
         }
         
         stop() {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.stop();
+                this.wasPlaying = false;
             }
         }
         
         pause() {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.pause();
+                this.wasPlaying = false;
             }
         }
         
@@ -166,6 +170,7 @@ module NuevaLuz {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.stop();
                 this.playerInfo.media.release();
+                this.wasPlaying = false;
             }
         }
         
@@ -310,8 +315,8 @@ module NuevaLuz {
             .then((entry : FileEntry) => {
                 this.cordovaFile.readAsBinaryString(bdir, bfile)
                 .then((result : string) => {
-                    // this.playerInfo.bookmarks = JSON.parse(atob(result));
-                    this.playerInfo.bookmarks = JSON.parse(result);
+                    this.playerInfo.bookmarks = JSON.parse(atob(result));
+                    //this.playerInfo.bookmarks = JSON.parse(result);
                     p.resolve(this.playerInfo.bookmarks);
                 });
             }, (error : ngCordova.IFileError) => {
@@ -330,8 +335,8 @@ module NuevaLuz {
                 var bdir = workingDir + this.book.id + "/";
                 var bfile = "bookmarks.json";        
                 
-//                this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.bookmarks)), true)
-                this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.bookmarks), true)
+               this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.bookmarks)), true)
+                //this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.bookmarks), true)
                 .then((event : ProgressEvent) => {
                     if (event.loaded===event.total) {
                         p.resolve();

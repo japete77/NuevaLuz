@@ -17,32 +17,51 @@ var NuevaLuz;
             this.myABooksSvc = MyABooksSvc;
             this.scope.downloadInfo = null;
             this.scope.showDetail = false;
-            this.scope.$on('downloading', function (event, download) {
-                if (_this.stateParams.abookId == download.id) {
+            this.currentId = this.padleft(this.stateParams.abookId, 4, "0");
+            this.scope.$on(NuevaLuz.STATUS_INSTALLING, function (event, download) {
+                if (_this.currentId == download.id) {
                     $scope.downloadInfo = download;
                 }
             });
-            this.scope.$on('downloaded', function (event, download) {
-                if (_this.stateParams.abookId == download.id) {
+            this.scope.$on(NuevaLuz.STATUS_DOWNLOADING, function (event, download) {
+                if (_this.currentId == download.id) {
+                    $scope.downloadInfo = download;
+                }
+            });
+            this.scope.$on(NuevaLuz.STATUS_DOWNLOADED, function (event, download) {
+                if (_this.currentId == download.id) {
+                    $scope.downloadInfo = download;
+                }
+            });
+            this.scope.$on(NuevaLuz.STATUS_COMPLETED, function (event, download) {
+                if (_this.currentId == download.id) {
                     $scope.downloadInfo = null;
                 }
             });
-            this.scope.$on('cancelled', function (event, download) {
-                if (_this.stateParams.abookId == download.id) {
+            this.scope.$on(NuevaLuz.STATUS_CANCELLED, function (event, download) {
+                if (_this.currentId == download.id) {
                     $scope.downloadInfo = null;
                 }
             });
-            this.scope.$on('error', function (event, download) {
-                if (_this.stateParams.abookId == download.id) {
-                    _this.ionicPopup.alert({
-                        title: 'Error en la descarga',
-                        template: download.downloadStatus
-                    });
-                    _this.scope.downloadInfo = null;
+            this.scope.$on(NuevaLuz.STATUS_ERROR, function (event, download) {
+                if (_this.currentId == download.id) {
+                    _this.scope.downloadInfo = download;
+                }
+            });
+            this.scope.$on(NuevaLuz.STATUS_PENDING, function (event, download) {
+                if (_this.currentId == download.id) {
+                    _this.scope.downloadInfo = download;
                 }
             });
             this.initialize();
         }
+        ABooksDetailController.prototype.padleft = function (str, count, char) {
+            var pad = "";
+            for (var i = 0; i < count; i++) {
+                pad += char;
+            }
+            return pad.substring(0, pad.length - str.length) + str;
+        };
         ABooksDetailController.prototype.initialize = function () {
             var _this = this;
             this.ionicLoading.show({
@@ -61,26 +80,68 @@ var NuevaLuz;
         ABooksDetailController.prototype.play = function (id) {
             this.location.path('/myabooks/player/' + id);
         };
-        ABooksDetailController.prototype.isDownloadable = function (id) {
-            var index = this.myABooksSvc.getABookIndex(id);
-            if (index >= 0) {
-                return (this.myABooksSvc.abooks[index].status !== "downloading" &&
-                    this.myABooksSvc.abooks[index].status !== "downloaded");
-            }
-            return true;
-        };
-        ABooksDetailController.prototype.isAvailable = function (id) {
-            var index = this.myABooksSvc.getABookIndex(id);
-            if (index >= 0) {
-                return this.myABooksSvc.abooks[index].status === "downloaded";
-            }
-            return false;
-        };
         ABooksDetailController.prototype.downloadBook = function (id, title) {
             this.downloadSvc.download(id, title);
         };
         ABooksDetailController.prototype.cancelDownload = function (id) {
             this.downloadSvc.cancel(id);
+        };
+        ABooksDetailController.prototype.delete = function (id) {
+            this.myABooksSvc.deleteBook(id);
+            this.scope.downloadInfo = null;
+        };
+        ABooksDetailController.prototype.showDescription = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            if (index >= 0) {
+                return this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_INSTALLING ||
+                    this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_DOWNLOADING ||
+                    this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_DOWNLOADED ||
+                    this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_ERROR ||
+                    this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_PENDING;
+            }
+            return false;
+        };
+        ABooksDetailController.prototype.isCancellable = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            if (index >= 0) {
+                return this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_PENDING ||
+                    this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_DOWNLOADING;
+            }
+            return false;
+        };
+        ABooksDetailController.prototype.isProgressing = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            if (index >= 0) {
+                return this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_DOWNLOADING ||
+                    this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_DOWNLOADED ||
+                    this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_INSTALLING;
+            }
+            return false;
+        };
+        ABooksDetailController.prototype.isDownloadable = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            return index < 0;
+        };
+        ABooksDetailController.prototype.isDownloading = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            if (index >= 0) {
+                return this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_DOWNLOADING;
+            }
+            return false;
+        };
+        ABooksDetailController.prototype.isAvailable = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            if (index >= 0) {
+                return this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_COMPLETED;
+            }
+            return false;
+        };
+        ABooksDetailController.prototype.isErasable = function (id) {
+            var index = this.myABooksSvc.getABookIndex(id);
+            if (index >= 0) {
+                return this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_ERROR;
+            }
+            return false;
         };
         return ABooksDetailController;
     })();

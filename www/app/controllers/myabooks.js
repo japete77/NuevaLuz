@@ -17,10 +17,10 @@ var NuevaLuz;
         ABooksController.prototype.getLink = function (id) {
             var index = this.getABookIndex(id);
             if (index >= 0) {
-                if (this.scope.abooks[index].status == 'downloaded') {
+                if (this.scope.abooks[index].statusKey == NuevaLuz.STATUS_COMPLETED) {
                     return '#/myabooks/player/' + id;
                 }
-                else if (this.scope.abooks[index].status == 'downloading') {
+                else {
                     return '#/abooks/menu/detail/' + id;
                 }
             }
@@ -33,6 +33,30 @@ var NuevaLuz;
                 }
             }
             return -1;
+        };
+        ABooksController.prototype.isShowable = function (id) {
+            var index = this.getABookIndex(id);
+            if (index >= 0) {
+                return this.scope.abooks[index].statusKey == NuevaLuz.STATUS_DOWNLOADING ||
+                    this.scope.abooks[index].statusKey == NuevaLuz.STATUS_INSTALLING ||
+                    this.scope.abooks[index].statusKey == NuevaLuz.STATUS_COMPLETED;
+            }
+            false;
+        };
+        ABooksController.prototype.isProgressing = function (id) {
+            var index = this.getABookIndex(id);
+            if (index >= 0) {
+                return this.scope.abooks[index].statusKey == NuevaLuz.STATUS_DOWNLOADING ||
+                    this.scope.abooks[index].statusKey == NuevaLuz.STATUS_INSTALLING;
+            }
+            false;
+        };
+        ABooksController.prototype.isCompleted = function (id) {
+            var index = this.getABookIndex(id);
+            if (index >= 0) {
+                return this.scope.abooks[index].statusKey == NuevaLuz.STATUS_COMPLETED;
+            }
+            false;
         };
         return ABooksController;
     })();

@@ -4,7 +4,7 @@ module NuevaLuz {
     
     export interface IABooksScope extends ng.IScope {
         control : ABooksController;
-        abooks : any;
+        abooks : Array<AudioBook>;
     }
     
     export class ABooksController {
@@ -21,7 +21,7 @@ module NuevaLuz {
             this.myABooksSvc = myAbooksSvc;
             
             // Retrieve all my audio books
-            this.myABooksSvc.getBooks((response : any) => {
+            this.myABooksSvc.getBooks((response : Array<AudioBook>) => {
                 this.scope.abooks = response;
             });
         }
@@ -29,22 +29,49 @@ module NuevaLuz {
         getLink(id : string) {
             var index : number = this.getABookIndex(id);
             if (index>=0) {
-                if (this.scope.abooks[index].status=='downloaded') {
+                if (this.scope.abooks[index].statusKey==STATUS_COMPLETED) {
                     return '#/myabooks/player/' + id;
                 }
-                else if (this.scope.abooks[index].status=='downloading') {
+                else {
                     return '#/abooks/menu/detail/' + id;	
                 }
             }
         } 
             
-        getABookIndex(id) {
+        getABookIndex(id) : number {
             if (this.scope.abooks!=null) {
                 for (var i=0; i<this.scope.abooks.length; i++) {
                     if (this.scope.abooks[i].id==id) return i;
                 }
             }
             return -1;
+        }
+        
+        isShowable(id : string) : boolean {
+            var index : number = this.getABookIndex(id);
+            if (index>=0) {
+                return this.scope.abooks[index].statusKey==STATUS_DOWNLOADING ||
+                       this.scope.abooks[index].statusKey==STATUS_INSTALLING ||
+                       this.scope.abooks[index].statusKey==STATUS_COMPLETED;
+            }
+            false;
+        }
+        
+        isProgressing(id : string) : boolean {
+            var index : number = this.getABookIndex(id);
+            if (index>=0) {
+                return this.scope.abooks[index].statusKey==STATUS_DOWNLOADING ||
+                       this.scope.abooks[index].statusKey==STATUS_INSTALLING;
+            }
+            false;
+        }
+        
+        isCompleted(id : string) : boolean {
+            var index : number = this.getABookIndex(id);
+            if (index>=0) {
+                return this.scope.abooks[index].statusKey==STATUS_COMPLETED;
+            }
+            false;
         }  
     }
 

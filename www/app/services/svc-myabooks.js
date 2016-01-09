@@ -4,26 +4,40 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var MyABooksService = (function () {
-        function MyABooksService($cordovaFile) {
+        function MyABooksService($cordovaFile, $q) {
             var _this = this;
             this.abooksIndexFilename = "abooks-index.json";
             this.abooks = new Array();
             this.ready = false;
             this.cordovaFile = $cordovaFile;
+            this.q = $q;
             ionic.Platform.ready(function () {
                 _this.ready = true;
                 // Load my audio books
-                _this.getBooks(function (abooks) { _this.abooks = abooks; });
+                _this.getBooks(function (abooks) {
+                    _this.abooks = abooks;
+                    // Remove all unconsistent books
+                    _this.abooks.forEach(function (item, index, object) {
+                        if (item.statusKey != NuevaLuz.STATUS_COMPLETED) {
+                            object.splice(index, 1);
+                        }
+                    });
+                    _this.updateABooksFile();
+                });
             });
         }
         MyABooksService.prototype.updateABooksFile = function () {
+            var q = this.q.defer();
             if (this.ready) {
                 this.cordovaFile.writeFile(NuevaLuz.workingDir, this.abooksIndexFilename, JSON.stringify(this.abooks), true)
                     .then(function (success) {
+                    q.resolve();
                 }, function (error) {
                     console.log(error);
+                    q.reject();
                 });
             }
+            return q.promise;
         };
         MyABooksService.prototype.getABookIndex = function (id) {
             if (this.abooks) {
@@ -46,24 +60,38 @@ var NuevaLuz;
             return false;
         };
         MyABooksService.prototype.addUpdateBook = function (book) {
+            var q = this.q.defer();
             var index = this.getABookIndex(book.id);
             if (index < 0) {
                 this.abooks.push({
                     id: book.id,
                     title: book.title,
-                    status: book.progress < 100 ? 'downloading' : 'downloaded'
+                    statusKey: book.statusKey
                 });
             }
             else {
                 // update book status
-                this.abooks[index].status = book.progress < 100 ? 'downloading' : 'downloaded';
+                this.abooks[index].statusKey = book.statusKey;
             }
-            this.updateABooksFile();
+            this.updateABooksFile()
+                .then(function () {
+                q.resolve();
+            })
+                .catch(function () {
+                q.reject();
+            });
+            return q.promise;
         };
         MyABooksService.prototype.deleteBook = function (id) {
+            var q = this.q.defer();
+            this.cordovaFile.removeFile(NuevaLuz.workingDir, id + ".zip");
             this.cordovaFile.removeRecursively(NuevaLuz.workingDir, id);
             this.abooks.splice(this.getABookIndex(id), 1);
-            this.updateABooksFile();
+            this.updateABooksFile()
+                .then(function () {
+                q.resolve();
+            });
+            return q.promise;
         };
         MyABooksService.prototype.getBooks = function (callback) {
             var _this = this;

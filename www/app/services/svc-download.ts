@@ -4,12 +4,26 @@
 module NuevaLuz {
     
     declare var zip : any;
+    
+    declare interface IUnzipEvent {
+        loaded : number;
+        total : number;
+    }
+    
+    export var STATUS_PENDING : string = "pending";
+    export var STATUS_DOWNLOADING : string = "downloading";
+    export var STATUS_DOWNLOADED : string = "downloaded";
+    export var STATUS_INSTALLING : string = "installing";
+    export var STATUS_CANCELLED : string = "cancelled";
+    export var STATUS_ERROR : string = "error";
+    export var STATUS_COMPLETED : string = "completed";
         
     export class DownloadService {
-        rootScope : ng.IScope;
-        interval : ng.IIntervalService;
-        cordovaFile : ngCordova.IFileService;
-        myABooksSvc : MyABooksService;
+        private rootScope : ng.IScope;
+        private interval : ng.IIntervalService;
+        private cordovaFile : ngCordova.IFileService;
+        private myABooksSvc : MyABooksService;
+        private q : ng.IQService;
            
         ready : boolean = false;
         downloads : Array<DownloadItem> = [];
@@ -18,11 +32,12 @@ module NuevaLuz {
         sourceZip : string = "";
 
         
-        constructor($rootScope : ng.IScope, $interval : ng.IIntervalService, $cordovaFile : ngCordova.IFileService, myABooksSvc : MyABooksService) {
+        constructor($rootScope : ng.IScope, $interval : ng.IIntervalService, $cordovaFile : ngCordova.IFileService, $q : ng.IQService, myABooksSvc : MyABooksService) {
             this.rootScope = $rootScope;
             this.interval = $interval;
             this.cordovaFile = $cordovaFile;
             this.myABooksSvc = myABooksSvc;
+            this.q = $q;
             
             // Check when device is ready to be used...
             ionic.Platform.ready(() => {
@@ -33,46 +48,151 @@ module NuevaLuz {
             this.interval(() => {
                 if (this.downloads.length>0) {
                     this.downloads.forEach((item : DownloadItem) => {
-                        this.rootScope.$broadcast('downloading', item);				
+                        this.rootScope.$broadcast(item.statusKey, item);				
                     });
                 }
             }, 1000);
         }
         
+        private getNextDownloadItem() : DownloadItem {
+            if (this.downloads.length>0) {
+                for (var i =0; i<this.downloads.length; i++) {
+                    if (this.downloads[i].statusKey===STATUS_PENDING) {
+                        return this.downloads[i];
+                    } else if (this.downloads[i].statusKey===STATUS_DOWNLOADING ||
+                        this.downloads[i].statusKey===STATUS_INSTALLING) {
+                        return null;
+                    }
+                }
+                return null;
+            }
+            else {
+                return null;
+            }
+        }
         
         private processDownloadQueue() {
             
+            // Get next item to download
+            var currentDownload : DownloadItem = this.getNextDownloadItem();
+            
             // Check that is not downloading and are still pending downloads
-            if (this.downloads.length==0 || this.downloads[0].transfer) {
+            if (!currentDownload) {
                 return;
             }
-            
-            // Get next item to download
-            var currentDownload : DownloadItem = this.downloads[0];
                     
             // Instantiate new FileTransfer object
             currentDownload.transfer = new FileTransfer();
             currentDownload.transfer.onprogress = (event : ProgressEvent) => {
                     if (event.lengthComputable) {
                         currentDownload.progress = (event.loaded / event.total) * 100;
-                        currentDownload.downloadStatus = Math.floor(currentDownload.progress) + '% descargado...';
+                        currentDownload.statusKey = STATUS_DOWNLOADING;
+                        currentDownload.statusDescription = Math.floor(currentDownload.progress) + '% descargado...';
+                        this.rootScope.$emit(STATUS_DOWNLOADING, currentDownload);
                     }
                 };
+           
+           // Prepare downloading status
+           currentDownload.progress = 0;
+           currentDownload.statusKey = STATUS_DOWNLOADING;
+           currentDownload.statusDescription = "0% descargado...";
+           this.myABooksSvc.addUpdateBook(currentDownload)
+           .then(() => {
+                this.rootScope.$emit(STATUS_DOWNLOADING, currentDownload);
 
-            currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, 
+                currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, 
                 (entry : FileEntry) => {
                     // Notify downloaded
-                    currentDownload.status = 'Descarga completada';
-                    this.rootScope.$broadcast('downloaded', currentDownload);
+                    currentDownload.progress = 100;
+                    currentDownload.statusDescription = 'Descarga completada';
+                    currentDownload.statusKey = STATUS_DOWNLOADED;
+                    this.rootScope.$broadcast(STATUS_DOWNLOADED, currentDownload);
                     
                     // Save my audio books list
-                    this.myABooksSvc.addUpdateBook(currentDownload);
+                    this.myABooksSvc.addUpdateBook(currentDownload)
+                    .then(() => {
+                        
+                        // Unzip file
+                        this.unzip(currentDownload.id, 
+                            (result : number) => {
+                                if (result==0) {
+                                    
+                                    // Delete .zip
+                                    this.cordovaFile.removeFile(workingDir, this.sourceZip);
 
-                    // remove item from download list
-                    this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
-
-                    // Unzip file
-                    this.unzip(currentDownload.id);
+                                    // Create target dir
+                                    var res = this.cordovaFile.createDir(workingDir, '/' + this.targetFolder + '/', true);
+                                                    
+                                    var callback = this.q.defer<number>();
+                                    
+                                    // Read files from tmp folder to move them to target dir
+                                    window.resolveLocalFileSystemURI(
+                                        workingDir + this.tmpFolder, 
+                                        (entry : DirectoryEntry) => { 
+                                            this.addFileEntry(entry, callback);
+                                            
+                                            callback.promise.then((result : number ) => {
+                                                if (result==0) {
+                                                    currentDownload.statusDescription = "";
+                                                    currentDownload.statusKey = STATUS_COMPLETED;
+                                                    this.rootScope.$broadcast(STATUS_COMPLETED, currentDownload);
+                                                    
+                                                    this.myABooksSvc.addUpdateBook(currentDownload)
+                                                    .then(() => {
+                                                        
+                                                        // Delete from download list
+                                                        this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
+                                                        
+                                                        // go for next item to process...
+                                                        this.processDownloadQueue();
+                                                    });                                                    
+                                                }
+                                                else {
+                                                    currentDownload.statusDescription = 'Error moviendo audio libro';
+                                                    currentDownload.statusKey = STATUS_ERROR;
+                                                    this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
+                                                    
+                                                    this.myABooksSvc.addUpdateBook(currentDownload)
+                                                    .then(() => {
+                                                        // go for next item to process...
+                                                        this.processDownloadQueue();  
+                                                    });                                             
+                                                }
+                                            });
+                                        },
+                                        (error : any) => {
+                                            currentDownload.statusDescription = "Error preparando audio libro";										
+                                            currentDownload.statusKey = STATUS_ERROR;
+                                            this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
+                                            
+                                            this.myABooksSvc.addUpdateBook(currentDownload)
+                                            .then(() => {
+                                                // go for next item to process...
+                                                this.processDownloadQueue();  
+                                            });                                              
+                                        }
+                                    );					
+                                }
+                                else {
+                                    currentDownload.statusDescription = "Error instalando audio libro";										
+                                    currentDownload.statusKey = STATUS_ERROR;
+                                    this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
+                                    
+                                    this.myABooksSvc.addUpdateBook(currentDownload)
+                                    .then(() => {
+                                        // go for next item to process...
+                                        this.processDownloadQueue();
+                                    });
+                                }    
+                            },
+                            (item : IUnzipEvent) => {
+                                currentDownload.progress = Math.round((item.loaded / item.total) * 100);
+                                currentDownload.statusDescription = currentDownload.progress + "% instalado...";
+                                currentDownload.statusKey = STATUS_INSTALLING;                                
+                                this.rootScope.$broadcast(STATUS_INSTALLING, currentDownload);
+                            });
+                            
+                    });
                     
                 }, (error : FileTransferError) => {			
                     
@@ -82,47 +202,47 @@ module NuevaLuz {
                     // Delete .zip
                     switch (error.code) {
                         case FileTransferError.FILE_NOT_FOUND_ERR:
-                            currentDownload.downloadStatus = 'Audio libro no encontrado';
-                            this.rootScope.$broadcast('error', currentDownload);
+                            currentDownload.statusDescription = 'Audio libro no encontrado';
+                            currentDownload.statusKey = STATUS_ERROR;
+                            this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
                             break;
                         case FileTransferError.INVALID_URL_ERR:
-                            currentDownload.downloadStatus = 'URL incorrecta';
-                            this.rootScope.$broadcast('error', currentDownload);
+                            currentDownload.statusDescription = 'URL incorrecta';
+                            currentDownload.statusKey = STATUS_ERROR;
+                            this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
                             break;
                         case FileTransferError.CONNECTION_ERR:
-                            currentDownload.downloadStatus = 'Error en la conexión';
-                            this.rootScope.$broadcast('error', currentDownload);
+                            currentDownload.statusDescription = 'Error en la conexión';
+                            currentDownload.statusKey = STATUS_ERROR;
+                            this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
                             break;
                         case FileTransferError.ABORT_ERR:
-                            currentDownload.downloadStatus = 'Cancelada la descarga';
-                            this.rootScope.$broadcast('cancelled', currentDownload);
+                            currentDownload.statusDescription = 'Cancelada la descarga';
+                            currentDownload.statusKey = STATUS_CANCELLED;
+                            this.rootScope.$broadcast(STATUS_CANCELLED, currentDownload);
                             break;
                         case FileTransferError.NOT_MODIFIED_ERR:
-                            currentDownload.downloadStatus = 'Error en archivo local descargdo';
-                            this.rootScope.$broadcast('error', currentDownload);
+                            currentDownload.statusDescription = 'Error en archivo local descargdo';
+                            currentDownload.statusKey = STATUS_ERROR;
+                            this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
                             break;
-                    }				
-        
-                    // Delete book from list
-                    this.myABooksSvc.deleteBook(currentDownload.id);
+                    }                        
 
-                    // Delete from download list
-                    this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
-                    
                     // go for next item to process...
-                    this.processDownloadQueue();
-                        
+                    this.processDownloadQueue();    
+                    
                 });
+           });
         }
                 
-        addFileEntry(entry : DirectoryEntry) {
+        addFileEntry(entry : DirectoryEntry, callback : ng.IDeferred<number>) {
             var dirReader = entry.createReader();       
             dirReader.readEntries((entries : DirectoryEntry[]) => {
                     var i : number = 0;
                     for (i = 0; i < entries.length; i++) {
                         if (entries[i].isDirectory === true) {
                             // Recursive -- calback into this subdirectory
-                            this.addFileEntry(entries[i]);
+                            this.addFileEntry(entries[i], callback);
                         } else {
                             var r : RegExp = /[^\/]*$/;
                             var sourcePath : string = entries[i].fullPath.replace(r,'');
@@ -133,11 +253,13 @@ module NuevaLuz {
                                     // Delete tmp folder at the end...
                                     if (i==entries.length) {
                                         this.cordovaFile.removeRecursively(workingDir, this.tmpFolder);
+                                        callback.resolve(0);
                                     }
                                 },
                                 (error : any) => {
                                     // clean tmp folder in case of error
                                     this.cordovaFile.removeRecursively(workingDir, this.tmpFolder);
+                                    callback.resolve(-1);
                                 }
                             );
                         }
@@ -146,7 +268,7 @@ module NuevaLuz {
             );
         }
         
-        private unzip(downloadId : string) {
+        private unzip(downloadId : string, sucessCallback : (result : number) => any, progressCallback : (progressEvent : IUnzipEvent) => any) {
             
             // Generate tmp folder
             var d = new Date();
@@ -160,43 +282,35 @@ module NuevaLuz {
             zip.unzip(
                 workingDir + this.sourceZip, 
                 workingDir + this.tmpFolder, 
-                (result : any) => {
-                    if (result>-1) {
-                        // Delete .zip
-                        this.cordovaFile.removeFile(workingDir, this.sourceZip);
-
-                        // Create target dir
-                        var res = this.cordovaFile.createDir(workingDir, '/' + this.targetFolder + '/', true);
-                                        
-                        // Read files from tmp folder to move them to target dir
-                        window.resolveLocalFileSystemURI(
-                            workingDir + this.tmpFolder, 
-                            (entry : DirectoryEntry) => { this.addFileEntry(entry); },
-                            (error : any) => {
-                                alert(error);
-                                this.processDownloadQueue();							
-                            }
-                        );					
-                    }
-                    else {										
-                        alert('Unzip Error!');
-                        this.processDownloadQueue();
-                    }
+                (result : number) => {
+                    sucessCallback(result);
                 },
-                (progress : any) => {
+                (progress : IUnzipEvent) => {
+                    progressCallback(progress);
                 }
             );
         }
         
-        private getPlatform = function() {
+        private getPlatform() {
             return ionic.Platform.platform();
         }
         
-        private getVersion = function() {
+        private getVersion() {
             return ionic.Platform.version();
         }
         
-        public download = function(id : string, title : string) {  
+        getDownloadItem(id : string) {
+            if (this.downloads) {
+                for (var i=0; i<this.downloads.length; i++) {
+                    if (this.downloads[i].id==id) {
+                        return this.downloads[i];
+                    }
+                }
+            }
+            return null;
+        }
+        
+        download(id : string, title : string) {  
                   			
             if (!this.ready) return;
             
@@ -213,23 +327,24 @@ module NuevaLuz {
                 path : workingDir,
                 filename : filename,
                 progress : 0,
-                downloadStatus : 'Pendiente de descarga',
+                statusDescription : 'Pendiente de descarga',
                 errorCode : 0,
                 transfer : null,
-                status : ""
+                statusKey : STATUS_PENDING
             }
             
             // push item into the download queue
             this.downloads.push(downloadItem);
             
             // Register item in abooks-index.json		
-            this.myABooksSvc.addUpdateBook(downloadItem);
-
-            // process item
-            this.processDownloadQueue();
+            this.myABooksSvc.addUpdateBook(downloadItem)
+            .then(() => {
+                // process item
+                this.processDownloadQueue();                
+            });
         }
         
-        public cancel(id : string) {
+        cancel(id : string) {
             var cancelDownload = this.getDownloadInfo(id);
             
             if (cancelDownload)
@@ -238,19 +353,19 @@ module NuevaLuz {
                 if (cancelDownload.transfer) {
                     cancelDownload.transfer.abort();
                 } 
-                else {
-                    this.myABooksSvc.deleteBook(cancelDownload.id);
-        
-                    this.downloads.splice(this.getDownloadIndex(cancelDownload.id), 1);
-                    cancelDownload.downloadStatus = 'Cancelada la descarga';
-                    this.rootScope.$broadcast('cancelled', cancelDownload);
-                    
-                    this.processDownloadQueue();
-                }
+
+                this.downloads.splice(this.getDownloadIndex(cancelDownload.id), 1);
+                this.myABooksSvc.deleteBook(cancelDownload.id)
+                .then(() => {
+                    // Process the next one in the queue if canceled was not in pending status
+                    if (cancelDownload.statusKey!=STATUS_PENDING) {                
+                        this.processDownloadQueue();                
+                    }                    
+                });
             }
         }
         
-        private getDownloadInfo = function(id : string) {
+        private getDownloadInfo(id : string) {
             if (this.downloads) {
                 for (var i=0; i<this.downloads.length; i++) {
                     if (this.downloads[i].id===id) {

@@ -7,14 +7,14 @@ declare class DownloadItem {
     public path : string;
     public filename : string;
     public progress : number;
-    public downloadStatus : string;
+    public statusDescription : string;
     public errorCode : number;
     public transfer : FileTransfer;
-    public status : string;
+    public statusKey : string;
 }
 
 declare class AudioBook {
     public id : string;
     public title : string;
-    public status : string;
+    public statusKey : string;
 }

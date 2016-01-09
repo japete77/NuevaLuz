@@ -114,9 +114,9 @@ var NuevaLuz;
     NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile, $interval, $rootScope, $q) {
         return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q);
     });
-    NuevaLuz.app.factory('MyABooksSvc', function ($cordovaFile) { return new NuevaLuz.MyABooksService($cordovaFile); });
-    NuevaLuz.app.factory('DownloadSvc', function ($rootScope, $interval, $cordovaFile, MyABooksSvc) {
-        return new NuevaLuz.DownloadService($rootScope, $interval, $cordovaFile, MyABooksSvc);
+    NuevaLuz.app.factory('MyABooksSvc', function ($cordovaFile, $q) { return new NuevaLuz.MyABooksService($cordovaFile, $q); });
+    NuevaLuz.app.factory('DownloadSvc', function ($rootScope, $interval, $cordovaFile, $q, MyABooksSvc) {
+        return new NuevaLuz.DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc);
     });
     // Register Controllers
     NuevaLuz.app.controller("AuthorsBooksCtrl", function ($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc) {
