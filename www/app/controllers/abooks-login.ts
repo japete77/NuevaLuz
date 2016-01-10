@@ -100,7 +100,7 @@ module NuevaLuz {
         // Checks if the user is authenticated
         isAuthenticated() : boolean {
             return this.sessionService.getSession()!=="";
-        } 
+        }
     }
     
 }

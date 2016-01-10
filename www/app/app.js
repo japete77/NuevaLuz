@@ -24,6 +24,7 @@ var NuevaLuz;
     NuevaLuz.abookBaseUrl = "http://bibliasbraille.com/ClubLibro/";
     // export var abookBaseUrl : string = "http://www.ibgracia.es/";
     NuevaLuz.workingDir = "";
+    NuevaLuz.playDir = "";
     NuevaLuz.radioStreamingUrl = "http://nlradio.dyndns.org:8294/;";
     // main angular app
     NuevaLuz.app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
@@ -40,14 +41,17 @@ var NuevaLuz;
                 userAgent = navigator.userAgent.match(/iPad/i);
                 if (userAgent && userAgent.toString() === "iPad") {
                     NuevaLuz.workingDir = cordova.file.documentsDirectory;
+                    NuevaLuz.playDir = "documents:/";
                 }
                 else {
                     userAgent = navigator.userAgent.match(/iPhone/i);
                     if (userAgent && userAgent.toString() === "iPhone") {
                         NuevaLuz.workingDir = cordova.file.documentsDirectory;
+                        NuevaLuz.playDir = "documents:/";
                     }
                     else {
                         NuevaLuz.workingDir = cordova.file.dataDirectory;
+                        NuevaLuz.playDir = cordova.file.dataDirectory;
                     }
                 }
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

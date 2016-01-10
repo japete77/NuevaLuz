@@ -27,6 +27,7 @@ module NuevaLuz {
     export var abookBaseUrl : string = "http://bibliasbraille.com/ClubLibro/";
     // export var abookBaseUrl : string = "http://www.ibgracia.es/";
     export var workingDir : string = "";
+    export var playDir : string = "";
     export var radioStreamingUrl : string = "http://nlradio.dyndns.org:8294/;";
 
     // main angular app
@@ -47,15 +48,18 @@ module NuevaLuz {
             var userAgent : RegExpMatchArray;
             userAgent = navigator.userAgent.match(/iPad/i);
             if (userAgent && userAgent.toString()==="iPad") {
-                workingDir = cordova.file.documentsDirectory;            
+                workingDir = cordova.file.documentsDirectory;
+                playDir = "documents:/";
             }
             else {
                 userAgent = navigator.userAgent.match(/iPhone/i);
                 if (userAgent && userAgent.toString()==="iPhone") {
-                    workingDir = cordova.file.documentsDirectory;            
+                    workingDir = cordova.file.documentsDirectory;
+                    playDir = "documents:/";
                 }
                 else {
                     workingDir = cordova.file.dataDirectory;
+                    playDir = cordova.file.dataDirectory;
                 }            
             }
 

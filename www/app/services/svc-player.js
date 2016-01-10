@@ -40,7 +40,7 @@ var NuevaLuz;
                 this.playerInfo.position.currentSOM = this.book.sequence[this.playerInfo.position.currentIndex].som;
                 this.playerInfo.position.currentTC = 0;
                 this.playerInfo.position.currentTitle = this.book.sequence[this.playerInfo.position.currentIndex].title;
-                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[this.playerInfo.position.currentIndex].filename, function () {
+                this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[this.playerInfo.position.currentIndex].filename, function () {
                 }, function (error) {
                     _this.loading = false;
                 }, function (status) {
@@ -80,7 +80,7 @@ var NuevaLuz;
                     _this.loadStatus(function (result) {
                         _this.playerInfo = result;
                         // Initialize media player
-                        _this.playerInfo.media = new Media("documents://" + _this.book.id + "/" + _this.book.sequence[_this.playerInfo.position.currentIndex].filename, function () { }, function (error) { }, function (status) {
+                        _this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + _this.book.id + "/" + _this.book.sequence[_this.playerInfo.position.currentIndex].filename, function () { }, function (error) { }, function (status) {
                             _this.processPlayerStatusChange(status);
                         });
                         // load bookmarks
@@ -154,7 +154,7 @@ var NuevaLuz;
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             if (this.book.sequence[index].filename !== filename) {
                 this.release();
-                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[index].filename, function () {
+                this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[index].filename, function () {
                 }, function (error) {
                     _this.loading = false;
                 }, function (status) {
@@ -194,7 +194,7 @@ var NuevaLuz;
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             if (this.book.sequence[this.playerInfo.position.currentIndex].filename !== filename) {
                 this.release();
-                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[index].filename, function () {
+                this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[index].filename, function () {
                 }, function (error) {
                     _this.loading = false;
                 }, function (status) {
@@ -212,7 +212,7 @@ var NuevaLuz;
             // If filename is not currently laoded, load the right one
             if (this.book.sequence[bookmark.index].filename != this.book.sequence[this.playerInfo.position.currentIndex].filename) {
                 this.release();
-                this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[bookmark.index].filename, function () {
+                this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[bookmark.index].filename, function () {
                 }, function (error) {
                     _this.loading = false;
                 }, function (status) {
@@ -267,34 +267,26 @@ var NuevaLuz;
             }
         };
         DaisyPlayerService.prototype.loadStatus = function (sucessCallback) {
-            this.playerInfo.position = new SeekInfo();
-            this.playerInfo.position.navigationLevel = 1;
-            this.playerInfo.position.currentIndex = 0;
-            this.playerInfo.position.currentSOM = this.book.sequence[0].som;
-            this.playerInfo.position.currentTC = this.book.sequence[0].som;
-            this.playerInfo.position.currentTitle = this.book.sequence[0].title;
-            this.playerInfo.position.absoluteTC = "0:00:00";
-            sucessCallback(this.playerInfo);
-            // var bdir = workingDir + this.book.id + "/";
-            // var bfile = "status.json";
-            // 
-            // this.cordovaFile.checkFile(bdir, bfile)
-            // .then((entry : FileEntry) => {
-            //     this.cordovaFile.readAsBinaryString(bdir, bfile)
-            //     .then((result : string) => {
-            //         this.playerInfo.position = JSON.parse(atob(result));
-            //         sucessCallback(this.playerInfo);
-            //     });                
-            // }, (error : ngCordova.IFileError) => {
-            //     this.playerInfo.position = new SeekInfo();
-            //     this.playerInfo.position.navigationLevel = 1;
-            //     this.playerInfo.position.currentIndex = 0;
-            //     this.playerInfo.position.currentSOM = this.book.sequence[0].som;
-            //     this.playerInfo.position.currentTC = this.book.sequence[0].som;
-            //     this.playerInfo.position.currentTitle = this.book.sequence[0].title;
-            //     this.playerInfo.position.absoluteTC = "0:00:00";
-            //     sucessCallback(this.playerInfo);
-            // });
+            var _this = this;
+            var bdir = NuevaLuz.workingDir + this.book.id + "/";
+            var bfile = "status.json";
+            this.cordovaFile.checkFile(bdir, bfile)
+                .then(function (entry) {
+                _this.cordovaFile.readAsBinaryString(bdir, bfile)
+                    .then(function (result) {
+                    _this.playerInfo.position = JSON.parse(atob(result));
+                    sucessCallback(_this.playerInfo);
+                });
+            }, function (error) {
+                _this.playerInfo.position = new SeekInfo();
+                _this.playerInfo.position.navigationLevel = 1;
+                _this.playerInfo.position.currentIndex = 0;
+                _this.playerInfo.position.currentSOM = _this.book.sequence[0].som;
+                _this.playerInfo.position.currentTC = _this.book.sequence[0].som;
+                _this.playerInfo.position.currentTitle = _this.book.sequence[0].title;
+                _this.playerInfo.position.absoluteTC = "0:00:00";
+                sucessCallback(_this.playerInfo);
+            });
         };
         DaisyPlayerService.prototype.saveStatus = function (pinfo, sucessCallback, errorCallback) {
             this.playerInfo = pinfo;

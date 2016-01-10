@@ -70,6 +70,7 @@ module NuevaLuz {
 
                 this.scope.showPlay = !info.status ||
                                        info.status===Media.MEDIA_NONE ||
+                                       info.status===Media.MEDIA_STARTING ||
                                        info.status===Media.MEDIA_PAUSED ||
                                        info.status===Media.MEDIA_STOPPED;
                 

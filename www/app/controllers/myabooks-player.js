@@ -43,6 +43,7 @@ var NuevaLuz;
             this.scope.$on('playerInfo', function (event, info) {
                 _this.scope.showPlay = !info.status ||
                     info.status === Media.MEDIA_NONE ||
+                    info.status === Media.MEDIA_STARTING ||
                     info.status === Media.MEDIA_PAUSED ||
                     info.status === Media.MEDIA_STOPPED;
                 if (_this.scope.currentStatus && _this.scope.currentStatus.position) {
@@ -79,7 +80,7 @@ var NuevaLuz;
             var _this = this;
             var currenLevel;
             var myPopup = this.ionicPopup.show({
-                template: '<ion-content><ion-list>' +
+                template: '<ion-list>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="1">Nivel 1</ion-radio>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="2">Nivel 2</ion-radio>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="3">Nivel 3</ion-radio>' +
@@ -87,7 +88,7 @@ var NuevaLuz;
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="5">Nivel 5</ion-radio>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="6">Nivel 6</ion-radio>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="7">Frase</ion-radio>' +
-                    '</ion-list></ion-content>',
+                    '</ion-list>',
                 title: 'Selecciona nivel de navegación',
                 scope: this.scope,
                 buttons: [
