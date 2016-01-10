@@ -17,7 +17,7 @@ var NuevaLuz;
             this.myABooksSvc = MyABooksSvc;
             this.scope.downloadInfo = null;
             this.scope.showDetail = false;
-            this.currentId = this.padleft(this.stateParams.abookId, 4, "0");
+            this.currentId = this.padleft(this.stateParams["abookId"], 4, "0");
             this.scope.$on(NuevaLuz.STATUS_INSTALLING, function (event, download) {
                 if (_this.currentId == download.id) {
                     $scope.downloadInfo = download;
@@ -69,7 +69,7 @@ var NuevaLuz;
             });
             this.http({
                 method: 'GET',
-                url: NuevaLuz.baseUrl + 'GetAudioBookDetail?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.abookId
+                url: NuevaLuz.baseUrl + 'GetAudioBookDetail?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams["abookId"]
             })
                 .then(function (response) {
                 _this.scope.detail = response.data.GetAudioBookDetailResult;
@@ -86,7 +86,7 @@ var NuevaLuz;
         ABooksDetailController.prototype.cancelDownload = function (id) {
             this.downloadSvc.cancel(id);
         };
-        ABooksDetailController.prototype.delete = function (id) {
+        ABooksDetailController.prototype.deleteDownload = function (id) {
             this.myABooksSvc.deleteBook(id);
             this.scope.downloadInfo = null;
         };

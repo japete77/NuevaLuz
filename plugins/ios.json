@@ -33,10 +33,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Media\"><param name=\"ios-package\" value=\"CDVSound\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"StatusBar\"><param name=\"ios-package\" value=\"CDVStatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
@@ -54,6 +50,14 @@
                         },
                         {
                             "xml": "<feature name=\"SplashScreen\"><param name=\"ios-package\" value=\"CDVSplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Keyboard\"><param name=\"ios-package\" onload=\"true\" value=\"CDVKeyboard\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Media\"><param name=\"ios-package\" value=\"CDVSound\" /></feature>",
                             "count": 1
                         }
                     ],
@@ -121,9 +125,6 @@
         "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
         },
-        "cordova-plugin-media": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
-        },
         "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
         },
@@ -137,6 +138,12 @@
             "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
         },
         "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+        },
+        "cordova-plugin-keyboard": {
+            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+        },
+        "cordova-plugin-media": {
             "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
         }
     },

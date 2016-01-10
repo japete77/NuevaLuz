@@ -53,7 +53,7 @@ module NuevaLuz {
             return q.promise;
         }
         
-        getABookIndex(id : string) {
+        getABookIndex(id : string) : number {
             if (this.abooks) {
                 for (var i=0; i<this.abooks.length; i++) {
                     if (this.abooks[i].id==id) {
@@ -75,8 +75,7 @@ module NuevaLuz {
             return false;
         }
         
-        addUpdateBook(book : DownloadItem) : ng.IPromise<{}> {
-            var q = this.q.defer();
+        addUpdateBook(book : DownloadItem) {
             
             var index = this.getABookIndex(book.id); 
             if (index<0) {
@@ -89,17 +88,7 @@ module NuevaLuz {
             else {
                 // update book status
                 this.abooks[index].statusKey = book.statusKey;	
-            }
-            
-            this.updateABooksFile()
-                .then(() => {
-                    q.resolve();
-                })
-                .catch(() => {
-                    q.reject();
-                });
-            
-            return q.promise;
+            }            
         }
         
         deleteBook(id : string) : ng.IPromise<{}> {
@@ -116,7 +105,7 @@ module NuevaLuz {
             return q.promise;
         }
         
-        getBooks(callback : (response : Array<AudioBook>) => any) {            
+        getBooks(callback : (response : Array<AudioBook>) => any) {
             if (this.ready) {
                 this.cordovaFile.checkFile(workingDir, this.abooksIndexFilename)
                 .then((success) => {

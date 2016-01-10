@@ -29,7 +29,7 @@ module NuevaLuz {
         private ionicLoading : ionic.loading.IonicLoadingService;
         private ionicPopup : ionic.popup.IonicPopupService;
         
-        constructor($scope : IABooksPlayerScope, $stateParams : any, $location : ng.ILocationService, 
+        constructor($scope : IABooksPlayerScope, $stateParams : angular.ui.IStateParamsService, $location : ng.ILocationService, 
             $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, player : DaisyPlayerService) {
             this.scope = $scope;
             this.scope.ready = false;
@@ -44,7 +44,7 @@ module NuevaLuz {
             });
             
             // Prepare audio player
-            if (this.player.getCurrentBook() && this.player.getCurrentBook().id===$stateParams.abookId) {
+            if (this.player.getCurrentBook() && this.player.getCurrentBook().id===$stateParams["abookId"]) {
                 this.scope.currentBook = this.player.getCurrentBook();
                 this.scope.currentStatus = this.player.getPlayerInfo();
                 this.ionicLoading.hide();
@@ -54,7 +54,7 @@ module NuevaLuz {
                 this.player.release();
                 
                 // Load daisy book...
-                this.player.loadBook($stateParams.abookId)
+                this.player.loadBook($stateParams["abookId"])
                 .then((book : DaisyBook) => {
                     this.scope.currentBook = book;
                     this.scope.currentStatus = this.player.getPlayerInfo();

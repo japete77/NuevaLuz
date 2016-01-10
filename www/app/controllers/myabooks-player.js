@@ -23,7 +23,7 @@ var NuevaLuz;
                 template: 'Cargando...'
             });
             // Prepare audio player
-            if (this.player.getCurrentBook() && this.player.getCurrentBook().id === $stateParams.abookId) {
+            if (this.player.getCurrentBook() && this.player.getCurrentBook().id === $stateParams["abookId"]) {
                 this.scope.currentBook = this.player.getCurrentBook();
                 this.scope.currentStatus = this.player.getPlayerInfo();
                 this.ionicLoading.hide();
@@ -32,7 +32,7 @@ var NuevaLuz;
             else {
                 this.player.release();
                 // Load daisy book...
-                this.player.loadBook($stateParams.abookId)
+                this.player.loadBook($stateParams["abookId"])
                     .then(function (book) {
                     _this.scope.currentBook = book;
                     _this.scope.currentStatus = _this.player.getPlayerInfo();

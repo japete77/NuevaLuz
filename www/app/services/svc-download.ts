@@ -96,7 +96,8 @@ module NuevaLuz {
            currentDownload.progress = 0;
            currentDownload.statusKey = STATUS_DOWNLOADING;
            currentDownload.statusDescription = "0% descargado...";
-           this.myABooksSvc.addUpdateBook(currentDownload)
+           this.myABooksSvc.addUpdateBook(currentDownload);
+           this.myABooksSvc.updateABooksFile()
            .then(() => {
                 this.rootScope.$emit(STATUS_DOWNLOADING, currentDownload);
 
@@ -109,13 +110,14 @@ module NuevaLuz {
                     this.rootScope.$broadcast(STATUS_DOWNLOADED, currentDownload);
                     
                     // Save my audio books list
-                    this.myABooksSvc.addUpdateBook(currentDownload)
+                    this.myABooksSvc.addUpdateBook(currentDownload);
+                    this.myABooksSvc.updateABooksFile()
                     .then(() => {
                         
                         // Unzip file
                         this.unzip(currentDownload.id, 
                             (result : number) => {
-                                if (result==0) {
+                                if (result!=-1) {
                                     
                                     // Delete .zip
                                     this.cordovaFile.removeFile(workingDir, this.sourceZip);
@@ -137,7 +139,8 @@ module NuevaLuz {
                                                     currentDownload.statusKey = STATUS_COMPLETED;
                                                     this.rootScope.$broadcast(STATUS_COMPLETED, currentDownload);
                                                     
-                                                    this.myABooksSvc.addUpdateBook(currentDownload)
+                                                    this.myABooksSvc.addUpdateBook(currentDownload);
+                                                    this.myABooksSvc.updateABooksFile()
                                                     .then(() => {
                                                         
                                                         // Delete from download list
@@ -152,7 +155,8 @@ module NuevaLuz {
                                                     currentDownload.statusKey = STATUS_ERROR;
                                                     this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
                                                     
-                                                    this.myABooksSvc.addUpdateBook(currentDownload)
+                                                    this.myABooksSvc.addUpdateBook(currentDownload);
+                                                    this.myABooksSvc.updateABooksFile()
                                                     .then(() => {
                                                         // go for next item to process...
                                                         this.processDownloadQueue();  
@@ -165,7 +169,8 @@ module NuevaLuz {
                                             currentDownload.statusKey = STATUS_ERROR;
                                             this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
                                             
-                                            this.myABooksSvc.addUpdateBook(currentDownload)
+                                            this.myABooksSvc.addUpdateBook(currentDownload);
+                                            this.myABooksSvc.updateABooksFile()
                                             .then(() => {
                                                 // go for next item to process...
                                                 this.processDownloadQueue();  
@@ -178,7 +183,8 @@ module NuevaLuz {
                                     currentDownload.statusKey = STATUS_ERROR;
                                     this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
                                     
-                                    this.myABooksSvc.addUpdateBook(currentDownload)
+                                    this.myABooksSvc.addUpdateBook(currentDownload);
+                                    this.myABooksSvc.updateABooksFile()
                                     .then(() => {
                                         // go for next item to process...
                                         this.processDownloadQueue();
@@ -337,7 +343,8 @@ module NuevaLuz {
             this.downloads.push(downloadItem);
             
             // Register item in abooks-index.json		
-            this.myABooksSvc.addUpdateBook(downloadItem)
+            this.myABooksSvc.addUpdateBook(downloadItem);
+            this.myABooksSvc.updateABooksFile()
             .then(() => {
                 // process item
                 this.processDownloadQueue();                

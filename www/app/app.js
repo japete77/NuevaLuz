@@ -27,7 +27,7 @@ var NuevaLuz;
     NuevaLuz.radioStreamingUrl = "http://nlradio.dyndns.org:8294/;";
     // main angular app
     NuevaLuz.app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
-    NuevaLuz.app.run(['$ionicPlatform', '$cordovaSplashscreen',
+    NuevaLuz.app.run(["$ionicPlatform", "$cordovaSplashscreen",
         function ($ionicPlatform, $cordovaSplashscreen) {
             setTimeout(function () {
                 $cordovaSplashscreen.hide();
@@ -61,51 +61,51 @@ var NuevaLuz;
             });
         }]);
     NuevaLuz.app.config(function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/');
+        $urlRouterProvider.otherwise("/");
         $stateProvider
-            .state('index', {
-            url: '/',
-            templateUrl: 'templates/home.html'
+            .state("index", {
+            url: "/",
+            templateUrl: "templates/home.html"
         })
-            .state('radio', {
-            url: '/radio',
-            templateUrl: 'templates/radio.html'
+            .state("radio", {
+            url: "/radio",
+            templateUrl: "templates/radio.html"
         })
-            .state('abooks-login', {
-            url: '/login',
-            templateUrl: 'templates/abooks-login.html'
+            .state("abooks-login", {
+            url: "/login",
+            templateUrl: "templates/abooks-login.html"
         })
-            .state('abooks-menu', {
-            url: '/abooks/menu',
-            templateUrl: 'templates/abooks-menu.html'
+            .state("abooks-menu", {
+            url: "/abooks/menu",
+            templateUrl: "templates/abooks-menu.html"
         })
-            .state('abooks-title', {
-            url: '/abooks/menu/title',
-            templateUrl: 'templates/abooks-title.html'
+            .state("abooks-title", {
+            url: "/abooks/menu/title",
+            templateUrl: "templates/abooks-title.html"
         })
-            .state('abooks-author', {
-            url: '/abooks/menu/author',
-            templateUrl: 'templates/abooks-author.html'
+            .state("abooks-author", {
+            url: "/abooks/menu/author",
+            templateUrl: "templates/abooks-author.html"
         })
-            .state('abooks-author-books', {
-            url: '/abooks/menu/author/:authorId',
-            templateUrl: 'templates/abooks-author-books.html'
+            .state("abooks-author-books", {
+            url: "/abooks/menu/author/:authorId",
+            templateUrl: "templates/abooks-author-books.html"
         })
-            .state('abooks-detail', {
-            url: '/abooks/menu/detail/:abookId',
-            templateUrl: 'templates/abooks-detail.html'
+            .state("abooks-detail", {
+            url: "/abooks/menu/detail/:abookId",
+            templateUrl: "templates/abooks-detail.html"
         })
-            .state('myabooks', {
-            url: '/myabooks',
-            templateUrl: 'templates/myabooks.html'
+            .state("myabooks", {
+            url: "/myabooks",
+            templateUrl: "templates/myabooks.html"
         })
-            .state('myabooks-player', {
-            url: '/myabooks/player/:abookId',
-            templateUrl: 'templates/myabooks-player.html'
+            .state("myabooks-player", {
+            url: "/myabooks/player/:abookId",
+            templateUrl: "templates/myabooks-player.html"
         })
-            .state('myabooks-info', {
-            url: '/myabooks/info/:abookId',
-            templateUrl: 'templates/abook-info.html'
+            .state("myabooks-info", {
+            url: "/myabooks/info/:abookId",
+            templateUrl: "templates/abook-info.html"
         });
     });
     // Register Services
@@ -114,8 +114,8 @@ var NuevaLuz;
     NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile, $interval, $rootScope, $q) {
         return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q);
     });
-    NuevaLuz.app.factory('MyABooksSvc', function ($cordovaFile, $q) { return new NuevaLuz.MyABooksService($cordovaFile, $q); });
-    NuevaLuz.app.factory('DownloadSvc', function ($rootScope, $interval, $cordovaFile, $q, MyABooksSvc) {
+    NuevaLuz.app.factory("MyABooksSvc", function ($cordovaFile, $q) { return new NuevaLuz.MyABooksService($cordovaFile, $q); });
+    NuevaLuz.app.factory("DownloadSvc", function ($rootScope, $interval, $cordovaFile, $q, MyABooksSvc) {
         return new NuevaLuz.DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc);
     });
     // Register Controllers

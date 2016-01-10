@@ -74,7 +74,8 @@ var NuevaLuz;
             currentDownload.progress = 0;
             currentDownload.statusKey = NuevaLuz.STATUS_DOWNLOADING;
             currentDownload.statusDescription = "0% descargado...";
-            this.myABooksSvc.addUpdateBook(currentDownload)
+            this.myABooksSvc.addUpdateBook(currentDownload);
+            this.myABooksSvc.updateABooksFile()
                 .then(function () {
                 _this.rootScope.$emit(NuevaLuz.STATUS_DOWNLOADING, currentDownload);
                 currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, function (entry) {
@@ -84,11 +85,12 @@ var NuevaLuz;
                     currentDownload.statusKey = NuevaLuz.STATUS_DOWNLOADED;
                     _this.rootScope.$broadcast(NuevaLuz.STATUS_DOWNLOADED, currentDownload);
                     // Save my audio books list
-                    _this.myABooksSvc.addUpdateBook(currentDownload)
+                    _this.myABooksSvc.addUpdateBook(currentDownload);
+                    _this.myABooksSvc.updateABooksFile()
                         .then(function () {
                         // Unzip file
                         _this.unzip(currentDownload.id, function (result) {
-                            if (result == 0) {
+                            if (result != -1) {
                                 // Delete .zip
                                 _this.cordovaFile.removeFile(NuevaLuz.workingDir, _this.sourceZip);
                                 // Create target dir
@@ -102,7 +104,8 @@ var NuevaLuz;
                                             currentDownload.statusDescription = "";
                                             currentDownload.statusKey = NuevaLuz.STATUS_COMPLETED;
                                             _this.rootScope.$broadcast(NuevaLuz.STATUS_COMPLETED, currentDownload);
-                                            _this.myABooksSvc.addUpdateBook(currentDownload)
+                                            _this.myABooksSvc.addUpdateBook(currentDownload);
+                                            _this.myABooksSvc.updateABooksFile()
                                                 .then(function () {
                                                 // Delete from download list
                                                 _this.downloads.splice(_this.getDownloadIndex(currentDownload.id), 1);
@@ -114,7 +117,8 @@ var NuevaLuz;
                                             currentDownload.statusDescription = 'Error moviendo audio libro';
                                             currentDownload.statusKey = NuevaLuz.STATUS_ERROR;
                                             _this.rootScope.$broadcast(NuevaLuz.STATUS_ERROR, currentDownload);
-                                            _this.myABooksSvc.addUpdateBook(currentDownload)
+                                            _this.myABooksSvc.addUpdateBook(currentDownload);
+                                            _this.myABooksSvc.updateABooksFile()
                                                 .then(function () {
                                                 // go for next item to process...
                                                 _this.processDownloadQueue();
@@ -125,7 +129,8 @@ var NuevaLuz;
                                     currentDownload.statusDescription = "Error preparando audio libro";
                                     currentDownload.statusKey = NuevaLuz.STATUS_ERROR;
                                     _this.rootScope.$broadcast(NuevaLuz.STATUS_ERROR, currentDownload);
-                                    _this.myABooksSvc.addUpdateBook(currentDownload)
+                                    _this.myABooksSvc.addUpdateBook(currentDownload);
+                                    _this.myABooksSvc.updateABooksFile()
                                         .then(function () {
                                         // go for next item to process...
                                         _this.processDownloadQueue();
@@ -136,7 +141,8 @@ var NuevaLuz;
                                 currentDownload.statusDescription = "Error instalando audio libro";
                                 currentDownload.statusKey = NuevaLuz.STATUS_ERROR;
                                 _this.rootScope.$broadcast(NuevaLuz.STATUS_ERROR, currentDownload);
-                                _this.myABooksSvc.addUpdateBook(currentDownload)
+                                _this.myABooksSvc.addUpdateBook(currentDownload);
+                                _this.myABooksSvc.updateABooksFile()
                                     .then(function () {
                                     // go for next item to process...
                                     _this.processDownloadQueue();
@@ -268,7 +274,8 @@ var NuevaLuz;
             // push item into the download queue
             this.downloads.push(downloadItem);
             // Register item in abooks-index.json		
-            this.myABooksSvc.addUpdateBook(downloadItem)
+            this.myABooksSvc.addUpdateBook(downloadItem);
+            this.myABooksSvc.updateABooksFile()
                 .then(function () {
                 // process item
                 _this.processDownloadQueue();

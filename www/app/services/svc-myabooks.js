@@ -60,7 +60,6 @@ var NuevaLuz;
             return false;
         };
         MyABooksService.prototype.addUpdateBook = function (book) {
-            var q = this.q.defer();
             var index = this.getABookIndex(book.id);
             if (index < 0) {
                 this.abooks.push({
@@ -73,14 +72,6 @@ var NuevaLuz;
                 // update book status
                 this.abooks[index].statusKey = book.statusKey;
             }
-            this.updateABooksFile()
-                .then(function () {
-                q.resolve();
-            })
-                .catch(function () {
-                q.reject();
-            });
-            return q.promise;
         };
         MyABooksService.prototype.deleteBook = function (id) {
             var q = this.q.defer();

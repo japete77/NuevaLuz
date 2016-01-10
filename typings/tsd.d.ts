@@ -1,4 +1,5 @@
 /// <reference path="angularjs/angular.d.ts" />
+/// <reference path="angular-ui-router/angular-ui-router.d.ts" />
 /// <reference path="cordova/cordova.d.ts" />
 /// <reference path="cordova/plugins/BatteryStatus.d.ts" />
 /// <reference path="cordova/plugins/Camera.d.ts" />

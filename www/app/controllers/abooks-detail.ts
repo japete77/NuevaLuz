@@ -15,7 +15,7 @@ module NuevaLuz {
         http : ng.IHttpService;
         location : ng.ILocationService; 
         ionicLoading : ionic.loading.IonicLoadingService;
-        stateParams : any; 
+        stateParams : angular.ui.IStateParamsService; 
         ionicPopup : ionic.popup.IonicPopupService;
         sessionSvc : SessionService;
         downloadSvc : DownloadService;
@@ -24,7 +24,7 @@ module NuevaLuz {
         
         constructor($scope : IABooksDetailScope, $timeout : ng.ITimeoutService, 
             $http : ng.IHttpService, $location : ng.ILocationService, 
-            $ionicLoading : ionic.loading.IonicLoadingService, $stateParams : any, 
+            $ionicLoading : ionic.loading.IonicLoadingService, $stateParams : angular.ui.IStateParamsService, 
             $ionicPopup : ionic.popup.IonicPopupService, sessionSvc : SessionService,
             DownloadSvc : DownloadService, MyABooksSvc : MyABooksService) {
             this.scope = $scope;
@@ -43,8 +43,7 @@ module NuevaLuz {
             this.scope.downloadInfo = null;
             this.scope.showDetail = false;
             
-            
-            this.currentId = this.padleft(this.stateParams.abookId, 4, "0");
+            this.currentId = this.padleft(this.stateParams["abookId"], 4, "0");
             
             this.scope.$on(STATUS_INSTALLING, (event : ng.IAngularEvent, download : DownloadItem) => {
                 if (this.currentId==download.id) {
@@ -97,16 +96,14 @@ module NuevaLuz {
             return pad.substring(0, pad.length - str.length) + str
         }
 
-        
-        initialize() {
-                        
+        private initialize() {              
             this.ionicLoading.show({
                 template: 'Cargando...'
             });
                     
             this.http({
                 method: 'GET',
-                url: baseUrl + 'GetAudioBookDetail?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.abookId
+                url: baseUrl + 'GetAudioBookDetail?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams["abookId"]
             })
             .then((response : any) => {
                 this.scope.detail = response.data.GetAudioBookDetailResult;
@@ -127,7 +124,7 @@ module NuevaLuz {
             this.downloadSvc.cancel(id);
         }
         
-        public delete(id : string) {
+        public deleteDownload(id : string) {
             this.myABooksSvc.deleteBook(id);
             this.scope.downloadInfo = null;    
         }

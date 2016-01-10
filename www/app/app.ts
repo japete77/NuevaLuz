@@ -32,8 +32,8 @@ module NuevaLuz {
     // main angular app
     export var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
 
-    app.run(['$ionicPlatform', '$cordovaSplashscreen',
-    function($ionicPlatform, $cordovaSplashscreen) {
+    app.run(["$ionicPlatform", "$cordovaSplashscreen",
+    ($ionicPlatform : ionic.platform.IonicPlatformService, $cordovaSplashscreen : any) => {
     
         setTimeout(function() {
             $cordovaSplashscreen.hide();
@@ -66,57 +66,57 @@ module NuevaLuz {
             }
             if(window.StatusBar) {
                 window.StatusBar.styleDefault();
-            }    
+            }  
         });
     }]);
 
-    app.config(function($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/');
-        
+    app.config(($stateProvider : angular.ui.IStateProvider, $urlRouterProvider : angular.ui.IUrlRouterProvider) => {
+        $urlRouterProvider.otherwise("/");
+       
         $stateProvider
-            .state('index', {
-            url: '/',
-            templateUrl: 'templates/home.html'
+            .state("index", {
+                url: "/",
+                templateUrl: "templates/home.html"
             })
-            .state('radio', {
-            url: '/radio',
-            templateUrl: 'templates/radio.html'
+            .state("radio", {
+                url: "/radio",
+                templateUrl: "templates/radio.html"
             })
-            .state('abooks-login', {
-            url: '/login',
-            templateUrl: 'templates/abooks-login.html'
+            .state("abooks-login", {
+                url: "/login",
+                templateUrl: "templates/abooks-login.html"
             })
-            .state('abooks-menu', {
-            url: '/abooks/menu',
-            templateUrl: 'templates/abooks-menu.html'
+            .state("abooks-menu", {
+                url: "/abooks/menu",
+                templateUrl: "templates/abooks-menu.html"
             })
-            .state('abooks-title', {
-            url: '/abooks/menu/title',
-            templateUrl: 'templates/abooks-title.html'
+            .state("abooks-title", {
+                url: "/abooks/menu/title",
+                templateUrl: "templates/abooks-title.html"
             })
-            .state('abooks-author', {
-            url: '/abooks/menu/author',
-            templateUrl: 'templates/abooks-author.html'
+            .state("abooks-author", {
+                url: "/abooks/menu/author",
+                templateUrl: "templates/abooks-author.html"
             })
-            .state('abooks-author-books', {
-            url: '/abooks/menu/author/:authorId',
-            templateUrl: 'templates/abooks-author-books.html'
+            .state("abooks-author-books", {
+                url: "/abooks/menu/author/:authorId",
+                templateUrl: "templates/abooks-author-books.html"
             })
-            .state('abooks-detail', {
-            url: '/abooks/menu/detail/:abookId',
-            templateUrl: 'templates/abooks-detail.html'
+            .state("abooks-detail", {
+                url: "/abooks/menu/detail/:abookId",
+                templateUrl: "templates/abooks-detail.html"
             })
-            .state('myabooks', {
-            url: '/myabooks',
-            templateUrl: 'templates/myabooks.html'
+            .state("myabooks", {
+                url: "/myabooks",
+                templateUrl: "templates/myabooks.html"
             })
-            .state('myabooks-player', {
-            url: '/myabooks/player/:abookId',
-            templateUrl: 'templates/myabooks-player.html'
+            .state("myabooks-player", {
+                url: "/myabooks/player/:abookId",
+                templateUrl: "templates/myabooks-player.html"
             })
-            .state('myabooks-info', {
-            url: '/myabooks/info/:abookId',
-            templateUrl: 'templates/abook-info.html'
+            .state("myabooks-info", {
+                url: "/myabooks/info/:abookId",
+                templateUrl: "templates/abook-info.html"
             })
         }
     );
@@ -127,14 +127,14 @@ module NuevaLuz {
     app.factory("DaisyPlayerSvc", ($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, 
         $interval : ng.IIntervalService, $rootScope : ng.IScope, $q : ng.IQService) => 
         new DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q));
-    app.factory('MyABooksSvc', ($cordovaFile : ngCordova.IFileService, $q : ng.IQService) => new MyABooksService($cordovaFile, $q));
-    app.factory('DownloadSvc', ($rootScope : ng.IScope, $interval : ng.IIntervalService, 
+    app.factory("MyABooksSvc", ($cordovaFile : ngCordova.IFileService, $q : ng.IQService) => new MyABooksService($cordovaFile, $q));
+    app.factory("DownloadSvc", ($rootScope : ng.IScope, $interval : ng.IIntervalService, 
         $cordovaFile : any, $q : ng.IQService, MyABooksSvc : MyABooksService) => new DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc));
     
     // Register Controllers
     app.controller("AuthorsBooksCtrl", ($scope : IAuthorsBooksScope, $http : ng.IHttpService, 
         $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, 
-        $stateParams : any, SessionSvc : SessionService) => 
+        $stateParams : angular.ui.IStateParamsService, SessionSvc : SessionService) => 
         new AuthorsBooksController($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc));
         
     app.controller("AuthorsCtrl", ($scope : IAuthorsScope, $timeout : ng.ITimeoutService, 
@@ -144,7 +144,7 @@ module NuevaLuz {
     
     app.controller("ABooksDetailCtrl", ($scope : IABooksDetailScope, $timeout : ng.ITimeoutService, 
             $http : ng.IHttpService, $location : ng.ILocationService, 
-            $ionicLoading : ionic.loading.IonicLoadingService, $stateParams : any, 
+            $ionicLoading : ionic.loading.IonicLoadingService, $stateParams : angular.ui.IStateParamsService, 
             $ionicPopup : ionic.popup.IonicPopupService, SessionSvc : SessionService,
             DownloadSvc : DownloadService, MyABooksSvc : MyABooksService) => 
         new ABooksDetailController($scope, $timeout, $http, $location, $ionicLoading, $stateParams, 
@@ -163,9 +163,9 @@ module NuevaLuz {
     app.controller("ABooksCtrl", ($scope : IABooksScope, $timeout : ng.ITimeoutService, 
         $http : ng.IHttpService, MyABooksSvc : MyABooksService) => 
         new ABooksController($scope, $timeout, $http, MyABooksSvc));
-
+        
     app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, 
-        $stateParams : any, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService) => 
+        $stateParams : angular.ui.IStateParamsService, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService) => 
         new ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc));
         
     app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService) => 
