@@ -51,10 +51,9 @@ var NuevaLuz;
                 }
             }
         };
-        DaisyPlayerService.prototype.loadBook = function (id) {
+        DaisyPlayerService.prototype.loadBook = function (id, sucessCallback) {
             var _this = this;
             this.loading = true;
-            var defer = this.q.defer();
             this.playerInfo = new PlayerInfo();
             this.playerInfo.position = new SeekInfo();
             this.playerInfo.position.currentIndex = -1;
@@ -76,27 +75,25 @@ var NuevaLuz;
                     for (var i = 0; i < result.length; i++) {
                         _this.book.parseSmils(result[i], _this.book.body[i].id, _this.book.body[i].title, _this.book.body[i].level);
                     }
+                    sucessCallback(_this.book);
                     // Initialize player info   
-                    _this.loadStatus()
-                        .then(function (result) {
+                    _this.loadStatus(function (result) {
                         _this.playerInfo = result;
                         // Initialize media player
                         _this.playerInfo.media = new Media("documents://" + _this.book.id + "/" + _this.book.sequence[_this.playerInfo.position.currentIndex].filename, function () { }, function (error) { }, function (status) {
                             _this.processPlayerStatusChange(status);
                         });
                         // load bookmarks
-                        _this.loadBookmarks()
-                            .then(function (bookmarks) {
+                        _this.loadBookmarks(function (bookmarks) {
                             _this.playerInfo.bookmarks = bookmarks;
                             _this.loading = false;
-                            defer.resolve(_this.book);
+                            sucessCallback(_this.book);
                         });
                     });
                 });
             }, function (error) {
                 console.log(error);
             });
-            return defer.promise;
         };
         DaisyPlayerService.prototype.getCurrentBook = function () {
             return this.book;
@@ -164,7 +161,7 @@ var NuevaLuz;
                     _this.processPlayerStatusChange(status);
                 });
             }
-            this.saveStatus(this.playerInfo);
+            this.saveStatus(this.playerInfo, function () { }, function (error) { });
             if (this.playerInfo.status === Media.MEDIA_RUNNING) {
                 this.playerInfo.media.play();
             }
@@ -204,7 +201,7 @@ var NuevaLuz;
                     _this.processPlayerStatusChange(status);
                 });
             }
-            this.saveStatus(this.playerInfo);
+            this.saveStatus(this.playerInfo, function () { }, function (error) { });
             if (this.playerInfo.status === Media.MEDIA_RUNNING) {
                 this.playerInfo.media.play();
             }
@@ -237,9 +234,8 @@ var NuevaLuz;
             // Seek to the position in the player
             this.playerInfo.media.seekTo(bookmark.tc * 1000);
         };
-        DaisyPlayerService.prototype.loadBookmarks = function () {
+        DaisyPlayerService.prototype.loadBookmarks = function (sucessCallback) {
             var _this = this;
-            var p = this.q.defer();
             var bdir = NuevaLuz.workingDir + this.book.id + "/";
             var bfile = "bookmarks.json";
             this.cordovaFile.checkFile(bdir, bfile)
@@ -248,15 +244,13 @@ var NuevaLuz;
                     .then(function (result) {
                     _this.playerInfo.bookmarks = JSON.parse(atob(result));
                     //this.playerInfo.bookmarks = JSON.parse(result);
-                    p.resolve(_this.playerInfo.bookmarks);
+                    sucessCallback(_this.playerInfo.bookmarks);
                 });
             }, function (error) {
-                p.resolve(new Array());
+                sucessCallback(new Array());
             });
-            return p.promise;
         };
-        DaisyPlayerService.prototype.saveBooksmarks = function (bookmarks) {
-            var p = this.q.defer();
+        DaisyPlayerService.prototype.saveBooksmarks = function (bookmarks, sucessCallback, errorCallback) {
             this.playerInfo.bookmarks = bookmarks;
             try {
                 var bdir = NuevaLuz.workingDir + this.book.id + "/";
@@ -264,41 +258,45 @@ var NuevaLuz;
                 this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.bookmarks)), true)
                     .then(function (event) {
                     if (event.loaded === event.total) {
-                        p.resolve();
+                        sucessCallback();
                     }
                 });
             }
             catch (e) {
-                p.reject("Error saving bookmarks: " + e);
+                errorCallback("Error saving bookmarks: " + e);
             }
-            return p.promise;
         };
-        DaisyPlayerService.prototype.loadStatus = function () {
-            var _this = this;
-            var p = this.q.defer();
-            var bdir = NuevaLuz.workingDir + this.book.id + "/";
-            var bfile = "status.json";
-            this.cordovaFile.checkFile(bdir, bfile)
-                .then(function (entry) {
-                _this.cordovaFile.readAsBinaryString(bdir, bfile)
-                    .then(function (result) {
-                    _this.playerInfo.position = JSON.parse(atob(result));
-                    p.resolve(_this.playerInfo);
-                });
-            }, function (error) {
-                _this.playerInfo.position = new SeekInfo();
-                _this.playerInfo.position.navigationLevel = 1;
-                _this.playerInfo.position.currentIndex = 0;
-                _this.playerInfo.position.currentSOM = _this.book.sequence[0].som;
-                _this.playerInfo.position.currentTC = _this.book.sequence[0].som;
-                _this.playerInfo.position.currentTitle = _this.book.sequence[0].title;
-                _this.playerInfo.position.absoluteTC = "0:00:00";
-                p.resolve(_this.playerInfo);
-            });
-            return p.promise;
+        DaisyPlayerService.prototype.loadStatus = function (sucessCallback) {
+            this.playerInfo.position = new SeekInfo();
+            this.playerInfo.position.navigationLevel = 1;
+            this.playerInfo.position.currentIndex = 0;
+            this.playerInfo.position.currentSOM = this.book.sequence[0].som;
+            this.playerInfo.position.currentTC = this.book.sequence[0].som;
+            this.playerInfo.position.currentTitle = this.book.sequence[0].title;
+            this.playerInfo.position.absoluteTC = "0:00:00";
+            sucessCallback(this.playerInfo);
+            // var bdir = workingDir + this.book.id + "/";
+            // var bfile = "status.json";
+            // 
+            // this.cordovaFile.checkFile(bdir, bfile)
+            // .then((entry : FileEntry) => {
+            //     this.cordovaFile.readAsBinaryString(bdir, bfile)
+            //     .then((result : string) => {
+            //         this.playerInfo.position = JSON.parse(atob(result));
+            //         sucessCallback(this.playerInfo);
+            //     });                
+            // }, (error : ngCordova.IFileError) => {
+            //     this.playerInfo.position = new SeekInfo();
+            //     this.playerInfo.position.navigationLevel = 1;
+            //     this.playerInfo.position.currentIndex = 0;
+            //     this.playerInfo.position.currentSOM = this.book.sequence[0].som;
+            //     this.playerInfo.position.currentTC = this.book.sequence[0].som;
+            //     this.playerInfo.position.currentTitle = this.book.sequence[0].title;
+            //     this.playerInfo.position.absoluteTC = "0:00:00";
+            //     sucessCallback(this.playerInfo);
+            // });
         };
-        DaisyPlayerService.prototype.saveStatus = function (pinfo) {
-            var p = this.q.defer();
+        DaisyPlayerService.prototype.saveStatus = function (pinfo, sucessCallback, errorCallback) {
             this.playerInfo = pinfo;
             try {
                 var bdir = NuevaLuz.workingDir + this.book.id + "/";
@@ -306,14 +304,13 @@ var NuevaLuz;
                 this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.position)), true)
                     .then(function (event) {
                     if (event.loaded === event.total) {
-                        p.resolve();
+                        sucessCallback();
                     }
                 });
             }
             catch (e) {
-                p.reject("Error saving status: " + e);
+                errorCallback("Error saving status: " + e);
             }
-            return p.promise;
         };
         DaisyPlayerService.prototype.seconds2TC = function (seconds) {
             if (seconds < 0)

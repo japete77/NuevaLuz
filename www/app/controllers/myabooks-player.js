@@ -32,16 +32,11 @@ var NuevaLuz;
             else {
                 this.player.release();
                 // Load daisy book...
-                this.player.loadBook($stateParams["abookId"])
-                    .then(function (book) {
+                this.player.loadBook($stateParams["abookId"], function (book) {
                     _this.scope.currentBook = book;
                     _this.scope.currentStatus = _this.player.getPlayerInfo();
                     _this.ionicLoading.hide();
                     _this.scope.ready = true;
-                })
-                    .catch(function (reason) {
-                    _this.ionicLoading.hide();
-                    alert(reason);
                 });
             }
             this.scope.showPlay = true;
@@ -68,7 +63,7 @@ var NuevaLuz;
             this.player.stop();
         };
         ABooksPlayerController.prototype.pause = function () {
-            this.player.saveStatus(this.scope.currentStatus);
+            this.player.saveStatus(this.scope.currentStatus, function () { }, function (error) { });
             this.player.pause();
         };
         ABooksPlayerController.prototype.next = function () {
@@ -84,7 +79,7 @@ var NuevaLuz;
             var _this = this;
             var currenLevel;
             var myPopup = this.ionicPopup.show({
-                template: '<ion-list>' +
+                template: '<ion-content><ion-list>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="1">Nivel 1</ion-radio>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="2">Nivel 2</ion-radio>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="3">Nivel 3</ion-radio>' +
@@ -92,7 +87,7 @@ var NuevaLuz;
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="5">Nivel 5</ion-radio>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="6">Nivel 6</ion-radio>' +
                     '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="7">Frase</ion-radio>' +
-                    '</ion-list>',
+                    '</ion-list></ion-content>',
                 title: 'Selecciona nivel de navegación',
                 scope: this.scope,
                 buttons: [
@@ -100,7 +95,7 @@ var NuevaLuz;
                 ]
             });
             myPopup.then(function () {
-                _this.player.saveStatus(_this.scope.currentStatus);
+                _this.player.saveStatus(_this.scope.currentStatus, function () { }, function (error) { });
             });
         };
         ABooksPlayerController.prototype.addBookmark = function () {
@@ -134,7 +129,7 @@ var NuevaLuz;
             myPopup.then(function (result) {
                 if (result) {
                     _this.scope.currentStatus.bookmarks.push(_this.scope.tmpBookmark);
-                    _this.player.saveBooksmarks(_this.scope.currentStatus.bookmarks);
+                    _this.player.saveBooksmarks(_this.scope.currentStatus.bookmarks, function () { }, function (message) { });
                 }
             });
         };
@@ -200,7 +195,7 @@ var NuevaLuz;
                         type: 'button-assertive',
                         onTap: function (e) {
                             _this.deleteBookmark(_this.scope.tmpBookmark.id);
-                            _this.player.saveBooksmarks(_this.scope.currentStatus.bookmarks);
+                            _this.player.saveBooksmarks(_this.scope.currentStatus.bookmarks, function () { }, function (message) { });
                             e.preventDefault();
                         }
                     }

@@ -26,7 +26,7 @@ module NuevaLuz {
             this.myABooksSvc = MyABooksSvc;
         }
         
-        delete(id : string) {
+        deleteBook(id : string) {
             this.ionicPopup.confirm({
                 title: "Borrar Audio Libro",
                 template: "El audio libro se eliminará definitivamente, ¿está seguro?"

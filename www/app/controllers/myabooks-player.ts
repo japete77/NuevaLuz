@@ -54,17 +54,13 @@ module NuevaLuz {
                 this.player.release();
                 
                 // Load daisy book...
-                this.player.loadBook($stateParams["abookId"])
-                .then((book : DaisyBook) => {
+                this.player.loadBook($stateParams["abookId"], 
+                (book : DaisyBook) => {
                     this.scope.currentBook = book;
                     this.scope.currentStatus = this.player.getPlayerInfo();
                     
                     this.ionicLoading.hide();
                     this.scope.ready = true;
-                })
-                .catch((reason : any) => {
-                    this.ionicLoading.hide();
-                    alert(reason);                    
                 });
             }
             
@@ -99,7 +95,7 @@ module NuevaLuz {
         }
         
         pause() {
-            this.player.saveStatus(this.scope.currentStatus);
+            this.player.saveStatus(this.scope.currentStatus, () => {}, (error:string) => {});
             this.player.pause();
         }
         
@@ -135,7 +131,7 @@ module NuevaLuz {
             });
             
             myPopup.then(() => {
-                this.player.saveStatus(this.scope.currentStatus);
+                this.player.saveStatus(this.scope.currentStatus, () => {}, (error:string) => {});
             });
         }
         
@@ -173,7 +169,7 @@ module NuevaLuz {
             myPopup.then((result : boolean) => {
                 if (result) {
                     this.scope.currentStatus.bookmarks.push(this.scope.tmpBookmark);
-                    this.player.saveBooksmarks(this.scope.currentStatus.bookmarks);                    
+                    this.player.saveBooksmarks(this.scope.currentStatus.bookmarks, () => {}, (message: string) => {});                    
                 }
             });            
         }
@@ -244,7 +240,7 @@ module NuevaLuz {
                   type: 'button-assertive',
                   onTap: (e : MouseEvent) => {
                       this.deleteBookmark(this.scope.tmpBookmark.id);
-                      this.player.saveBooksmarks(this.scope.currentStatus.bookmarks);
+                      this.player.saveBooksmarks(this.scope.currentStatus.bookmarks, () => {}, (message: string) => {});
                       e.preventDefault();
                   }
                 }

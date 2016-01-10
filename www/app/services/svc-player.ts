@@ -73,12 +73,10 @@ module NuevaLuz {
             }
         }
         
-        loadBook(id : string) : ng.IPromise<DaisyBook> {
+        loadBook(id : string, sucessCallback : (book : DaisyBook) => any)  {
             
             this.loading = true; 
-            
-            var defer = this.q.defer();
-            
+                        
             this.playerInfo = new PlayerInfo();
             this.playerInfo.position = new SeekInfo();
             this.playerInfo.position.currentIndex = -1;
@@ -93,7 +91,7 @@ module NuevaLuz {
                 this.book = new DaisyBook();
                 this.book.id = id;
                 this.book.parseDaisyBook(result);
-                                
+
                 // Read all smil files...
                 var promises : Array<ng.IPromise<string>> = new Array<ng.IPromise<string>>();
                 this.book.body.forEach(s => {
@@ -106,11 +104,12 @@ module NuevaLuz {
                         this.book.parseSmils(result[i], this.book.body[i].id, this.book.body[i].title, this.book.body[i].level);     
                     }
                     
+                    sucessCallback(this.book);
+                    
                     // Initialize player info   
-                    this.loadStatus()
-                    .then((result : PlayerInfo) => { 
+                    this.loadStatus((result : PlayerInfo) => { 
                         this.playerInfo = result;
-
+                                                    
                         // Initialize media player
                         this.playerInfo.media = new Media("documents://" + this.book.id + "/" + this.book.sequence[this.playerInfo.position.currentIndex].filename, 
                             () => {},
@@ -120,12 +119,12 @@ module NuevaLuz {
                             });
                             
                         // load bookmarks
-                        this.loadBookmarks()
-                        .then((bookmarks : Array<Bookmark>) => {
+                        this.loadBookmarks((bookmarks : Array<Bookmark>) => {
                             this.playerInfo.bookmarks = bookmarks;  
                             
-                            this.loading = false;                       
-                            defer.resolve(this.book);                          
+                            this.loading = false;
+                            
+                            sucessCallback(this.book);                         
                         });
                     });                    
                 });               
@@ -133,7 +132,6 @@ module NuevaLuz {
                 console.log(error);
             });
             
-            return defer.promise;
         }
         
         getCurrentBook() : DaisyBook {
@@ -216,7 +214,8 @@ module NuevaLuz {
                     });
             }
             
-            this.saveStatus(this.playerInfo);
+            this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
+
             if (this.playerInfo.status===Media.MEDIA_RUNNING) {
                 this.playerInfo.media.play();
             }
@@ -265,7 +264,7 @@ module NuevaLuz {
                     });
             }
             
-            this.saveStatus(this.playerInfo);
+            this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
             if (this.playerInfo.status===Media.MEDIA_RUNNING) {
                 this.playerInfo.media.play();
             }           
@@ -305,8 +304,7 @@ module NuevaLuz {
             this.playerInfo.media.seekTo(bookmark.tc*1000);                
         }
         
-        loadBookmarks() : ng.IPromise<Array<Bookmark>> {
-            var p = this.q.defer();
+        loadBookmarks(sucessCallback : (bookmarks : Array<Bookmark>) => any) {
             
             var bdir = workingDir + this.book.id + "/";
             var bfile = "bookmarks.json";
@@ -317,17 +315,15 @@ module NuevaLuz {
                 .then((result : string) => {
                     this.playerInfo.bookmarks = JSON.parse(atob(result));
                     //this.playerInfo.bookmarks = JSON.parse(result);
-                    p.resolve(this.playerInfo.bookmarks);
+                    sucessCallback(this.playerInfo.bookmarks);
                 });
             }, (error : ngCordova.IFileError) => {
-                p.resolve(new Array<Bookmark>());
+                sucessCallback(new Array<Bookmark>());
             });
             
-            return p.promise;
         }
         
-        saveBooksmarks(bookmarks : Array<Bookmark>) : ng.IPromise<{}> {
-            var p = this.q.defer();
+        saveBooksmarks(bookmarks : Array<Bookmark>, sucessCallback : () => any, errorCallback : (message : string) => any) {
             
             this.playerInfo.bookmarks = bookmarks;
             
@@ -339,31 +335,17 @@ module NuevaLuz {
                 //this.cordovaFile.writeFile(bdir, bfile, JSON.stringify(this.playerInfo.bookmarks), true)
                 .then((event : ProgressEvent) => {
                     if (event.loaded===event.total) {
-                        p.resolve();
+                        sucessCallback();
                     }
                 });
             } 
             catch (e) {
-                p.reject("Error saving bookmarks: " + e);
+                errorCallback("Error saving bookmarks: " + e);
             }
             
-            return p.promise;
         }
         
-        loadStatus() : ng.IPromise<PlayerInfo> {
-            var p = this.q.defer();
-            
-            var bdir = workingDir + this.book.id + "/";
-            var bfile = "status.json";
-            
-            this.cordovaFile.checkFile(bdir, bfile)
-            .then((entry : FileEntry) => {
-                this.cordovaFile.readAsBinaryString(bdir, bfile)
-                .then((result : string) => {
-                    this.playerInfo.position = JSON.parse(atob(result));
-                    p.resolve(this.playerInfo);
-                });                
-            }, (error : ngCordova.IFileError) => {
+        loadStatus(sucessCallback : (playerInfo : PlayerInfo) => any) {
                 this.playerInfo.position = new SeekInfo();
                 this.playerInfo.position.navigationLevel = 1;
                 this.playerInfo.position.currentIndex = 0;
@@ -371,14 +353,31 @@ module NuevaLuz {
                 this.playerInfo.position.currentTC = this.book.sequence[0].som;
                 this.playerInfo.position.currentTitle = this.book.sequence[0].title;
                 this.playerInfo.position.absoluteTC = "0:00:00";
-                p.resolve(this.playerInfo);
-            });
-            
-            return p.promise;
+                sucessCallback(this.playerInfo);
+                                    
+            // var bdir = workingDir + this.book.id + "/";
+            // var bfile = "status.json";
+            // 
+            // this.cordovaFile.checkFile(bdir, bfile)
+            // .then((entry : FileEntry) => {
+            //     this.cordovaFile.readAsBinaryString(bdir, bfile)
+            //     .then((result : string) => {
+            //         this.playerInfo.position = JSON.parse(atob(result));
+            //         sucessCallback(this.playerInfo);
+            //     });                
+            // }, (error : ngCordova.IFileError) => {
+            //     this.playerInfo.position = new SeekInfo();
+            //     this.playerInfo.position.navigationLevel = 1;
+            //     this.playerInfo.position.currentIndex = 0;
+            //     this.playerInfo.position.currentSOM = this.book.sequence[0].som;
+            //     this.playerInfo.position.currentTC = this.book.sequence[0].som;
+            //     this.playerInfo.position.currentTitle = this.book.sequence[0].title;
+            //     this.playerInfo.position.absoluteTC = "0:00:00";
+            //     sucessCallback(this.playerInfo);
+            // });
         }
         
-        saveStatus(pinfo : PlayerInfo) : ng.IPromise<{}> {
-            var p = this.q.defer();
+        saveStatus(pinfo : PlayerInfo, sucessCallback : () => any, errorCallback : (message:string) => any) {
             
             this.playerInfo = pinfo;
             
@@ -389,15 +388,14 @@ module NuevaLuz {
                 this.cordovaFile.writeFile(bdir, bfile, btoa(JSON.stringify(this.playerInfo.position)), true)
                 .then((event : ProgressEvent) => {
                     if (event.loaded===event.total) {
-                        p.resolve();
+                        sucessCallback();
                     }
                 });
             } 
             catch (e) {
-                p.reject("Error saving status: " + e);
+                errorCallback("Error saving status: " + e);
             }
             
-            return p.promise;
         }
                 
         seconds2TC(seconds : number) : string {

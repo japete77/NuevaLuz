@@ -12,7 +12,7 @@ var NuevaLuz;
             this.ionicPopup = $ionicPopup;
             this.myABooksSvc = MyABooksSvc;
         }
-        ABookInfoController.prototype.delete = function (id) {
+        ABookInfoController.prototype.deleteBook = function (id) {
             var _this = this;
             this.ionicPopup.confirm({
                 title: "Borrar Audio Libro",

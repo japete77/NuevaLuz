@@ -16,9 +16,9 @@
             <a ng-if="currentBook.format" class="item">Formato<span class="item-note">{{currentBook.format}}</span></a>
             <a ng-if="currentBook.identifier" class="item">Identificador<span class="item-note">{{currentBook.identifier}}</span></a>
             <a ng-if="currentBook.charset" class="item">Juego de caracteres<span class="item-note">{{currentBook.charset}}</span></a>
-            <a ng-if="currentBook.generator" class="item">Generado por<span class="item-note">{{currentBook.generator | limitTo:30}}</span></a>
+            <a ng-if="currentBook.generator" class="item">Generado por<span class="item-note">{{currentBook.generator}}</span></a>
             <br/><br/>
-            <button class="button button-full button-assertive" ng-click="control.delete(currentBook.id)">
+            <button class="button button-full button-assertive" ng-click="control.deleteBook(currentBook.id)">
 				Borrar Audio Libro
 			</button>
         </div>
