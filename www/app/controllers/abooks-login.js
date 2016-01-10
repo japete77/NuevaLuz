@@ -68,15 +68,6 @@ var NuevaLuz;
         LoginController.prototype.isAuthenticated = function () {
             return this.sessionService.getSession() !== "";
         };
-        LoginController.prototype.play = function () {
-            alert(NuevaLuz.workingDir);
-            var m = new Media(NuevaLuz.playDir + "/1212/a000001.mp3", function () {
-            }, function (error) {
-            }, function (status) {
-                alert("Status: " + status);
-            });
-            m.play();
-        };
         return LoginController;
     })();
     NuevaLuz.LoginController = LoginController;

@@ -29,9 +29,13 @@ var NuevaLuz;
         }
         DaisyPlayerService.prototype.processPlayerStatusChange = function (status) {
             this.playerInfo.status = status;
+            // alert(this.loading + "," + status + "," + this.wasPlaying);
             if (!this.loading && status === Media.MEDIA_STOPPED && this.wasPlaying) {
                 this.loadNextFile(true);
             }
+        };
+        DaisyPlayerService.prototype.getPlayStatus = function () {
+            return this.wasPlaying;
         };
         DaisyPlayerService.prototype.loadNextFile = function (autoplay) {
             var _this = this;
@@ -152,6 +156,7 @@ var NuevaLuz;
             this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
             this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
             if (this.book.sequence[index].filename !== filename) {
                 this.release();
                 this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[index].filename, function () {
@@ -162,7 +167,7 @@ var NuevaLuz;
                 });
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
-            if (this.playerInfo.status === Media.MEDIA_RUNNING) {
+            if (isPlaying) {
                 this.playerInfo.media.play();
             }
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
@@ -192,6 +197,7 @@ var NuevaLuz;
             this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
             this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
             if (this.book.sequence[this.playerInfo.position.currentIndex].filename !== filename) {
                 this.release();
                 this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[index].filename, function () {
@@ -200,9 +206,10 @@ var NuevaLuz;
                 }, function (status) {
                     _this.processPlayerStatusChange(status);
                 });
+                this.playerInfo.media.play();
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
-            if (this.playerInfo.status === Media.MEDIA_RUNNING) {
+            if (isPlaying) {
                 this.playerInfo.media.play();
             }
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);

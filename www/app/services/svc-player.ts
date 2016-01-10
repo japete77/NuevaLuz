@@ -46,9 +46,14 @@ module NuevaLuz {
         
         private processPlayerStatusChange(status : number) {
             this.playerInfo.status = status;
+            // alert(this.loading + "," + status + "," + this.wasPlaying);
             if (!this.loading && status===Media.MEDIA_STOPPED && this.wasPlaying) {
                 this.loadNextFile(true);
             }
+        }
+        
+        getPlayStatus() : boolean {
+            return this.wasPlaying;
         }
         
         private loadNextFile(autoplay : boolean) {
@@ -201,6 +206,8 @@ module NuevaLuz {
             this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             
+            var isPlaying : boolean = (this.playerInfo.status===Media.MEDIA_RUNNING);
+
             if (this.book.sequence[index].filename!==filename) {
                 this.release();
                 this.playerInfo.media = new Media(playDir + "/" + this.book.id + "/" + this.book.sequence[index].filename, 
@@ -216,7 +223,7 @@ module NuevaLuz {
             
             this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
 
-            if (this.playerInfo.status===Media.MEDIA_RUNNING) {
+            if (isPlaying) {
                 this.playerInfo.media.play();
             }
 
@@ -252,6 +259,8 @@ module NuevaLuz {
             this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             
+            var isPlaying : boolean = (this.playerInfo.status===Media.MEDIA_RUNNING);
+            
             if (this.book.sequence[this.playerInfo.position.currentIndex].filename!==filename) {
                 this.release();
                 this.playerInfo.media = new Media(playDir + "/" + this.book.id + "/" + this.book.sequence[index].filename, 
@@ -263,12 +272,15 @@ module NuevaLuz {
                     (status : number) => {
                         this.processPlayerStatusChange(status);
                     });
+                this.playerInfo.media.play();
             }
             
             this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
-            if (this.playerInfo.status===Media.MEDIA_RUNNING) {
+            
+            if (isPlaying) {
                 this.playerInfo.media.play();
-            }           
+            }
+
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
         }
         
