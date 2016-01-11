@@ -146,39 +146,6 @@ module NuevaLuz {
                 }
             });            
         }
-        
-        private deleteBookmark(id : number) {
-            var count : number = 0;
-            var pos : number = -1;
-            this.scope.currentStatus.bookmarks.forEach(s => {
-                if (s.id===id) {
-                    pos = count;
-                }
-                count++;
-            });
-            
-            if (pos!=-1) {
-                this.scope.currentStatus.bookmarks.splice(pos, 1);                
-            }
-        }
-        
-        private getBookmark(id : number) : Bookmark {
-            var count : number = 0;
-            var pos : number = -1;
-            this.scope.currentStatus.bookmarks.forEach(s => {
-                if (s.id===id) {
-                    pos = count;
-                }
-                count++;
-            });
-            
-            if (pos!=-1) {
-                return this.scope.currentStatus.bookmarks[pos];
-            }
-            else {
-                return null;
-            }
-        }
 
         showBookmarks() {
             this.location.path("/myabooks/player/bookmarks/" + this.scope.currentBook.id);            
