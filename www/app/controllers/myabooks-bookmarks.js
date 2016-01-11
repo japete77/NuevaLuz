@@ -28,6 +28,7 @@ var NuevaLuz;
         ABooksBookmarksController.prototype.deleteBookmark = function () {
             if (this.scope.bdata.selectedIndex > -1) {
                 this.scope.bookmarks.splice(this.scope.bdata.selectedIndex, 1);
+                this.player.saveBooksmarks(this.scope.bookmarks, function () { }, function (message) { });
                 this.scope.bdata.selectedIndex = -1;
             }
         };

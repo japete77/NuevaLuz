@@ -43,6 +43,7 @@ module NuevaLuz {
         deleteBookmark() {
             if (this.scope.bdata.selectedIndex>-1) {
                 this.scope.bookmarks.splice(this.scope.bdata.selectedIndex, 1);
+                this.player.saveBooksmarks(this.scope.bookmarks, () => {}, (message: string) => {});
                 this.scope.bdata.selectedIndex = -1;
             }
         }
