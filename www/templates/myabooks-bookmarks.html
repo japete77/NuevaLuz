@@ -1,0 +1,17 @@
+<ion-view title="Marcadores" ng-controller="ABooksBookmarksCtrl">
+    <ion-nav-buttons side="right">
+        <a class="button" ng-click="control.setEditMode(!editMode)">{{editMode?"Cancelar":"Editar"}}</a>
+    </ion-nav-buttons>
+	<ion-content class="padding">
+        <div class="list" ng-hide="editMode">
+            <a class="item" ng-click="control.seekTo($index)" ng-repeat="bookmark in bookmarks track by $index">{{bookmark.title}}<span class="item-note">{{bookmark.absoluteTC}}</span></a>
+        </div>
+        <ion-list ng-show="editMode">
+            <ion-radio ng-repeat="bookmark in bookmarks track by $index" ng-model="bdata.selectedIndex" ng-value="$index">{{bookmark.title}}<span class="item-note">{{bookmark.absoluteTC}}</span></ion-radio>
+        </ion-list>
+        <br/><br/>
+        <button ng-show="editMode" class="button button-full button-assertive" ng-click="control.deleteBookmark()">
+            Borrar
+        </button>
+	</ion-content>
+</ion-view>

@@ -12,6 +12,8 @@
 /// <reference path="./controllers/abooks-titles.ts" />
 /// <reference path="./controllers/myabooks.ts" />
 /// <reference path="./controllers/myabooks-player.ts" />
+/// <reference path="./controllers/myabooks-levels.ts" />
+/// <reference path="./controllers/myabooks-bookmarks.ts" />
 /// <reference path="./controllers/radio.ts" />
 
 // Ionic Starter App
@@ -25,10 +27,9 @@ module NuevaLuz {
     // Global variables
     export var baseUrl : string = "http://nluz.dyndns.org:8081/AudioBookService/"; 
     export var abookBaseUrl : string = "http://bibliasbraille.com/ClubLibro/";
-    // export var abookBaseUrl : string = "http://www.ibgracia.es/";
+    export var radioStreamingUrl : string = "http://nlradio.dyndns.org:8294/;";
     export var workingDir : string = "";
     export var playDir : string = "";
-    export var radioStreamingUrl : string = "http://nlradio.dyndns.org:8294/;";
 
     // main angular app
     export var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
@@ -118,6 +119,14 @@ module NuevaLuz {
                 url: "/myabooks/player/:abookId",
                 templateUrl: "templates/myabooks-player.html"
             })
+            .state("myabooks-level", {
+                url: "/myabooks/player/level/:abookId",
+                templateUrl: "templates/myabooks-levels.html"
+            })
+            .state("myabooks-bookmarks", {
+                url: "/myabooks/player/bookmarks/:abookId",
+                templateUrl: "templates/myabooks-bookmarks.html"
+            })
             .state("myabooks-info", {
                 url: "/myabooks/info/:abookId",
                 templateUrl: "templates/abook-info.html"
@@ -178,4 +187,12 @@ module NuevaLuz {
     app.controller("ABookInfoCtrl", ($scope : IABookInfoScope, $ionicPopup : ionic.popup.IonicPopupService, 
         $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService, MyABooksSvc : MyABooksService) => 
         new ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc));
+        
+   app.controller("ABooksLevelsCtrl", ($scope : IABooksLevelsScope, $stateParams : angular.ui.IStateParamsService, 
+        $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) =>
+        new ABooksLevelsController($scope, $stateParams, $location, DaisyPlayerSvc));
+
+   app.controller("ABooksBookmarksCtrl", ($scope : IABooksBookmarksScope, $stateParams : angular.ui.IStateParamsService, 
+        $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) =>
+        new ABooksBookmarksController($scope, $stateParams, $location, DaisyPlayerSvc));
 }

@@ -12,6 +12,8 @@
 /// <reference path="./controllers/abooks-titles.ts" />
 /// <reference path="./controllers/myabooks.ts" />
 /// <reference path="./controllers/myabooks-player.ts" />
+/// <reference path="./controllers/myabooks-levels.ts" />
+/// <reference path="./controllers/myabooks-bookmarks.ts" />
 /// <reference path="./controllers/radio.ts" />
 // Ionic Starter App
 // angular.module is a global place for creating, registering and retrieving Angular modules
@@ -22,10 +24,9 @@ var NuevaLuz;
     // Global variables
     NuevaLuz.baseUrl = "http://nluz.dyndns.org:8081/AudioBookService/";
     NuevaLuz.abookBaseUrl = "http://bibliasbraille.com/ClubLibro/";
-    // export var abookBaseUrl : string = "http://www.ibgracia.es/";
+    NuevaLuz.radioStreamingUrl = "http://nlradio.dyndns.org:8294/;";
     NuevaLuz.workingDir = "";
     NuevaLuz.playDir = "";
-    NuevaLuz.radioStreamingUrl = "http://nlradio.dyndns.org:8294/;";
     // main angular app
     NuevaLuz.app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
     NuevaLuz.app.run(["$ionicPlatform", "$cordovaSplashscreen",
@@ -107,6 +108,14 @@ var NuevaLuz;
             url: "/myabooks/player/:abookId",
             templateUrl: "templates/myabooks-player.html"
         })
+            .state("myabooks-level", {
+            url: "/myabooks/player/level/:abookId",
+            templateUrl: "templates/myabooks-levels.html"
+        })
+            .state("myabooks-bookmarks", {
+            url: "/myabooks/player/bookmarks/:abookId",
+            templateUrl: "templates/myabooks-bookmarks.html"
+        })
             .state("myabooks-info", {
             url: "/myabooks/info/:abookId",
             templateUrl: "templates/abook-info.html"
@@ -149,5 +158,11 @@ var NuevaLuz;
     });
     NuevaLuz.app.controller("ABookInfoCtrl", function ($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc) {
         return new NuevaLuz.ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc);
+    });
+    NuevaLuz.app.controller("ABooksLevelsCtrl", function ($scope, $stateParams, $location, DaisyPlayerSvc) {
+        return new NuevaLuz.ABooksLevelsController($scope, $stateParams, $location, DaisyPlayerSvc);
+    });
+    NuevaLuz.app.controller("ABooksBookmarksCtrl", function ($scope, $stateParams, $location, DaisyPlayerSvc) {
+        return new NuevaLuz.ABooksBookmarksController($scope, $stateParams, $location, DaisyPlayerSvc);
     });
 })(NuevaLuz || (NuevaLuz = {}));

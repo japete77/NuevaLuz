@@ -1,14 +1,6 @@
 /// <reference path="../app.ts" />
 var NuevaLuz;
 (function (NuevaLuz) {
-    var BOOKMARK_NONE = 0;
-    var BOOKMARK_GO = 1;
-    var BOOKMARK_DELETE = 2;
-    var BookmarkEvent = (function () {
-        function BookmarkEvent() {
-        }
-        return BookmarkEvent;
-    })();
     var ABooksPlayerController = (function () {
         function ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, player) {
             var _this = this;
@@ -77,27 +69,7 @@ var NuevaLuz;
             this.location.path("/myabooks/info/" + this.scope.currentBook.id);
         };
         ABooksPlayerController.prototype.selectLevel = function () {
-            var _this = this;
-            var currenLevel;
-            var myPopup = this.ionicPopup.show({
-                template: '<ion-list>' +
-                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="1">Nivel 1</ion-radio>' +
-                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="2">Nivel 2</ion-radio>' +
-                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="3">Nivel 3</ion-radio>' +
-                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="4">Nivel 4</ion-radio>' +
-                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="5">Nivel 5</ion-radio>' +
-                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="6">Nivel 6</ion-radio>' +
-                    '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="7">Frase</ion-radio>' +
-                    '</ion-list>',
-                title: 'Selecciona nivel de navegación',
-                scope: this.scope,
-                buttons: [
-                    { text: 'Cerrar' },
-                ]
-            });
-            myPopup.then(function () {
-                _this.player.saveStatus(_this.scope.currentStatus, function () { }, function (error) { });
-            });
+            this.location.path("/myabooks/player/level/" + this.scope.currentBook.id);
         };
         ABooksPlayerController.prototype.addBookmark = function () {
             var _this = this;
@@ -164,50 +136,53 @@ var NuevaLuz;
             }
         };
         ABooksPlayerController.prototype.showBookmarks = function () {
-            var _this = this;
-            this.scope.tmpBookmark = new NuevaLuz.Bookmark();
-            var myPopup = this.ionicPopup.show({
-                template: '<ion-list>' +
-                    ' <ion-radio ng-model="tmpBookmark.id" ng-repeat="bookmark in currentStatus.bookmarks" ng-value="{{bookmark.id}}">{{bookmark.title}}</ion-radio>' +
-                    '</ion-list>',
-                title: 'Selecciona marca',
-                scope: this.scope,
-                buttons: [
-                    { text: '<b>Ir</b>',
-                        type: 'button-positive',
-                        onTap: function (e) {
-                            var result = {
-                                type: BOOKMARK_GO,
-                                boomark: _this.getBookmark(_this.scope.tmpBookmark.id)
-                            };
-                            return result;
-                        }
-                    },
-                    { text: 'Cerrar',
-                        onTap: function (e) {
-                            var result = {
-                                type: BOOKMARK_NONE,
-                                boomark: _this.getBookmark(_this.scope.tmpBookmark.id)
-                            };
-                            return result;
-                        }
-                    },
-                    { text: 'Borrar',
-                        type: 'button-assertive',
-                        onTap: function (e) {
-                            _this.deleteBookmark(_this.scope.tmpBookmark.id);
-                            _this.player.saveBooksmarks(_this.scope.currentStatus.bookmarks, function () { }, function (message) { });
-                            e.preventDefault();
-                        }
-                    }
-                ]
-            });
-            myPopup.then(function (e) {
-                if (e.type === BOOKMARK_GO) {
-                    // Seek to the position
-                    _this.player.seek(e.boomark);
-                }
-            });
+            this.location.path("/myabooks/player/bookmarks/" + this.scope.currentBook.id);
+            // 
+            //             this.scope.tmpBookmark = new Bookmark();
+            //             
+            //             var myPopup = this.ionicPopup.show({
+            //                 template: '<ion-list>' + 
+            //                             ' <ion-radio ng-model="tmpBookmark.id" ng-repeat="bookmark in currentStatus.bookmarks" ng-value="{{bookmark.id}}">{{bookmark.title}}</ion-radio>' +
+            //                           '</ion-list>',
+            //                 title: 'Selecciona marca',
+            //                 scope: this.scope,
+            //                 buttons: [
+            //                 { text: '<b>Ir</b>',
+            //                   type: 'button-positive',
+            //                   onTap: (e : MouseEvent) => {
+            //                       var result : BookmarkEvent = {
+            //                           type : BOOKMARK_GO,
+            //                           boomark : this.getBookmark(this.scope.tmpBookmark.id)
+            //                       }
+            //                       return result;
+            //                   }
+            //                 },
+            //                 { text: 'Cerrar',
+            //                   onTap: (e : MouseEvent) => {
+            //                       var result : BookmarkEvent = {
+            //                           type : BOOKMARK_NONE,
+            //                           boomark : this.getBookmark(this.scope.tmpBookmark.id)
+            //                       }
+            //                       return result;                                          
+            //                   }
+            //                 },
+            //                 { text: 'Borrar',
+            //                   type: 'button-assertive',
+            //                   onTap: (e : MouseEvent) => {
+            //                       this.deleteBookmark(this.scope.tmpBookmark.id);
+            //                       this.player.saveBooksmarks(this.scope.currentStatus.bookmarks, () => {}, (message: string) => {});
+            //                       e.preventDefault();
+            //                   }
+            //                 }
+            //                 ]
+            //             });
+            //             
+            //             myPopup.then((e : BookmarkEvent) => {
+            //                 if (e.type===BOOKMARK_GO) {
+            //                     // Seek to the position
+            //                     this.player.seek(e.boomark);
+            //                 }
+            //             });             
         };
         return ABooksPlayerController;
     })();

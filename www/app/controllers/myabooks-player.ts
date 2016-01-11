@@ -1,14 +1,6 @@
 /// <reference path="../app.ts" />
 
 module NuevaLuz {
-    const BOOKMARK_NONE : number = 0;
-    const BOOKMARK_GO : number = 1;
-    const BOOKMARK_DELETE : number = 2;
-    
-    class BookmarkEvent {
-        type : number;
-        boomark : Bookmark;
-    }
 
     export interface IABooksPlayerScope extends ng.IScope {
         control : ABooksPlayerController;
@@ -17,7 +9,7 @@ module NuevaLuz {
         currentStatus : PlayerInfo;
         
         tmpBookmark : Bookmark;
-        
+                
         showPlay : boolean;
         ready : boolean;
     }
@@ -113,27 +105,7 @@ module NuevaLuz {
         }
         
         selectLevel() {
-            var currenLevel;
-            var myPopup = this.ionicPopup.show({
-                template: '<ion-list>' + 
-                        '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="1">Nivel 1</ion-radio>' +
-                        '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="2">Nivel 2</ion-radio>' +
-                        '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="3">Nivel 3</ion-radio>' +
-                        '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="4">Nivel 4</ion-radio>' +
-                        '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="5">Nivel 5</ion-radio>' +
-                        '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="6">Nivel 6</ion-radio>' +
-                        '<ion-radio ng-model="currentStatus.position.navigationLevel" ng-value="7">Frase</ion-radio>' +
-                        '</ion-list>',
-                title: 'Selecciona nivel de navegación',
-                scope: this.scope,
-                buttons: [
-                { text: 'Cerrar' },
-                ]
-            });
-            
-            myPopup.then(() => {
-                this.player.saveStatus(this.scope.currentStatus, () => {}, (error:string) => {});
-            });
+            this.location.path("/myabooks/player/level/" + this.scope.currentBook.id);
         }
         
         addBookmark() {
@@ -209,51 +181,53 @@ module NuevaLuz {
         }
 
         showBookmarks() {
-            this.scope.tmpBookmark = new Bookmark();
-            
-            var myPopup = this.ionicPopup.show({
-                template: '<ion-list>' + 
-                            ' <ion-radio ng-model="tmpBookmark.id" ng-repeat="bookmark in currentStatus.bookmarks" ng-value="{{bookmark.id}}">{{bookmark.title}}</ion-radio>' +
-                          '</ion-list>',
-                title: 'Selecciona marca',
-                scope: this.scope,
-                buttons: [
-                { text: '<b>Ir</b>',
-                  type: 'button-positive',
-                  onTap: (e : MouseEvent) => {
-                      var result : BookmarkEvent = {
-                          type : BOOKMARK_GO,
-                          boomark : this.getBookmark(this.scope.tmpBookmark.id)
-                      }
-                      return result;
-                  }
-                },
-                { text: 'Cerrar',
-                  onTap: (e : MouseEvent) => {
-                      var result : BookmarkEvent = {
-                          type : BOOKMARK_NONE,
-                          boomark : this.getBookmark(this.scope.tmpBookmark.id)
-                      }
-                      return result;                                          
-                  }
-                },
-                { text: 'Borrar',
-                  type: 'button-assertive',
-                  onTap: (e : MouseEvent) => {
-                      this.deleteBookmark(this.scope.tmpBookmark.id);
-                      this.player.saveBooksmarks(this.scope.currentStatus.bookmarks, () => {}, (message: string) => {});
-                      e.preventDefault();
-                  }
-                }
-                ]
-            });
-            
-            myPopup.then((e : BookmarkEvent) => {
-                if (e.type===BOOKMARK_GO) {
-                    // Seek to the position
-                    this.player.seek(e.boomark);
-                }
-            });             
+            this.location.path("/myabooks/player/bookmarks/" + this.scope.currentBook.id);
+// 
+//             this.scope.tmpBookmark = new Bookmark();
+//             
+//             var myPopup = this.ionicPopup.show({
+//                 template: '<ion-list>' + 
+//                             ' <ion-radio ng-model="tmpBookmark.id" ng-repeat="bookmark in currentStatus.bookmarks" ng-value="{{bookmark.id}}">{{bookmark.title}}</ion-radio>' +
+//                           '</ion-list>',
+//                 title: 'Selecciona marca',
+//                 scope: this.scope,
+//                 buttons: [
+//                 { text: '<b>Ir</b>',
+//                   type: 'button-positive',
+//                   onTap: (e : MouseEvent) => {
+//                       var result : BookmarkEvent = {
+//                           type : BOOKMARK_GO,
+//                           boomark : this.getBookmark(this.scope.tmpBookmark.id)
+//                       }
+//                       return result;
+//                   }
+//                 },
+//                 { text: 'Cerrar',
+//                   onTap: (e : MouseEvent) => {
+//                       var result : BookmarkEvent = {
+//                           type : BOOKMARK_NONE,
+//                           boomark : this.getBookmark(this.scope.tmpBookmark.id)
+//                       }
+//                       return result;                                          
+//                   }
+//                 },
+//                 { text: 'Borrar',
+//                   type: 'button-assertive',
+//                   onTap: (e : MouseEvent) => {
+//                       this.deleteBookmark(this.scope.tmpBookmark.id);
+//                       this.player.saveBooksmarks(this.scope.currentStatus.bookmarks, () => {}, (message: string) => {});
+//                       e.preventDefault();
+//                   }
+//                 }
+//                 ]
+//             });
+//             
+//             myPopup.then((e : BookmarkEvent) => {
+//                 if (e.type===BOOKMARK_GO) {
+//                     // Seek to the position
+//                     this.player.seek(e.boomark);
+//                 }
+//             });             
         }
     }
 }
