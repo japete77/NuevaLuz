@@ -72,7 +72,9 @@ module NuevaLuz {
                     }, 
                     (status : number) => {
                         this.processPlayerStatusChange(status);
-                    });                    
+                    });
+
+                    this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
             }
             
         }

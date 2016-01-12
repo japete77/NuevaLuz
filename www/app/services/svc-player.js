@@ -50,6 +50,7 @@ var NuevaLuz;
                 }, function (status) {
                     _this.processPlayerStatusChange(status);
                 });
+                this.saveStatus(this.playerInfo, function () { }, function (error) { });
             }
         };
         DaisyPlayerService.prototype.loadBook = function (id, sucessCallback) {
