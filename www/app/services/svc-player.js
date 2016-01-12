@@ -4,7 +4,6 @@ var NuevaLuz;
     var DaisyPlayerService = (function () {
         function DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q) {
             var _this = this;
-            this.wasPlaying = false;
             this.cordovaMedia = $cordovaMedia;
             this.cordovaFile = $cordovaFile;
             this.rootScope = $rootScope;
@@ -29,18 +28,19 @@ var NuevaLuz;
         }
         DaisyPlayerService.prototype.processPlayerStatusChange = function (status) {
             this.playerInfo.status = status;
-            // alert(this.loading + "," + status + "," + this.wasPlaying);
-            if (!this.loading && status === Media.MEDIA_STOPPED && this.wasPlaying) {
-                this.loadNextFile(true);
+            if (!this.loading && status === Media.MEDIA_STOPPED) {
+                this.loading = true;
+                this.loadNextFile(1);
+                this.play(this.playerInfo.position);
+                this.loading = false;
             }
         };
-        DaisyPlayerService.prototype.getPlayStatus = function () {
-            return this.wasPlaying;
-        };
-        DaisyPlayerService.prototype.loadNextFile = function (autoplay) {
+        DaisyPlayerService.prototype.loadNextFile = function (step) {
             var _this = this;
-            if (this.book.sequence.length > this.playerInfo.position.currentIndex + 1) {
-                this.playerInfo.position.currentIndex++;
+            if (this.book.sequence.length > this.playerInfo.position.currentIndex + step &&
+                this.playerInfo.position.currentIndex + step >= 0) {
+                this.release();
+                this.playerInfo.position.currentIndex += step;
                 this.playerInfo.position.currentSOM = this.book.sequence[this.playerInfo.position.currentIndex].som;
                 this.playerInfo.position.currentTC = 0;
                 this.playerInfo.position.currentTitle = this.book.sequence[this.playerInfo.position.currentIndex].title;
@@ -50,9 +50,6 @@ var NuevaLuz;
                 }, function (status) {
                     _this.processPlayerStatusChange(status);
                 });
-                if (autoplay) {
-                    this.play(this.playerInfo.position);
-                }
             }
         };
         DaisyPlayerService.prototype.loadBook = function (id, sucessCallback) {
@@ -109,30 +106,25 @@ var NuevaLuz;
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.play();
                 this.playerInfo.media.seekTo(position.currentTC * 1000);
-                this.wasPlaying = true;
             }
         };
         DaisyPlayerService.prototype.stop = function () {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.stop();
-                this.wasPlaying = false;
             }
         };
         DaisyPlayerService.prototype.pause = function () {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.pause();
-                this.wasPlaying = false;
             }
         };
         DaisyPlayerService.prototype.release = function () {
             if (this.playerInfo && this.playerInfo.media) {
-                this.playerInfo.media.stop();
                 this.playerInfo.media.release();
-                this.wasPlaying = false;
             }
         };
         DaisyPlayerService.prototype.next = function () {
-            var _this = this;
+            this.loading = true;
             var index = this.playerInfo.position.currentIndex;
             // protect bounds...
             if (index >= 0 && this.book.sequence.length <= index)
@@ -158,22 +150,17 @@ var NuevaLuz;
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
             if (this.book.sequence[index].filename !== filename) {
-                this.release();
-                this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[index].filename, function () {
-                }, function (error) {
-                    _this.loading = false;
-                }, function (status) {
-                    _this.processPlayerStatusChange(status);
-                });
+                this.loadNextFile(0);
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
             if (isPlaying) {
                 this.playerInfo.media.play();
             }
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
+            this.loading = false;
         };
         DaisyPlayerService.prototype.prev = function () {
-            var _this = this;
+            this.loading = true;
             var index = this.playerInfo.position.currentIndex;
             // protect bounds...
             if (index >= 0 && this.book.sequence.length <= index)
@@ -199,20 +186,14 @@ var NuevaLuz;
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
             if (this.book.sequence[this.playerInfo.position.currentIndex].filename !== filename) {
-                this.release();
-                this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[index].filename, function () {
-                }, function (error) {
-                    _this.loading = false;
-                }, function (status) {
-                    _this.processPlayerStatusChange(status);
-                });
-                this.playerInfo.media.play();
+                this.loadNextFile(0);
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
             if (isPlaying) {
                 this.playerInfo.media.play();
             }
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
+            this.loading = false;
         };
         DaisyPlayerService.prototype.seek = function (bookmark) {
             var _this = this;
@@ -250,7 +231,6 @@ var NuevaLuz;
                 _this.cordovaFile.readAsBinaryString(bdir, bfile)
                     .then(function (result) {
                     _this.playerInfo.bookmarks = JSON.parse(atob(result));
-                    //this.playerInfo.bookmarks = JSON.parse(result);
                     sucessCallback(_this.playerInfo.bookmarks);
                 });
             }, function (error) {

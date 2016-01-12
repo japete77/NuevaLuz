@@ -30,7 +30,7 @@ module NuevaLuz {
             this.location = $location;
             this.ionicLoading = $ionicLoading;
             this.ionicPopup = $ionicPopup;
-                   
+            
             this.ionicLoading.show({
                 template: 'Cargando...'
             });

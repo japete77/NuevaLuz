@@ -106,35 +106,6 @@ var NuevaLuz;
                 }
             });
         };
-        ABooksPlayerController.prototype.deleteBookmark = function (id) {
-            var count = 0;
-            var pos = -1;
-            this.scope.currentStatus.bookmarks.forEach(function (s) {
-                if (s.id === id) {
-                    pos = count;
-                }
-                count++;
-            });
-            if (pos != -1) {
-                this.scope.currentStatus.bookmarks.splice(pos, 1);
-            }
-        };
-        ABooksPlayerController.prototype.getBookmark = function (id) {
-            var count = 0;
-            var pos = -1;
-            this.scope.currentStatus.bookmarks.forEach(function (s) {
-                if (s.id === id) {
-                    pos = count;
-                }
-                count++;
-            });
-            if (pos != -1) {
-                return this.scope.currentStatus.bookmarks[pos];
-            }
-            else {
-                return null;
-            }
-        };
         ABooksPlayerController.prototype.showBookmarks = function () {
             this.location.path("/myabooks/player/bookmarks/" + this.scope.currentBook.id);
         };
