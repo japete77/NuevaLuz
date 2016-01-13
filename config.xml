@@ -13,6 +13,7 @@
   <gap:config-file platform="android" parent="/manifest">
      <application android:debuggable="true" />
   </gap:config-file>
+  <gap:plugin name="de.appplant.cordova.plugin.background-mode" version="0.6.3" />
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

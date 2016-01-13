@@ -30,13 +30,14 @@ module NuevaLuz {
     export var radioStreamingUrl : string = "http://nlradio.dyndns.org:8294/;";
     export var workingDir : string = "";
     export var playDir : string = "";
+    export var appleDevice : boolean;
 
     // main angular app
     export var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
 
     app.run(["$ionicPlatform", "$cordovaSplashscreen",
     ($ionicPlatform : ionic.platform.IonicPlatformService, $cordovaSplashscreen : any) => {
-    
+            
         setTimeout(function() {
             $cordovaSplashscreen.hide();
         }, 3000);
@@ -44,23 +45,26 @@ module NuevaLuz {
         function stringStartsWith (str, prefix) {
             return str.substring(0, prefix.length) == prefix;
         }
-        
+                
         $ionicPlatform.ready(() => {
             var userAgent : RegExpMatchArray;
             userAgent = navigator.userAgent.match(/iPad/i);
             if (userAgent && userAgent.toString()==="iPad") {
                 workingDir = cordova.file.documentsDirectory;
                 playDir = "documents:/";
+                appleDevice = true;
             }
             else {
                 userAgent = navigator.userAgent.match(/iPhone/i);
                 if (userAgent && userAgent.toString()==="iPhone") {
                     workingDir = cordova.file.documentsDirectory;
                     playDir = "documents:/";
+                    appleDevice = true;
                 }
                 else {
                     workingDir = cordova.file.dataDirectory;
                     playDir = cordova.file.dataDirectory;
+                    appleDevice = false;
                 }            
             }
 
@@ -71,7 +75,7 @@ module NuevaLuz {
             }
             if(window.StatusBar) {
                 window.StatusBar.styleDefault();
-            }  
+            }            
         });
     }]);
 
@@ -138,8 +142,8 @@ module NuevaLuz {
     app.factory("RadioSvc",() => new RadioService());
     app.factory("SessionSvc",() => new SessionService());
     app.factory("DaisyPlayerSvc", ($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, 
-        $interval : ng.IIntervalService, $rootScope : ng.IScope, $q : ng.IQService) => 
-        new DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q));
+        $interval : ng.IIntervalService, $rootScope : ng.IScope, $q : ng.IQService, $timeout : ng.ITimeoutService) => 
+        new DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q, $timeout));
     app.factory("MyABooksSvc", ($cordovaFile : ngCordova.IFileService, $q : ng.IQService) => new MyABooksService($cordovaFile, $q));
     app.factory("DownloadSvc", ($rootScope : ng.IScope, $interval : ng.IIntervalService, 
         $cordovaFile : any, $q : ng.IQService, MyABooksSvc : MyABooksService) => new DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc));

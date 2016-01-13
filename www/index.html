@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src  'self' 'unsafe-inline' *">
     <title></title>
     
     <!-- compiled css output -->
@@ -13,6 +14,7 @@
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="js/ng-cordova.min.js"></script>
+    <script src="js/background-mode.js"></script>
     <script src="cordova.js"></script>
     
     <!-- app's js -->
@@ -35,6 +37,20 @@
     <script src="app/services/svc-myabooks.js"></script>
     <script src="js/fix_ios9/angular-ios9-uiwebview.patch.js"></script>
   </head>
+  
+  <script>
+    document.addEventListener('deviceready', function() {
+        // cordova.plugins.backgroundMode.setDefaults({
+        //     title:  "Nueva Luz",
+        //     ticker: "Nueva Luz",
+        //     text:   "Nueva Luz"
+        // });
+        // 
+        // // Enable background mode
+        // cordova.plugins.backgroundMode.enable();
+    });
+  </script>
+  
   <body ng-app="starter">
     <ion-nav-bar class="bar-energized nav-title-slide-ios7">
       <ion-nav-back-button class="button-icon ion-arrow-left-c">

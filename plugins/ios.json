@@ -59,6 +59,10 @@
                         {
                             "xml": "<feature name=\"Media\"><param name=\"ios-package\" value=\"CDVSound\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"BackgroundMode\"><param name=\"ios-package\" value=\"APPBackgroundMode\" /></feature>",
+                            "count": 1
                         }
                     ],
                     "/widget": [
@@ -74,7 +78,7 @@
                     "UIBackgroundModes": [
                         {
                             "xml": "<array><string>audio</string></array>",
-                            "count": 1
+                            "count": 2
                         }
                     ]
                 }
@@ -144,6 +148,9 @@
             "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
         },
         "cordova-plugin-media": {
+            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+        },
+        "de.appplant.cordova.plugin.background-mode": {
             "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
         }
     },

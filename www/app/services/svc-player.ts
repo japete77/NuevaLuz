@@ -12,20 +12,20 @@ module NuevaLuz {
         
         private book : DaisyBook;
         private playerInfo : PlayerInfo;
-        private loading : boolean;
+        private timeout : ng.ITimeoutService;
+        private processStatusChange : boolean = true;
         
-        constructor($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, $interval : ng.IIntervalService, $rootScope : ng.IScope, $q : ng.IQService) {
+        constructor($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, $interval : ng.IIntervalService, $rootScope : ng.IScope, $q : ng.IQService, $timeout : ng.ITimeoutService) {
             
             this.cordovaMedia = $cordovaMedia;
             this.cordovaFile = $cordovaFile;
             this.rootScope = $rootScope;
             this.interval = $interval;
             this.q = $q;
-                                     
-            this.loading = true; // prevent player info broadcast
-            
+            this.timeout = $timeout;
+                                                 
             this.interval(() => {
-                if (!this.loading && this.playerInfo && this.playerInfo.media) {
+                if (this.playerInfo && this.playerInfo.media) {
                     // refresh player info
                     this.playerInfo.media.getCurrentPosition((position : number) => {
                         
@@ -44,14 +44,24 @@ module NuevaLuz {
             }, 250);
         }
         
-        private processPlayerStatusChange(status : number) {
+        private processPlayerStatusChange(status : number) { 
             this.playerInfo.status = status;
-
-            if (!this.loading && status===Media.MEDIA_STOPPED) {
-                this.loading = true;
-                this.loadNextFile(1);
-                this.play(this.playerInfo.position);
-                this.loading = false;
+            
+            if (appleDevice) {
+                if (status===Media.MEDIA_STOPPED) {
+                    this.loadNextFile(1);
+                    this.play(this.playerInfo.position);
+                }                
+            }
+            else {
+                if (this.processStatusChange && status===Media.MEDIA_STOPPED) {
+                    this.loadNextFile(1);
+                    this.play(this.playerInfo.position);
+                }
+                
+                if (status===Media.MEDIA_STOPPED) {
+                    this.processStatusChange = true;            
+                }
             }
         }
         
@@ -68,7 +78,6 @@ module NuevaLuz {
                     () => {
                     }, 
                     (error : MediaError) => {
-                        this.loading = false;
                     }, 
                     (status : number) => {
                         this.processPlayerStatusChange(status);
@@ -80,9 +89,7 @@ module NuevaLuz {
         }
         
         loadBook(id : string, sucessCallback : (book : DaisyBook) => any)  {
-            
-            this.loading = true; 
-                        
+                                    
             this.playerInfo = new PlayerInfo();
             this.playerInfo.position = new SeekInfo();
             this.playerInfo.position.currentIndex = -1;
@@ -127,9 +134,7 @@ module NuevaLuz {
                         // load bookmarks
                         this.loadBookmarks((bookmarks : Array<Bookmark>) => {
                             this.playerInfo.bookmarks = bookmarks;  
-                            
-                            this.loading = false;
-                            
+                                                        
                             sucessCallback(this.book);                         
                         });
                     });                    
@@ -174,8 +179,8 @@ module NuevaLuz {
         }
         
         next() {
-            this.loading = true;
-                     
+            this.processStatusChange = false;
+                        
             var index : number = this.playerInfo.position.currentIndex;
             
             // protect bounds...
@@ -217,12 +222,11 @@ module NuevaLuz {
             }
 
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
-            
-            this.loading = false;       
+
         }
         
         prev() {
-            this.loading = true;
+            this.processStatusChange = false;
 
             var index : number = this.playerInfo.position.currentIndex;
             
@@ -265,9 +269,7 @@ module NuevaLuz {
             }
 
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
-
-            this.loading = false;       
-            
+                        
         }
         
         seek(bookmark : Bookmark) {            
@@ -278,7 +280,6 @@ module NuevaLuz {
                     () => {
                     }, 
                     (error : MediaError) => {
-                        this.loading = false;
                     }, 
                     (status : number) => {
                         this.processPlayerStatusChange(status);

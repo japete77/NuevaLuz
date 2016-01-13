@@ -43,16 +43,19 @@ var NuevaLuz;
                 if (userAgent && userAgent.toString() === "iPad") {
                     NuevaLuz.workingDir = cordova.file.documentsDirectory;
                     NuevaLuz.playDir = "documents:/";
+                    NuevaLuz.appleDevice = true;
                 }
                 else {
                     userAgent = navigator.userAgent.match(/iPhone/i);
                     if (userAgent && userAgent.toString() === "iPhone") {
                         NuevaLuz.workingDir = cordova.file.documentsDirectory;
                         NuevaLuz.playDir = "documents:/";
+                        NuevaLuz.appleDevice = true;
                     }
                     else {
                         NuevaLuz.workingDir = cordova.file.dataDirectory;
                         NuevaLuz.playDir = cordova.file.dataDirectory;
+                        NuevaLuz.appleDevice = false;
                     }
                 }
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -124,8 +127,8 @@ var NuevaLuz;
     // Register Services
     NuevaLuz.app.factory("RadioSvc", function () { return new NuevaLuz.RadioService(); });
     NuevaLuz.app.factory("SessionSvc", function () { return new NuevaLuz.SessionService(); });
-    NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile, $interval, $rootScope, $q) {
-        return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q);
+    NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile, $interval, $rootScope, $q, $timeout) {
+        return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q, $timeout);
     });
     NuevaLuz.app.factory("MyABooksSvc", function ($cordovaFile, $q) { return new NuevaLuz.MyABooksService($cordovaFile, $q); });
     NuevaLuz.app.factory("DownloadSvc", function ($rootScope, $interval, $cordovaFile, $q, MyABooksSvc) {

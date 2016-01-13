@@ -2,16 +2,17 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var DaisyPlayerService = (function () {
-        function DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q) {
+        function DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q, $timeout) {
             var _this = this;
+            this.processStatusChange = true;
             this.cordovaMedia = $cordovaMedia;
             this.cordovaFile = $cordovaFile;
             this.rootScope = $rootScope;
             this.interval = $interval;
             this.q = $q;
-            this.loading = true; // prevent player info broadcast
+            this.timeout = $timeout;
             this.interval(function () {
-                if (!_this.loading && _this.playerInfo && _this.playerInfo.media) {
+                if (_this.playerInfo && _this.playerInfo.media) {
                     // refresh player info
                     _this.playerInfo.media.getCurrentPosition(function (position) {
                         if (position > -1) {
@@ -28,11 +29,20 @@ var NuevaLuz;
         }
         DaisyPlayerService.prototype.processPlayerStatusChange = function (status) {
             this.playerInfo.status = status;
-            if (!this.loading && status === Media.MEDIA_STOPPED) {
-                this.loading = true;
-                this.loadNextFile(1);
-                this.play(this.playerInfo.position);
-                this.loading = false;
+            if (NuevaLuz.appleDevice) {
+                if (status === Media.MEDIA_STOPPED) {
+                    this.loadNextFile(1);
+                    this.play(this.playerInfo.position);
+                }
+            }
+            else {
+                if (this.processStatusChange && status === Media.MEDIA_STOPPED) {
+                    this.loadNextFile(1);
+                    this.play(this.playerInfo.position);
+                }
+                if (status === Media.MEDIA_STOPPED) {
+                    this.processStatusChange = true;
+                }
             }
         };
         DaisyPlayerService.prototype.loadNextFile = function (step) {
@@ -46,7 +56,6 @@ var NuevaLuz;
                 this.playerInfo.position.currentTitle = this.book.sequence[this.playerInfo.position.currentIndex].title;
                 this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[this.playerInfo.position.currentIndex].filename, function () {
                 }, function (error) {
-                    _this.loading = false;
                 }, function (status) {
                     _this.processPlayerStatusChange(status);
                 });
@@ -55,7 +64,6 @@ var NuevaLuz;
         };
         DaisyPlayerService.prototype.loadBook = function (id, sucessCallback) {
             var _this = this;
-            this.loading = true;
             this.playerInfo = new PlayerInfo();
             this.playerInfo.position = new SeekInfo();
             this.playerInfo.position.currentIndex = -1;
@@ -88,7 +96,6 @@ var NuevaLuz;
                         // load bookmarks
                         _this.loadBookmarks(function (bookmarks) {
                             _this.playerInfo.bookmarks = bookmarks;
-                            _this.loading = false;
                             sucessCallback(_this.book);
                         });
                     });
@@ -125,7 +132,7 @@ var NuevaLuz;
             }
         };
         DaisyPlayerService.prototype.next = function () {
-            this.loading = true;
+            this.processStatusChange = false;
             var index = this.playerInfo.position.currentIndex;
             // protect bounds...
             if (index >= 0 && this.book.sequence.length <= index)
@@ -158,10 +165,9 @@ var NuevaLuz;
                 this.playerInfo.media.play();
             }
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
-            this.loading = false;
         };
         DaisyPlayerService.prototype.prev = function () {
-            this.loading = true;
+            this.processStatusChange = false;
             var index = this.playerInfo.position.currentIndex;
             // protect bounds...
             if (index >= 0 && this.book.sequence.length <= index)
@@ -194,7 +200,6 @@ var NuevaLuz;
                 this.playerInfo.media.play();
             }
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
-            this.loading = false;
         };
         DaisyPlayerService.prototype.seek = function (bookmark) {
             var _this = this;
@@ -203,7 +208,6 @@ var NuevaLuz;
                 this.release();
                 this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[bookmark.index].filename, function () {
                 }, function (error) {
-                    _this.loading = false;
                 }, function (status) {
                     _this.processPlayerStatusChange(status);
                 });
