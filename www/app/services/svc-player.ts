@@ -275,6 +275,9 @@ module NuevaLuz {
         seek(bookmark : Bookmark) {            
             // If filename is not currently laoded, load the right one
             if (this.book.sequence[bookmark.index].filename!=this.book.sequence[this.playerInfo.position.currentIndex].filename) {
+                
+                this.processStatusChange = false;
+                
                 this.release();
                 this.playerInfo.media = new Media(playDir + "/" + this.book.id + "/" +  this.book.sequence[bookmark.index].filename, 
                     () => {

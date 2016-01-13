@@ -205,6 +205,7 @@ var NuevaLuz;
             var _this = this;
             // If filename is not currently laoded, load the right one
             if (this.book.sequence[bookmark.index].filename != this.book.sequence[this.playerInfo.position.currentIndex].filename) {
+                this.processStatusChange = false;
                 this.release();
                 this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[bookmark.index].filename, function () {
                 }, function (error) {
