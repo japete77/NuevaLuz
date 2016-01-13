@@ -132,7 +132,9 @@ var NuevaLuz;
             }
         };
         DaisyPlayerService.prototype.next = function () {
-            this.processStatusChange = false;
+            if (!NuevaLuz.appleDevice) {
+                this.processStatusChange = false;
+            }
             var index = this.playerInfo.position.currentIndex;
             // protect bounds...
             if (index >= 0 && this.book.sequence.length <= index)
@@ -167,7 +169,9 @@ var NuevaLuz;
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
         };
         DaisyPlayerService.prototype.prev = function () {
-            this.processStatusChange = false;
+            if (!NuevaLuz.appleDevice) {
+                this.processStatusChange = false;
+            }
             var index = this.playerInfo.position.currentIndex;
             // protect bounds...
             if (index >= 0 && this.book.sequence.length <= index)
@@ -205,7 +209,9 @@ var NuevaLuz;
             var _this = this;
             // If filename is not currently laoded, load the right one
             if (this.book.sequence[bookmark.index].filename != this.book.sequence[this.playerInfo.position.currentIndex].filename) {
-                this.processStatusChange = false;
+                if (!NuevaLuz.appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.release();
                 this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + this.book.id + "/" + this.book.sequence[bookmark.index].filename, function () {
                 }, function (error) {

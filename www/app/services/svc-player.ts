@@ -179,7 +179,10 @@ module NuevaLuz {
         }
         
         next() {
-            this.processStatusChange = false;
+            
+            if (!appleDevice) {
+                this.processStatusChange = false;
+            }
                         
             var index : number = this.playerInfo.position.currentIndex;
             
@@ -226,8 +229,11 @@ module NuevaLuz {
         }
         
         prev() {
-            this.processStatusChange = false;
-
+            
+            if (!appleDevice) {
+                this.processStatusChange = false;
+            }
+            
             var index : number = this.playerInfo.position.currentIndex;
             
             // protect bounds...
@@ -276,7 +282,9 @@ module NuevaLuz {
             // If filename is not currently laoded, load the right one
             if (this.book.sequence[bookmark.index].filename!=this.book.sequence[this.playerInfo.position.currentIndex].filename) {
                 
-                this.processStatusChange = false;
+                if (!appleDevice) {
+                    this.processStatusChange = false;
+                }
                 
                 this.release();
                 this.playerInfo.media = new Media(playDir + "/" + this.book.id + "/" +  this.book.sequence[bookmark.index].filename, 
