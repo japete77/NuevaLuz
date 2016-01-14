@@ -9,6 +9,7 @@ var NuevaLuz;
             this.location = $location;
             this.player = DaisyPlayerSvc;
             this.scope.currentLevel = this.player.getPlayerInfo().position.navigationLevel;
+            this.scope.levels = this.player.getLevels();
         }
         ABooksLevelsController.prototype.setLevel = function (level) {
             var _this = this;

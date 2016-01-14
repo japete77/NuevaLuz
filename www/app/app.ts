@@ -25,7 +25,7 @@
 module NuevaLuz {
     
     // Global variables
-    export var baseUrl : string = "http://nluz.dyndns.org:8081/AudioBookService/"; 
+    export var baseUrl : string = "http://nluz.dyndns.org:8080/AudioBookService/"; 
     export var abookBaseUrl : string = "http://bibliasbraille.com/ClubLibro/";
     export var radioStreamingUrl : string = "http://nlradio.dyndns.org:8294/;";
     export var workingDir : string = "";

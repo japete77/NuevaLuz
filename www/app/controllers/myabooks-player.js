@@ -4,6 +4,7 @@ var NuevaLuz;
     var ABooksPlayerController = (function () {
         function ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, player) {
             var _this = this;
+            this.levelDescription = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4", "Nivel 5", "Nivel 6", "Frase", "Marcadores"];
             this.scope = $scope;
             this.scope.ready = false;
             this.scope.control = this;
@@ -49,6 +50,9 @@ var NuevaLuz;
                 }
             });
         }
+        ABooksPlayerController.prototype.getLevel = function () {
+            return this.levelDescription[this.scope.currentStatus.position.navigationLevel - 1];
+        };
         ABooksPlayerController.prototype.play = function () {
             this.player.play(this.scope.currentStatus.position);
         };

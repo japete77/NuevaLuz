@@ -104,6 +104,13 @@ var NuevaLuz;
                 console.log(error);
             });
         };
+        DaisyPlayerService.prototype.getLevels = function () {
+            var levels = new Array();
+            for (var i = 1; i <= this.book.maxLevels; i++) {
+                levels.push("Nivel " + i);
+            }
+            return levels;
+        };
         DaisyPlayerService.prototype.getCurrentBook = function () {
             return this.book;
         };
@@ -132,9 +139,6 @@ var NuevaLuz;
             }
         };
         DaisyPlayerService.prototype.next = function () {
-            if (!NuevaLuz.appleDevice) {
-                this.processStatusChange = false;
-            }
             var index = this.playerInfo.position.currentIndex;
             // protect bounds...
             if (index >= 0 && this.book.sequence.length <= index)
@@ -160,6 +164,9 @@ var NuevaLuz;
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
             if (this.book.sequence[index].filename !== filename) {
+                if (!NuevaLuz.appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.loadNextFile(0);
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
@@ -169,9 +176,6 @@ var NuevaLuz;
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
         };
         DaisyPlayerService.prototype.prev = function () {
-            if (!NuevaLuz.appleDevice) {
-                this.processStatusChange = false;
-            }
             var index = this.playerInfo.position.currentIndex;
             // protect bounds...
             if (index >= 0 && this.book.sequence.length <= index)
@@ -197,6 +201,9 @@ var NuevaLuz;
             this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
             if (this.book.sequence[this.playerInfo.position.currentIndex].filename !== filename) {
+                if (!NuevaLuz.appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.loadNextFile(0);
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
@@ -356,6 +363,7 @@ var NuevaLuz;
     NuevaLuz.Bookmark = Bookmark;
     var DaisyBook = (function () {
         function DaisyBook() {
+            this.maxLevels = 0;
             this.body = new Array();
             this.sequence = new Array();
         }
@@ -425,6 +433,9 @@ var NuevaLuz;
                     case "div":
                         level = 7;
                         break;
+                }
+                if (level < 7 && this.maxLevels < level) {
+                    this.maxLevels = level;
                 }
                 this.body.push({
                     id: href[1],

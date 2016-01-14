@@ -22,7 +22,7 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     // Global variables
-    NuevaLuz.baseUrl = "http://nluz.dyndns.org:8081/AudioBookService/";
+    NuevaLuz.baseUrl = "http://nluz.dyndns.org:8080/AudioBookService/";
     NuevaLuz.abookBaseUrl = "http://bibliasbraille.com/ClubLibro/";
     NuevaLuz.radioStreamingUrl = "http://nlradio.dyndns.org:8294/;";
     NuevaLuz.workingDir = "";

@@ -21,6 +21,8 @@ module NuevaLuz {
         private ionicLoading : ionic.loading.IonicLoadingService;
         private ionicPopup : ionic.popup.IonicPopupService;
         
+        private levelDescription : string[] = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4", "Nivel 5", "Nivel 6", "Frase", "Marcadores"];
+        
         constructor($scope : IABooksPlayerScope, $stateParams : angular.ui.IStateParamsService, $location : ng.ILocationService, 
             $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, player : DaisyPlayerService) {
             this.scope = $scope;
@@ -77,6 +79,10 @@ module NuevaLuz {
                 }
                 
             });
+        }
+        
+        getLevel() : string {
+            return this.levelDescription[this.scope.currentStatus.position.navigationLevel-1];
         }
         
         play() {

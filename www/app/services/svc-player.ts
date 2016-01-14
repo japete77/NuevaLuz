@@ -145,6 +145,14 @@ module NuevaLuz {
             
         }
         
+        getLevels() : Array<string> {
+            var levels : Array<string> = new Array<string>();
+            for (var i : number = 1; i<=this.book.maxLevels; i++) {
+                levels.push("Nivel " + i);
+            }
+            return levels;
+        }
+        
         getCurrentBook() : DaisyBook {
             return this.book;
         }
@@ -179,11 +187,7 @@ module NuevaLuz {
         }
         
         next() {
-            
-            if (!appleDevice) {
-                this.processStatusChange = false;
-            }
-                        
+                                    
             var index : number = this.playerInfo.position.currentIndex;
             
             // protect bounds...
@@ -215,6 +219,9 @@ module NuevaLuz {
             var isPlaying : boolean = (this.playerInfo.status===Media.MEDIA_RUNNING);
 
             if (this.book.sequence[index].filename!==filename) {
+                if (!appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.loadNextFile(0);
             }
             
@@ -229,11 +236,7 @@ module NuevaLuz {
         }
         
         prev() {
-            
-            if (!appleDevice) {
-                this.processStatusChange = false;
-            }
-            
+                        
             var index : number = this.playerInfo.position.currentIndex;
             
             // protect bounds...
@@ -265,6 +268,9 @@ module NuevaLuz {
             var isPlaying : boolean = (this.playerInfo.status===Media.MEDIA_RUNNING);
             
             if (this.book.sequence[this.playerInfo.position.currentIndex].filename!==filename) {
+                if (!appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.loadNextFile(0);
             }
             
@@ -476,6 +482,8 @@ module NuevaLuz {
         producer : string;
         totalTime : string;
         
+        maxLevels : number = 0;
+        
         // body smil info
         body : Array<SmilInfo>;
         
@@ -557,6 +565,10 @@ module NuevaLuz {
                     case "div":
                         level = 7;
                         break;
+                }
+                
+                if (level<7 && this.maxLevels<level) {
+                    this.maxLevels = level;
                 }
                 
                 this.body.push({

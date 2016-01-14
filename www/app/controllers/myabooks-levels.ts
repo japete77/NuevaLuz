@@ -4,6 +4,7 @@ module NuevaLuz {
 
     export interface IABooksLevelsScope extends ng.IScope {
         control : ABooksLevelsController;
+        levels : Array<string>;
         currentLevel : number;
     }
     
@@ -22,6 +23,8 @@ module NuevaLuz {
             this.player = DaisyPlayerSvc;
             
             this.scope.currentLevel = this.player.getPlayerInfo().position.navigationLevel;
+            
+            this.scope.levels = this.player.getLevels();
         }
         
         setLevel(level : number) {

@@ -1,12 +1,12 @@
 <ion-view title="Navegación" ng-controller="ABooksLevelsCtrl">
 	<ion-content class="padding">
         <ion-list>
-            <ion-radio ng-model="currentLevel" ng-value="1" ng-click="control.setLevel(1)">Nivel 1</ion-radio>
-            <ion-radio ng-model="currentLevel" ng-value="2" ng-click="control.setLevel(2)">Nivel 2</ion-radio>
+            <ion-radio ng-model="currentLevel" ng-repeat="level in levels" ng-value="$index+1" ng-click="control.setLevel($index+1)">{{level}}</ion-radio>
+            <!--<ion-radio ng-model="currentLevel" ng-value="2" ng-click="control.setLevel(2)">Nivel 2</ion-radio>
             <ion-radio ng-model="currentLevel" ng-value="3" ng-click="control.setLevel(3)">Nivel 3</ion-radio>
             <ion-radio ng-model="currentLevel" ng-value="4" ng-click="control.setLevel(4)">Nivel 4</ion-radio>
             <ion-radio ng-model="currentLevel" ng-value="5" ng-click="control.setLevel(5)">Nivel 5</ion-radio>
-            <ion-radio ng-model="currentLevel" ng-value="6" ng-click="control.setLevel(6)">Nivel 6</ion-radio>
+            <ion-radio ng-model="currentLevel" ng-value="6" ng-click="control.setLevel(6)">Nivel 6</ion-radio>-->
             <ion-radio ng-model="currentLevel" ng-value="7" ng-click="control.setLevel(7)">Frase</ion-radio>            
         </ion-list>	
 	</ion-content>
