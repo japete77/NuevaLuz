@@ -24,6 +24,8 @@ module NuevaLuz {
         private cordovaFile : ngCordova.IFileService;
         private myABooksSvc : MyABooksService;
         private q : ng.IQService;
+        private http : ng.IHttpService;
+        private sessionSvc : SessionService;
            
         ready : boolean = false;
         downloads : Array<DownloadItem> = [];
@@ -32,12 +34,16 @@ module NuevaLuz {
         sourceZip : string = "";
 
         
-        constructor($rootScope : ng.IScope, $interval : ng.IIntervalService, $cordovaFile : ngCordova.IFileService, $q : ng.IQService, myABooksSvc : MyABooksService) {
+        constructor($rootScope : ng.IScope, $interval : ng.IIntervalService, 
+            $cordovaFile : ngCordova.IFileService, $q : ng.IQService, myABooksSvc : MyABooksService,
+            $http : ng.IHttpService, sessionSvc : SessionService) {
             this.rootScope = $rootScope;
             this.interval = $interval;
             this.cordovaFile = $cordovaFile;
             this.myABooksSvc = myABooksSvc;
             this.q = $q;
+            this.http = $http;
+            this.sessionSvc = sessionSvc;
             
             // Check when device is ready to be used...
             ionic.Platform.ready(() => {
@@ -135,20 +141,27 @@ module NuevaLuz {
                                             
                                             callback.promise.then((result : number ) => {
                                                 if (result==0) {
-                                                    currentDownload.statusDescription = "";
-                                                    currentDownload.statusKey = STATUS_COMPLETED;
-                                                    this.rootScope.$broadcast(STATUS_COMPLETED, currentDownload);
-                                                    
-                                                    this.myABooksSvc.addUpdateBook(currentDownload);
-                                                    this.myABooksSvc.updateABooksFile()
-                                                    .then(() => {
+                                                    // Register download
+                                                    this.http({
+                                                        method: 'GET',
+                                                        url: baseUrl + 'RegisterDownload?Session=' + this.sessionSvc.getSession() + '&IdAudio=' + currentDownload.id
+                                                    })
+                                                    .then((response : any) => {
+                                                        currentDownload.statusDescription = "";
+                                                        currentDownload.statusKey = STATUS_COMPLETED;
+                                                        this.rootScope.$broadcast(STATUS_COMPLETED, currentDownload);
                                                         
-                                                        // Delete from download list
-                                                        this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
-                                                        
-                                                        // go for next item to process...
-                                                        this.processDownloadQueue();
-                                                    });                                                    
+                                                        this.myABooksSvc.addUpdateBook(currentDownload);
+                                                        this.myABooksSvc.updateABooksFile()
+                                                        .then(() => {
+                                                            
+                                                            // Delete from download list
+                                                            this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
+                                                            
+                                                            // go for next item to process...
+                                                            this.processDownloadQueue();
+                                                        });                                                    
+                                                    })                                                    
                                                 }
                                                 else {
                                                     currentDownload.statusDescription = 'Error moviendo audio libro';

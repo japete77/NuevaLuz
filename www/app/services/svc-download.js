@@ -10,7 +10,7 @@ var NuevaLuz;
     NuevaLuz.STATUS_ERROR = "error";
     NuevaLuz.STATUS_COMPLETED = "completed";
     var DownloadService = (function () {
-        function DownloadService($rootScope, $interval, $cordovaFile, $q, myABooksSvc) {
+        function DownloadService($rootScope, $interval, $cordovaFile, $q, myABooksSvc, $http, sessionSvc) {
             var _this = this;
             this.ready = false;
             this.downloads = [];
@@ -22,6 +22,8 @@ var NuevaLuz;
             this.cordovaFile = $cordovaFile;
             this.myABooksSvc = myABooksSvc;
             this.q = $q;
+            this.http = $http;
+            this.sessionSvc = sessionSvc;
             // Check when device is ready to be used...
             ionic.Platform.ready(function () {
                 _this.ready = true;
@@ -101,16 +103,23 @@ var NuevaLuz;
                                     _this.addFileEntry(entry, callback);
                                     callback.promise.then(function (result) {
                                         if (result == 0) {
-                                            currentDownload.statusDescription = "";
-                                            currentDownload.statusKey = NuevaLuz.STATUS_COMPLETED;
-                                            _this.rootScope.$broadcast(NuevaLuz.STATUS_COMPLETED, currentDownload);
-                                            _this.myABooksSvc.addUpdateBook(currentDownload);
-                                            _this.myABooksSvc.updateABooksFile()
-                                                .then(function () {
-                                                // Delete from download list
-                                                _this.downloads.splice(_this.getDownloadIndex(currentDownload.id), 1);
-                                                // go for next item to process...
-                                                _this.processDownloadQueue();
+                                            // Register download
+                                            _this.http({
+                                                method: 'GET',
+                                                url: NuevaLuz.baseUrl + 'RegisterDownload?Session=' + _this.sessionSvc.getSession() + '&IdAudio=' + currentDownload.id
+                                            })
+                                                .then(function (response) {
+                                                currentDownload.statusDescription = "";
+                                                currentDownload.statusKey = NuevaLuz.STATUS_COMPLETED;
+                                                _this.rootScope.$broadcast(NuevaLuz.STATUS_COMPLETED, currentDownload);
+                                                _this.myABooksSvc.addUpdateBook(currentDownload);
+                                                _this.myABooksSvc.updateABooksFile()
+                                                    .then(function () {
+                                                    // Delete from download list
+                                                    _this.downloads.splice(_this.getDownloadIndex(currentDownload.id), 1);
+                                                    // go for next item to process...
+                                                    _this.processDownloadQueue();
+                                                });
                                             });
                                         }
                                         else {

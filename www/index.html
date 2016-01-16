@@ -40,14 +40,14 @@
   
   <script>
     document.addEventListener('deviceready', function() {
-        // cordova.plugins.backgroundMode.setDefaults({
-        //     title:  "Nueva Luz",
-        //     ticker: "Nueva Luz",
-        //     text:   "Nueva Luz"
-        // });
-        // 
-        // // Enable background mode
-        // cordova.plugins.backgroundMode.enable();
+        cordova.plugins.backgroundMode.setDefaults({
+            title:  "Nueva Luz",
+            ticker: "Nueva Luz",
+            text:   "Nueva Luz"
+        });
+        
+        // Enable background mode
+        cordova.plugins.backgroundMode.enable();
     });
   </script>
   
