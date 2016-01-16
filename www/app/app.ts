@@ -35,8 +35,10 @@ module NuevaLuz {
     // main angular app
     export var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
 
-    app.run(["$ionicPlatform", "$cordovaSplashscreen",
-    ($ionicPlatform : ionic.platform.IonicPlatformService, $cordovaSplashscreen : any) => {
+    app.run(["$ionicPlatform", "$cordovaSplashscreen", "$ionicPopup", "DaisyPlayerSvc",
+    ($ionicPlatform : ionic.platform.IonicPlatformService, $cordovaSplashscreen : any, 
+        $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService, 
+        $ionicHistory : ionic.navigation.IonicHistoryService ) => {
             
         setTimeout(function() {
             $cordovaSplashscreen.hide();
@@ -47,27 +49,17 @@ module NuevaLuz {
         }
                 
         $ionicPlatform.ready(() => {
-            var userAgent : RegExpMatchArray;
-            userAgent = navigator.userAgent.match(/iPad/i);
-            if (userAgent && userAgent.toString()==="iPad") {
-                workingDir = cordova.file.documentsDirectory;
-                playDir = "documents:/";
-                appleDevice = true;
+            if (ionic.Platform.isAndroid()) {
+                workingDir = cordova.file.dataDirectory;
+                playDir = cordova.file.dataDirectory;
+                appleDevice = false;
             }
             else {
-                userAgent = navigator.userAgent.match(/iPhone/i);
-                if (userAgent && userAgent.toString()==="iPhone") {
-                    workingDir = cordova.file.documentsDirectory;
-                    playDir = "documents:/";
-                    appleDevice = true;
-                }
-                else {
-                    workingDir = cordova.file.dataDirectory;
-                    playDir = cordova.file.dataDirectory;
-                    appleDevice = false;
-                }            
+                workingDir = cordova.file.documentsDirectory;
+                playDir = "documents:/";
+                appleDevice = true;                
             }
-
+            
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
             if(Keyboard) {
@@ -77,6 +69,25 @@ module NuevaLuz {
                 window.StatusBar.styleDefault();
             }            
         });
+        
+        // // Disable BACK button on home
+        // $ionicPlatform.registerBackButtonAction(function(event : ng.IAngularEvent) {
+        //     // if ($ionicHistory.currentStateName()==="/") { // your check here
+        //         $ionicPopup.confirm({
+        //             title: "Hola",
+        //             template: '¿Estás seguro de querer salir de la aplicación?'
+        //         }).then(function(res) {
+        //             if (res) {
+        //                 DaisyPlayerSvc.saveStatus(DaisyPlayerSvc.getPlayerInfo(), 
+        //                     () => {
+        //                         ionic.Platform.exitApp();                            
+        //                     },
+        //                     () => {}
+        //                 );
+        //             }
+        //         })
+        // }, 100);
+
     }]);
 
     app.config(($stateProvider : angular.ui.IStateProvider, $urlRouterProvider : angular.ui.IUrlRouterProvider) => {

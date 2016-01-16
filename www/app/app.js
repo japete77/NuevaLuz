@@ -29,8 +29,8 @@ var NuevaLuz;
     NuevaLuz.playDir = "";
     // main angular app
     NuevaLuz.app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
-    NuevaLuz.app.run(["$ionicPlatform", "$cordovaSplashscreen",
-        function ($ionicPlatform, $cordovaSplashscreen) {
+    NuevaLuz.app.run(["$ionicPlatform", "$cordovaSplashscreen", "$ionicPopup", "DaisyPlayerSvc",
+        function ($ionicPlatform, $cordovaSplashscreen, $ionicPopup, DaisyPlayerSvc, $ionicHistory) {
             setTimeout(function () {
                 $cordovaSplashscreen.hide();
             }, 3000);
@@ -38,25 +38,15 @@ var NuevaLuz;
                 return str.substring(0, prefix.length) == prefix;
             }
             $ionicPlatform.ready(function () {
-                var userAgent;
-                userAgent = navigator.userAgent.match(/iPad/i);
-                if (userAgent && userAgent.toString() === "iPad") {
+                if (ionic.Platform.isAndroid()) {
+                    NuevaLuz.workingDir = cordova.file.dataDirectory;
+                    NuevaLuz.playDir = cordova.file.dataDirectory;
+                    NuevaLuz.appleDevice = false;
+                }
+                else {
                     NuevaLuz.workingDir = cordova.file.documentsDirectory;
                     NuevaLuz.playDir = "documents:/";
                     NuevaLuz.appleDevice = true;
-                }
-                else {
-                    userAgent = navigator.userAgent.match(/iPhone/i);
-                    if (userAgent && userAgent.toString() === "iPhone") {
-                        NuevaLuz.workingDir = cordova.file.documentsDirectory;
-                        NuevaLuz.playDir = "documents:/";
-                        NuevaLuz.appleDevice = true;
-                    }
-                    else {
-                        NuevaLuz.workingDir = cordova.file.dataDirectory;
-                        NuevaLuz.playDir = cordova.file.dataDirectory;
-                        NuevaLuz.appleDevice = false;
-                    }
                 }
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
@@ -67,6 +57,20 @@ var NuevaLuz;
                     window.StatusBar.styleDefault();
                 }
             });
+            // Disable BACK button on home
+            $ionicPlatform.registerBackButtonAction(function (event) {
+                // if ($ionicHistory.currentStateName()==="/") { // your check here
+                $ionicPopup.confirm({
+                    title: "Hola",
+                    template: '¿Estás seguro de querer salir de la aplicación?'
+                }).then(function (res) {
+                    if (res) {
+                        DaisyPlayerSvc.saveStatus(DaisyPlayerSvc.getPlayerInfo(), function () {
+                            ionic.Platform.exitApp();
+                        }, function () { });
+                    }
+                });
+            }, 100);
         }]);
     NuevaLuz.app.config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise("/");

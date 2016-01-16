@@ -120,6 +120,16 @@ var NuevaLuz;
                                                     // go for next item to process...
                                                     _this.processDownloadQueue();
                                                 });
+                                            }, function (reason) {
+                                                currentDownload.statusDescription = 'Error registrando descarga';
+                                                currentDownload.statusKey = NuevaLuz.STATUS_ERROR;
+                                                _this.rootScope.$broadcast(NuevaLuz.STATUS_ERROR, currentDownload);
+                                                _this.myABooksSvc.addUpdateBook(currentDownload);
+                                                _this.myABooksSvc.updateABooksFile()
+                                                    .then(function () {
+                                                    // go for next item to process...
+                                                    _this.processDownloadQueue();
+                                                });
                                             });
                                         }
                                         else {
