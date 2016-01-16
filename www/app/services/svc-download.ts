@@ -161,6 +161,18 @@ module NuevaLuz {
                                                             // go for next item to process...
                                                             this.processDownloadQueue();
                                                         });                                                    
+                                                    },
+                                                    (reason : any) => {
+                                                        currentDownload.statusDescription = 'Error registrando descarga';
+                                                        currentDownload.statusKey = STATUS_ERROR;
+                                                        this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
+                                                        
+                                                        this.myABooksSvc.addUpdateBook(currentDownload);
+                                                        this.myABooksSvc.updateABooksFile()
+                                                        .then(() => {
+                                                            // go for next item to process...
+                                                            this.processDownloadQueue();  
+                                                        });                                                        
                                                     })                                                    
                                                 }
                                                 else {
