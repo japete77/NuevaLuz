@@ -53,8 +53,14 @@ var NuevaLuz;
         ABooksPlayerController.prototype.getLevel = function () {
             return this.levelDescription[this.scope.currentStatus.position.navigationLevel - 1];
         };
-        ABooksPlayerController.prototype.play = function () {
-            this.player.play(this.scope.currentStatus.position);
+        ABooksPlayerController.prototype.play = function (on) {
+            if (on) {
+                this.player.play(this.scope.currentStatus.position);
+            }
+            else {
+                this.player.saveStatus(this.scope.currentStatus, function () { }, function (error) { });
+                this.player.pause();
+            }
         };
         ABooksPlayerController.prototype.stop = function () {
             this.player.stop();

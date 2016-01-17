@@ -1,18 +1,17 @@
 <ion-view title="" ng-controller="ABooksPlayerCtrl">
 	<ion-nav-buttons side="right">
-        <a class="button button-icon icon ion-home" href="#/"></a>
+        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
     </ion-nav-buttons>
-	<div class="bar bar-subheader player" ng-show="ready">
+	<div ng-if="ready" class="bar bar-subheader player">
 		<div class="row">
 			<div class="col col-25">
-				<button class="button button-full button-dark icon ion-ios-rewind" ng-click="control.prev()"></button>
+				<button title="Retroceder" class="button button-full button-dark icon ion-ios-rewind" ng-click="control.prev()"></button>
 			</div>
 			<div class="col col-50">
-				<button ng-if="showPlay" class="button button-full button-dark icon ion-play" ng-click="control.play()"></button>
-				<button ng-if="!showPlay" class="button button-full button-dark icon ion-pause" ng-click="control.pause()"></button>
+				<button ng-attr-title="{{showPlay?'Escuchar':'Parar'}}" ng-class="{'button button-full button-dark icon ion-play':showPlay, 'button button-full button-dark icon ion-pause':!showPlay}" ng-click="control.play(showPlay)"></button>
 			</div>
 			<div class="col col-25">
-				<button class="button button-full button-dark icon ion-ios-fastforward" ng-click="control.next()"></button>
+				<button title="Avanzar" class="button button-full button-dark icon ion-ios-fastforward" ng-click="control.next()"></button>
 			</div>
 		</div>
         <div class="row">
@@ -22,7 +21,6 @@
                 {{currentStatus.position.absoluteTC}} / {{currentBook.totalTime}}
             </div>
             <div class="col col-25" style="text-align:center">
-                <!--Nivel {{currentStatus.position.navigationLevel}}-->
                 {{control.getLevel()}}
             </div>
 		</div>
@@ -33,18 +31,20 @@
 	</ion-content>
 	<div class="tabs tabs-icon-top">
 		<a class="tab-item">
-			<i class="icon ion-bookmark" ng-click="control.addBookmark()"></i>
-			Crear marca
+            <div title="Crear marca" alt="Crear marca"> 
+                <i class="icon ion-bookmark" ng-click="control.addBookmark()"></i>
+                Crear marca
+            </div>
 		</a>
-		<a class="tab-item">
+		<a alt="Ir a marca" class="tab-item">
 			<i class="icon ion-ios-bookmarks" ng-click="control.showBookmarks()"></i>
 			Ir a marca
 		</a>
-		<a class="tab-item" ng-click="control.selectLevel()">
+		<a alt="Navegacion" class="tab-item" ng-click="control.selectLevel()">
 			<i class="icon ion-ios-browsers"></i>
 			Navegación
 		</a>
-		<a class="tab-item" ng-click="control.showInfo(currentBook.id)">
+		<a alt="Informacion" class="tab-item" ng-click="control.showInfo(currentBook.id)">
 			<i class="icon ion-ios-information"></i>
 			Info
 		</a>

@@ -20,6 +20,9 @@ module NuevaLuz {
             this.http = $http;
             this.myABooksSvc = myAbooksSvc;
             
+            this.scope.abooks = new Array<AudioBook>();
+            this.scope.abooks.push({ id:"", statusKey:"", title:""});
+            
             // Retrieve all my audio books
             this.myABooksSvc.getBooks((response : Array<AudioBook>) => {
                 this.scope.abooks = response;

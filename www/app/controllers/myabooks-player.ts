@@ -85,8 +85,14 @@ module NuevaLuz {
             return this.levelDescription[this.scope.currentStatus.position.navigationLevel-1];
         }
         
-        play() {
-            this.player.play(this.scope.currentStatus.position);
+        play(on : boolean) {
+            if (on) {
+                this.player.play(this.scope.currentStatus.position);            
+            }
+            else {
+                this.player.saveStatus(this.scope.currentStatus, () => {}, (error:string) => {});
+                this.player.pause();                
+            }
         }
         
         stop() {

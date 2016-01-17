@@ -64,6 +64,10 @@ var NuevaLuz;
         };
         DaisyPlayerService.prototype.loadBook = function (id, sucessCallback) {
             var _this = this;
+            // Save status of a previous book loaded
+            if (this.playerInfo) {
+                this.saveStatus(this.playerInfo, function () { }, function () { });
+            }
             this.playerInfo = new PlayerInfo();
             this.playerInfo.position = new SeekInfo();
             this.playerInfo.position.currentIndex = -1;
@@ -93,6 +97,7 @@ var NuevaLuz;
                         _this.playerInfo.media = new Media(NuevaLuz.playDir + "/" + _this.book.id + "/" + _this.book.sequence[_this.playerInfo.position.currentIndex].filename, function () { }, function (error) { }, function (status) {
                             _this.processPlayerStatusChange(status);
                         });
+                        _this.play(_this.playerInfo.position);
                         // load bookmarks
                         _this.loadBookmarks(function (bookmarks) {
                             _this.playerInfo.bookmarks = bookmarks;
@@ -125,6 +130,9 @@ var NuevaLuz;
         };
         DaisyPlayerService.prototype.stop = function () {
             if (this.playerInfo && this.playerInfo.media) {
+                if (!NuevaLuz.appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.playerInfo.media.stop();
             }
         };
@@ -135,6 +143,9 @@ var NuevaLuz;
         };
         DaisyPlayerService.prototype.release = function () {
             if (this.playerInfo && this.playerInfo.media) {
+                if (!NuevaLuz.appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.playerInfo.media.release();
             }
         };

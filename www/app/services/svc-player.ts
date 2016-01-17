@@ -89,6 +89,10 @@ module NuevaLuz {
         }
         
         loadBook(id : string, sucessCallback : (book : DaisyBook) => any)  {
+            // Save status of a previous book loaded
+            if (this.playerInfo) {
+                this.saveStatus(this.playerInfo, () => {}, () => {})
+            }            
                                     
             this.playerInfo = new PlayerInfo();
             this.playerInfo.position = new SeekInfo();
@@ -130,11 +134,13 @@ module NuevaLuz {
                             (status : number) => {
                                 this.processPlayerStatusChange(status);
                             });
-                            
+                                                    
+                        this.play(this.playerInfo.position);
+
                         // load bookmarks
                         this.loadBookmarks((bookmarks : Array<Bookmark>) => {
                             this.playerInfo.bookmarks = bookmarks;  
-                                                        
+                            
                             sucessCallback(this.book);                         
                         });
                     });                    
@@ -170,6 +176,9 @@ module NuevaLuz {
         
         stop() {
             if (this.playerInfo && this.playerInfo.media) {
+                if (!appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.playerInfo.media.stop();
             }
         }
@@ -182,6 +191,9 @@ module NuevaLuz {
         
         release() {
             if (this.playerInfo && this.playerInfo.media) {
+                if (!appleDevice) {
+                    this.processStatusChange = false;
+                }
                 this.playerInfo.media.release();
             }
         }
