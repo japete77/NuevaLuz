@@ -24,7 +24,9 @@
                 {{control.getLevel()}}
             </div>
 		</div>
-        <div class="list">
+	</div>
+	<ion-content class="padding has-subheader player">
+        <div ng-if="ready" class="list">
             <a class="item item-icon-left" ng-click="control.addBookmark()">
                 <i class="icon ion-bookmark"></i>
                 Crear marcador
@@ -45,8 +47,6 @@
                 <i class="icon ion-ios-arrow-right"></i>
             </a>
         </div>
-	</div>
-	<ion-content class="padding has-subheader player">
         <div ng-if="ready" class="list">
             <a class="item item-text-wrap">
                 <h2>{{currentBook.title}}</h2>
