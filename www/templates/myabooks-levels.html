@@ -3,6 +3,7 @@
         <ion-list>
             <ion-radio ng-model="currentLevel" ng-repeat="level in levels" ng-value="$index+1" ng-click="control.setLevel($index+1)">{{level}}</ion-radio>
             <ion-radio ng-model="currentLevel" ng-value="7" ng-click="control.setLevel(7)">Frase</ion-radio>            
+            <ion-radio ng-model="currentLevel" ng-value="9" ng-if="hasBookmarks" ng-click="control.setLevel(9)">Marcas</ion-radio>            
             <ion-radio ng-model="currentLevel" ng-value="8" ng-if="hasPages" ng-click="control.setLevel(8)">Página</ion-radio>            
         </ion-list>	
 	</ion-content>

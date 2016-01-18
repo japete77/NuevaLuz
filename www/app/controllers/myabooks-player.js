@@ -4,7 +4,7 @@ var NuevaLuz;
     var ABooksPlayerController = (function () {
         function ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, player) {
             var _this = this;
-            this.levelDescription = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4", "Nivel 5", "Nivel 6", "Frase", "Página", "Marcadores", "Intervalo"];
+            this.levelDescription = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4", "Nivel 5", "Nivel 6", "Frase", "Página", "Marcas", "Tiempo"];
             this.scope = $scope;
             this.scope.ready = false;
             this.scope.control = this;

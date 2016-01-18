@@ -11,6 +11,7 @@ var NuevaLuz;
             this.scope.currentLevel = this.player.getPlayerInfo().position.navigationLevel;
             this.scope.levels = this.player.getLevels();
             this.scope.hasPages = this.player.getCurrentBook().hasPages;
+            this.scope.hasBookmarks = this.player.getPlayerInfo().bookmarks && this.player.getPlayerInfo().bookmarks.length > 0;
         }
         ABooksLevelsController.prototype.setLevel = function (level) {
             var _this = this;

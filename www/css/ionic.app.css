@@ -2979,10 +2979,10 @@ $dark:                            #444 !default;
   content: ""; }
 
 .bar-subheader.player {
-  height: 110px !important; }
+  height: 90px !important; }
 
 .has-subheader.player {
-  top: 174px !important; }
+  top: 154px !important; }
 
 .bar-energized .button.button-icon {
   color: black; }

@@ -7,6 +7,7 @@ module NuevaLuz {
         levels : Array<string>;
         currentLevel : number;
         hasPages : boolean;
+        hasBookmarks : boolean;
     }
     
     export class ABooksLevelsController {
@@ -27,6 +28,7 @@ module NuevaLuz {
             
             this.scope.levels = this.player.getLevels();
             this.scope.hasPages = this.player.getCurrentBook().hasPages;
+            this.scope.hasBookmarks = this.player.getPlayerInfo().bookmarks && this.player.getPlayerInfo().bookmarks.length>0;
         }
         
         setLevel(level : number) {

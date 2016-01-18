@@ -250,7 +250,24 @@ module NuevaLuz {
 
             }
             else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_BOOKMARK) {
-                
+                if (this.playerInfo.bookmarks) {
+                    var absoluteTC : number = this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC;
+                 
+                    var found : boolean = false;
+                    var goBookmark : Bookmark = null;
+                    this.playerInfo.bookmarks.forEach((bm : Bookmark, index : number, array : Bookmark[]) => {
+                        if (!found && bm.som+bm.tc>absoluteTC) {
+                            found = true;
+                            goBookmark = bm;
+                        }  
+                    }); 
+                    
+                    if (goBookmark) {
+                        this.seek(goBookmark);
+                    }
+                    
+                    return;
+                }
             }
             else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_INTERVAL) {
                 
@@ -335,7 +352,24 @@ module NuevaLuz {
                 this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             }
             else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_BOOKMARK) {
-                
+                if (this.playerInfo.bookmarks) {
+                    var absoluteTC : number = this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC;
+                 
+                    var found : boolean = false;
+                    var goBookmark : Bookmark = null;
+                    for (var i = this.playerInfo.bookmarks.length-1; i>=0; i--) {
+                        if (!found && this.playerInfo.bookmarks[i].som+this.playerInfo.bookmarks[i].tc<absoluteTC-5) {
+                            found = true;
+                            goBookmark = this.playerInfo.bookmarks[i];
+                        }                          
+                    }
+                                        
+                    if (goBookmark) {
+                        this.seek(goBookmark);
+                    }
+                    
+                    return;
+                }                
             }
             else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_INTERVAL) {
                 
@@ -358,10 +392,13 @@ module NuevaLuz {
                         
         }
         
-        seek(bookmark : Bookmark) {            
+        seek(bookmark : Bookmark) {
+            
+            this.isPlaying = false;
+            var isPlaying : boolean = (this.playerInfo.status===Media.MEDIA_RUNNING);
+                  
             // If filename is not currently laoded, load the right one
             if (this.book.sequence[bookmark.index].filename!=this.book.sequence[this.playerInfo.position.currentIndex].filename) {
-                                
                 this.release();
                 this.playerInfo.media = new Media(playDir + "/" + this.book.id + "/" +  this.book.sequence[bookmark.index].filename, 
                     () => {
@@ -372,13 +409,6 @@ module NuevaLuz {
                         this.processPlayerStatusChange(status);
                     });
             }
-            else {
-            }
-
-            // play if running
-            if (this.playerInfo.status===Media.MEDIA_RUNNING) {
-                this.playerInfo.media.play();
-            }
             
             // update status
             this.playerInfo.position.absoluteTC = bookmark.absoluteTC;
@@ -387,6 +417,11 @@ module NuevaLuz {
             this.playerInfo.position.currentTC = bookmark.tc;
             this.playerInfo.position.currentTitle = this.book.sequence[bookmark.index].title;
             
+            // play if running
+            if (isPlaying) {
+                this.playerInfo.media.play();
+            }
+
             // Seek to the position in the player
             this.playerInfo.media.seekTo(bookmark.tc*1000);                
         }
