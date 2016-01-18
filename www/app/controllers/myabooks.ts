@@ -13,16 +13,18 @@ module NuevaLuz {
         http : ng.IHttpService;
         myABooksSvc : MyABooksService;
         
-        constructor($scope : IABooksScope, $timeout : ng.ITimeoutService, $http : ng.IHttpService, myAbooksSvc : MyABooksService) {
+        constructor($scope : IABooksScope, $timeout : ng.ITimeoutService, $http : ng.IHttpService, 
+            myAbooksSvc : MyABooksService, $stateParams : angular.ui.IStateParamsService, $ionicHistory : ionic.navigation.IonicHistoryService) {
             this.scope = $scope;
             this.scope.control = this;
             this.timeout = $timeout;
             this.http = $http;
             this.myABooksSvc = myAbooksSvc;
             
-            this.scope.abooks = new Array<AudioBook>();
-            this.scope.abooks.push({ id:"", statusKey:"", title:""});
-            
+            if ($stateParams["command"]=="clear") {
+                $ionicHistory.clearHistory();
+            }
+                        
             // Retrieve all my audio books
             this.myABooksSvc.getBooks((response : Array<AudioBook>) => {
                 this.scope.abooks = response;

@@ -24,8 +24,8 @@ var NuevaLuz;
                     _this.playerSvc.release();
                     // Delete book
                     _this.myABooksSvc.deleteBook(id);
-                    // Redirect to my audio books
-                    _this.location.path("/myabooks");
+                    // Redirect to my audio books cleaning history
+                    _this.location.path("/myabooks/clear");
                 }
             });
         };

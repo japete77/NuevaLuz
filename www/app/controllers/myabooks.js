@@ -2,15 +2,16 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var ABooksController = (function () {
-        function ABooksController($scope, $timeout, $http, myAbooksSvc) {
+        function ABooksController($scope, $timeout, $http, myAbooksSvc, $stateParams, $ionicHistory) {
             var _this = this;
             this.scope = $scope;
             this.scope.control = this;
             this.timeout = $timeout;
             this.http = $http;
             this.myABooksSvc = myAbooksSvc;
-            this.scope.abooks = new Array();
-            this.scope.abooks.push({ id: "", statusKey: "", title: "" });
+            if ($stateParams["command"] == "clear") {
+                $ionicHistory.clearHistory();
+            }
             // Retrieve all my audio books
             this.myABooksSvc.getBooks(function (response) {
                 _this.scope.abooks = response;

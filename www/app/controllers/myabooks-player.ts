@@ -4,12 +4,9 @@ module NuevaLuz {
 
     export interface IABooksPlayerScope extends ng.IScope {
         control : ABooksPlayerController;
-        
         currentBook : DaisyBook;        
         currentStatus : PlayerInfo;
-        
-        tmpBookmark : Bookmark;
-                
+        tmpBookmark : Bookmark;        
         showPlay : boolean;
         ready : boolean;
     }

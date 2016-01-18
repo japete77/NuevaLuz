@@ -40,8 +40,8 @@ module NuevaLuz {
                     // Delete book
                     this.myABooksSvc.deleteBook(id);
                     
-                    // Redirect to my audio books
-                    this.location.path("/myabooks");
+                    // Redirect to my audio books cleaning history
+                    this.location.path("/myabooks/clear");
                 }
             });
         }

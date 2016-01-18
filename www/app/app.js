@@ -111,7 +111,7 @@ var NuevaLuz;
             templateUrl: "templates/abooks-detail.html"
         })
             .state("myabooks", {
-            url: "/myabooks",
+            url: "/myabooks/:command",
             templateUrl: "templates/myabooks.html"
         })
             .state("myabooks-player", {
@@ -157,8 +157,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksTitlesCtrl", function ($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc) {
         return new NuevaLuz.ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc);
     });
-    NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc) {
-        return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc);
+    NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory) {
+        return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory);
     });
     NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc) {
         return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc);

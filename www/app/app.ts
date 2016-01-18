@@ -127,7 +127,7 @@ module NuevaLuz {
                 templateUrl: "templates/abooks-detail.html"
             })
             .state("myabooks", {
-                url: "/myabooks",
+                url: "/myabooks/:command",
                 templateUrl: "templates/myabooks.html"
             })
             .state("myabooks-player", {
@@ -190,8 +190,8 @@ module NuevaLuz {
         new ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc));
  
     app.controller("ABooksCtrl", ($scope : IABooksScope, $timeout : ng.ITimeoutService, 
-        $http : ng.IHttpService, MyABooksSvc : MyABooksService) => 
-        new ABooksController($scope, $timeout, $http, MyABooksSvc));
+        $http : ng.IHttpService, MyABooksSvc : MyABooksService, $stateParams : angular.ui.IStateParamsService, $ionicHistory : ionic.navigation.IonicHistoryService) => 
+        new ABooksController($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory));
         
     app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, 
         $stateParams : angular.ui.IStateParamsService, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService) => 
