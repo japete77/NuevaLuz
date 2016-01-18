@@ -199,41 +199,80 @@ module NuevaLuz {
         }
         
         next() {
-                                    
-            var index : number = this.playerInfo.position.currentIndex;
-            
-            // protect bounds...
-            if (index>=0 && this.book.sequence.length<=index) return;
-            
-            var filename : string = this.book.sequence[index].filename;
-            var level : number = this.playerInfo.position.navigationLevel;
-            
-            do {
-                index++;
-            } while (index<this.book.sequence.length && this.book.sequence[index].level>level);
-            
-            // protect bounds...
-            if (index<0) {
-                index = 0;
-                return;
+
+            if (this.playerInfo.position.navigationLevel<=NAV_LEVEL_PHRASE) {
+                var index : number = this.playerInfo.position.currentIndex;
+                
+                // protect bounds...
+                if (index>=0 && this.book.sequence.length<=index) return;
+                
+                var filename : string = this.book.sequence[index].filename;
+                var level : number = this.playerInfo.position.navigationLevel;
+                
+                do {
+                    index++;
+                } while (index<this.book.sequence.length && this.book.sequence[index].level>level);
+                
+                // protect bounds...
+                if (index<0) {
+                    index = 0;
+                    return;
+                }
+                if (index>=this.book.sequence.length) {
+                    index = this.book.sequence.length-1;
+                    return;
+                }
+                
+                this.playerInfo.position.currentIndex = index;
+                this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+                this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+                this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+                this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             }
-            if (index>=this.book.sequence.length) {
-                index = this.book.sequence.length-1;
-                return;
+            else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_PAGE) {
+                var index : number = this.playerInfo.position.currentIndex;
+                
+                // protect bounds...
+                if (index>=0 && this.book.sequence.length<=index) return;
+                
+                var filename : string = this.book.sequence[index].filename;
+                var level : number = this.playerInfo.position.navigationLevel;
+                
+                do {
+                    index++;
+                } while (index<this.book.sequence.length && this.book.sequence[index].level!=NAV_LEVEL_PAGE);
+                
+                // protect bounds...
+                if (index<0) {
+                    index = this.playerInfo.position.currentIndex;
+                    return;
+                }
+                if (index>=this.book.sequence.length) {
+                    index = this.playerInfo.position.currentIndex;
+                    return;
+                }
+                
+                this.playerInfo.position.currentIndex = index;
+                this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+                this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+                this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+                this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+
             }
-            
-            this.playerInfo.position.currentIndex = index;
-            this.playerInfo.position.currentSOM = this.book.sequence[index].som;
-            this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
-            this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
-            this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_BOOKMARK) {
+                
+            }
+            else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_INTERVAL) {
+                
+            }
             
             var isPlaying : boolean = (this.playerInfo.status===Media.MEDIA_RUNNING);
 
+            if (!appleDevice) {
+                this.processStatusChange = false;
+            }
+            
             if (this.book.sequence[index].filename!==filename) {
-                if (!appleDevice) {
-                    this.processStatusChange = false;
-                }
                 this.loadNextFile(0);
             }
             
@@ -249,40 +288,78 @@ module NuevaLuz {
         
         prev() {
                         
-            var index : number = this.playerInfo.position.currentIndex;
-            
-            // protect bounds...
-            if (index>=0 && this.book.sequence.length<=index) return;
-            
-            var filename : string = this.book.sequence[index].filename;
-            var level : number = this.playerInfo.position.navigationLevel;
-            
-            do {
-                index--;
-            } while (index>0 && this.book.sequence[index].level>level);
-            
-            // protect bounds...
-            if (index<0) {
-                index = 0;
-                return;
+            if (this.playerInfo.position.navigationLevel<=NAV_LEVEL_PHRASE) {
+                var index : number = this.playerInfo.position.currentIndex;
+                
+                // protect bounds...
+                if (index>=0 && this.book.sequence.length<=index) return;
+                
+                var filename : string = this.book.sequence[index].filename;
+                var level : number = this.playerInfo.position.navigationLevel;
+                
+                do {
+                    index--;
+                } while (index>0 && this.book.sequence[index].level>level);
+                
+                // protect bounds...
+                if (index<0) {
+                    index = this.playerInfo.position.currentIndex;
+                    return;
+                }
+                if (index>=this.book.sequence.length) {
+                    index = this.playerInfo.position.currentIndex;
+                    return;
+                }
+        
+                this.playerInfo.position.currentIndex = index;
+                this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+                this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+                this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+                this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             }
-            if (index>=this.book.sequence.length) {
-                index = this.book.sequence.length-1;
-                return;
+            else if (this.playerInfo.position.navigationLevel<=NAV_LEVEL_PAGE) {
+                var index : number = this.playerInfo.position.currentIndex;
+                
+                // protect bounds...
+                if (index>=0 && this.book.sequence.length<=index) return;
+                
+                var filename : string = this.book.sequence[index].filename;
+                var level : number = this.playerInfo.position.navigationLevel;
+                
+                do {
+                    index--;
+                } while (index>0 && this.book.sequence[index].level!=NAV_LEVEL_PAGE);
+                
+                // protect bounds...
+                if (index<0) {
+                    index = 0;
+                    return;
+                }
+                if (index>=this.book.sequence.length) {
+                    index = this.book.sequence.length-1;
+                    return;
+                }
+        
+                this.playerInfo.position.currentIndex = index;
+                this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+                this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+                this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+                this.playerInfo.position.currentTitle = this.book.sequence[index].title;
             }
-       
-            this.playerInfo.position.currentIndex = index;
-            this.playerInfo.position.currentSOM = this.book.sequence[index].som;
-            this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
-            this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
-            this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_BOOKMARK) {
+                
+            }
+            else if (this.playerInfo.position.navigationLevel===NAV_LEVEL_INTERVAL) {
+                
+            }
             
             var isPlaying : boolean = (this.playerInfo.status===Media.MEDIA_RUNNING);
             
+            if (!appleDevice) {
+                this.processStatusChange = false;
+            }
+            
             if (this.book.sequence[this.playerInfo.position.currentIndex].filename!==filename) {
-                if (!appleDevice) {
-                    this.processStatusChange = false;
-                }
                 this.loadNextFile(0);
             }
             
@@ -380,7 +457,18 @@ module NuevaLuz {
             .then((entry : FileEntry) => {
                 this.cordovaFile.readAsBinaryString(bdir, bfile)
                 .then((result : string) => {
-                    this.playerInfo.position = JSON.parse(atob(result));
+                    try {
+                        this.playerInfo.position = JSON.parse(atob(result));
+                    }
+                    catch (e) {
+                        this.playerInfo.position = new SeekInfo();
+                        this.playerInfo.position.navigationLevel = 1;
+                        this.playerInfo.position.currentIndex = 0;
+                        this.playerInfo.position.currentSOM = this.book.sequence[0].som;
+                        this.playerInfo.position.currentTC = this.book.sequence[0].som;
+                        this.playerInfo.position.currentTitle = this.book.sequence[0].title;
+                        this.playerInfo.position.absoluteTC = "0:00:00";
+                    }
                     sucessCallback(this.playerInfo);
                 });                
             }, (error : ngCordova.IFileError) => {
@@ -476,6 +564,17 @@ module NuevaLuz {
         absoluteTC : string;
     }
     
+    export var NAV_LEVEL_1 : number = 1;
+    export var NAV_LEVEL_2 : number = 2;
+    export var NAV_LEVEL_3 : number = 3;
+    export var NAV_LEVEL_4 : number = 4;
+    export var NAV_LEVEL_5 : number = 5;
+    export var NAV_LEVEL_6 : number = 6;
+    export var NAV_LEVEL_PHRASE : number = 7;
+    export var NAV_LEVEL_PAGE : number = 8;
+    export var NAV_LEVEL_BOOKMARK : number = 9;
+    export var NAV_LEVEL_INTERVAL : number = 10;
+
     export class DaisyBook {
         
         // Metadata info
@@ -495,7 +594,8 @@ module NuevaLuz {
         totalTime : string;
         
         maxLevels : number = 0;
-        
+        hasPages : boolean = false;
+                
         // body smil info
         body : Array<SmilInfo>;
         
@@ -554,32 +654,34 @@ module NuevaLuz {
                 var level : number;
                 switch (bodyElements.item(i).tagName) {
                     case "h1":
-                        level = 1;
+                        level = NAV_LEVEL_1;
                         break;
                     case "h2":
-                        level = 2;
+                        level = NAV_LEVEL_2;
                         break;
                     case "h3":
-                        level = 3;
+                        level = NAV_LEVEL_3;
                         break;
                     case "h4":
-                        level = 4;
+                        level = NAV_LEVEL_4;
                         break;
                     case "h5":
-                        level = 5;
+                        level = NAV_LEVEL_5;
                         break;
                     case "h6":
-                        level = 6;
+                        level = NAV_LEVEL_6;
                         break;
                     case "span":
-                        level = 7;
+                        level = NAV_LEVEL_PAGE;
+                        this.hasPages = true;
                         break;
                     case "div":
-                        level = 7;
+                        level = NAV_LEVEL_PAGE;
+                        this.hasPages = true;
                         break;
                 }
                 
-                if (level<7 && this.maxLevels<level) {
+                if (level<=NAV_LEVEL_6 && this.maxLevels<level) {
                     this.maxLevels = level;
                 }
                 
@@ -609,7 +711,7 @@ module NuevaLuz {
                 this.sequence.push({
                      filename : audioElements.item(i).attributes.getNamedItem("src").value,
                      title : title,
-                     level : i===0?level:7,
+                     level : i===0?level:NAV_LEVEL_PHRASE,
                      som : som,
                      tcin : tcin,
                      tcout : tcout

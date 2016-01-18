@@ -6,6 +6,7 @@ module NuevaLuz {
         control : ABooksLevelsController;
         levels : Array<string>;
         currentLevel : number;
+        hasPages : boolean;
     }
     
     export class ABooksLevelsController {
@@ -25,6 +26,7 @@ module NuevaLuz {
             this.scope.currentLevel = this.player.getPlayerInfo().position.navigationLevel;
             
             this.scope.levels = this.player.getLevels();
+            this.scope.hasPages = this.player.getCurrentBook().hasPages;
         }
         
         setLevel(level : number) {

@@ -24,29 +24,34 @@
                 {{control.getLevel()}}
             </div>
 		</div>
+        <div class="list">
+            <a class="item item-icon-left" ng-click="control.addBookmark()">
+                <i class="icon ion-bookmark"></i>
+                Crear marcador
+            </a>
+            <a class="item item-icon-left item-icon-right" ng-click="control.showBookmarks()">
+                <i class="icon ion-ios-bookmarks"></i>
+                Ir a marcador
+                <i class="icon ion-ios-arrow-right"></i>
+            </a>
+            <a class="item item-icon-left item-icon-right" ng-click="control.selectLevel()">
+                <i class="icon ion-ios-browsers"></i>
+                Niveles de navegación
+                <i class="icon ion-ios-arrow-right"></i>
+            </a>
+            <a class="item item-icon-left item-icon-right" ng-click="control.showInfo(currentBook.id)">
+                <i class="icon ion-ios-information"></i>
+                Más información
+                <i class="icon ion-ios-arrow-right"></i>
+            </a>
+        </div>
 	</div>
 	<ion-content class="padding has-subheader player">
-		<h4 style="text-align:center">{{currentBook.title}}</h4>
-		<p>{{currentStatus.position.currentTitle}}</p>
+        <div ng-if="ready" class="list">
+            <a class="item item-text-wrap">
+                <h2>{{currentBook.title}}</h2>
+                <p>{{currentStatus.position.currentTitle}}</p>
+            </a>
+        </div>
 	</ion-content>
-	<div class="tabs tabs-icon-top">
-		<a class="tab-item">
-            <div title="Crear marca" alt="Crear marca"> 
-                <i class="icon ion-bookmark" ng-click="control.addBookmark()"></i>
-                Crear marca
-            </div>
-		</a>
-		<a alt="Ir a marca" class="tab-item">
-			<i class="icon ion-ios-bookmarks" ng-click="control.showBookmarks()"></i>
-			Ir a marca
-		</a>
-		<a alt="Navegacion" class="tab-item" ng-click="control.selectLevel()">
-			<i class="icon ion-ios-browsers"></i>
-			Navegación
-		</a>
-		<a alt="Informacion" class="tab-item" ng-click="control.showInfo(currentBook.id)">
-			<i class="icon ion-ios-information"></i>
-			Info
-		</a>
-	</div>
 </ion-view>

@@ -21,7 +21,7 @@ module NuevaLuz {
         private ionicLoading : ionic.loading.IonicLoadingService;
         private ionicPopup : ionic.popup.IonicPopupService;
         
-        private levelDescription : string[] = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4", "Nivel 5", "Nivel 6", "Frase", "Marcadores"];
+        private levelDescription : string[] = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4", "Nivel 5", "Nivel 6", "Frase", "Página", "Marcadores", "Intervalo"];
         
         constructor($scope : IABooksPlayerScope, $stateParams : angular.ui.IStateParamsService, $location : ng.ILocationService, 
             $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, player : DaisyPlayerService) {

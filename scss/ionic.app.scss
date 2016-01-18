@@ -27,3 +27,22 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
         text-align: center;
     }
 }
+
+$newHeight:320px;
+
+.bar-subheader {
+	&.player {
+		height: $newHeight !important;
+	}
+}
+
+.has-subheader {
+	&.player {
+		top: $bar-height + $newHeight + 10px !important;
+	}
+}
+
+
+.bar-energized .button.button-icon {
+	color: black;
+}

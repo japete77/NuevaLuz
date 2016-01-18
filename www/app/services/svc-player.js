@@ -150,34 +150,65 @@ var NuevaLuz;
             }
         };
         DaisyPlayerService.prototype.next = function () {
-            var index = this.playerInfo.position.currentIndex;
-            // protect bounds...
-            if (index >= 0 && this.book.sequence.length <= index)
-                return;
-            var filename = this.book.sequence[index].filename;
-            var level = this.playerInfo.position.navigationLevel;
-            do {
-                index++;
-            } while (index < this.book.sequence.length && this.book.sequence[index].level > level);
-            // protect bounds...
-            if (index < 0) {
-                index = 0;
-                return;
-            }
-            if (index >= this.book.sequence.length) {
-                index = this.book.sequence.length - 1;
-                return;
-            }
-            this.playerInfo.position.currentIndex = index;
-            this.playerInfo.position.currentSOM = this.book.sequence[index].som;
-            this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
-            this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
-            this.playerInfo.position.currentTitle = this.book.sequence[index].title;
-            var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
-            if (this.book.sequence[index].filename !== filename) {
-                if (!NuevaLuz.appleDevice) {
-                    this.processStatusChange = false;
+            if (this.playerInfo.position.navigationLevel <= NuevaLuz.NAV_LEVEL_PHRASE) {
+                var index = this.playerInfo.position.currentIndex;
+                // protect bounds...
+                if (index >= 0 && this.book.sequence.length <= index)
+                    return;
+                var filename = this.book.sequence[index].filename;
+                var level = this.playerInfo.position.navigationLevel;
+                do {
+                    index++;
+                } while (index < this.book.sequence.length && this.book.sequence[index].level > level);
+                // protect bounds...
+                if (index < 0) {
+                    index = 0;
+                    return;
                 }
+                if (index >= this.book.sequence.length) {
+                    index = this.book.sequence.length - 1;
+                    return;
+                }
+                this.playerInfo.position.currentIndex = index;
+                this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+                this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+                this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+                this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            }
+            else if (this.playerInfo.position.navigationLevel === NuevaLuz.NAV_LEVEL_PAGE) {
+                var index = this.playerInfo.position.currentIndex;
+                // protect bounds...
+                if (index >= 0 && this.book.sequence.length <= index)
+                    return;
+                var filename = this.book.sequence[index].filename;
+                var level = this.playerInfo.position.navigationLevel;
+                do {
+                    index++;
+                } while (index < this.book.sequence.length && this.book.sequence[index].level != NuevaLuz.NAV_LEVEL_PAGE);
+                // protect bounds...
+                if (index < 0) {
+                    index = this.playerInfo.position.currentIndex;
+                    return;
+                }
+                if (index >= this.book.sequence.length) {
+                    index = this.playerInfo.position.currentIndex;
+                    return;
+                }
+                this.playerInfo.position.currentIndex = index;
+                this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+                this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+                this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+                this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            }
+            else if (this.playerInfo.position.navigationLevel === NuevaLuz.NAV_LEVEL_BOOKMARK) {
+            }
+            else if (this.playerInfo.position.navigationLevel === NuevaLuz.NAV_LEVEL_INTERVAL) {
+            }
+            var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
+            if (!NuevaLuz.appleDevice) {
+                this.processStatusChange = false;
+            }
+            if (this.book.sequence[index].filename !== filename) {
                 this.loadNextFile(0);
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
@@ -187,34 +218,65 @@ var NuevaLuz;
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
         };
         DaisyPlayerService.prototype.prev = function () {
-            var index = this.playerInfo.position.currentIndex;
-            // protect bounds...
-            if (index >= 0 && this.book.sequence.length <= index)
-                return;
-            var filename = this.book.sequence[index].filename;
-            var level = this.playerInfo.position.navigationLevel;
-            do {
-                index--;
-            } while (index > 0 && this.book.sequence[index].level > level);
-            // protect bounds...
-            if (index < 0) {
-                index = 0;
-                return;
-            }
-            if (index >= this.book.sequence.length) {
-                index = this.book.sequence.length - 1;
-                return;
-            }
-            this.playerInfo.position.currentIndex = index;
-            this.playerInfo.position.currentSOM = this.book.sequence[index].som;
-            this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
-            this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
-            this.playerInfo.position.currentTitle = this.book.sequence[index].title;
-            var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
-            if (this.book.sequence[this.playerInfo.position.currentIndex].filename !== filename) {
-                if (!NuevaLuz.appleDevice) {
-                    this.processStatusChange = false;
+            if (this.playerInfo.position.navigationLevel <= NuevaLuz.NAV_LEVEL_PHRASE) {
+                var index = this.playerInfo.position.currentIndex;
+                // protect bounds...
+                if (index >= 0 && this.book.sequence.length <= index)
+                    return;
+                var filename = this.book.sequence[index].filename;
+                var level = this.playerInfo.position.navigationLevel;
+                do {
+                    index--;
+                } while (index > 0 && this.book.sequence[index].level > level);
+                // protect bounds...
+                if (index < 0) {
+                    index = this.playerInfo.position.currentIndex;
+                    return;
                 }
+                if (index >= this.book.sequence.length) {
+                    index = this.playerInfo.position.currentIndex;
+                    return;
+                }
+                this.playerInfo.position.currentIndex = index;
+                this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+                this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+                this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+                this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            }
+            else if (this.playerInfo.position.navigationLevel <= NuevaLuz.NAV_LEVEL_PAGE) {
+                var index = this.playerInfo.position.currentIndex;
+                // protect bounds...
+                if (index >= 0 && this.book.sequence.length <= index)
+                    return;
+                var filename = this.book.sequence[index].filename;
+                var level = this.playerInfo.position.navigationLevel;
+                do {
+                    index--;
+                } while (index > 0 && this.book.sequence[index].level != NuevaLuz.NAV_LEVEL_PAGE);
+                // protect bounds...
+                if (index < 0) {
+                    index = 0;
+                    return;
+                }
+                if (index >= this.book.sequence.length) {
+                    index = this.book.sequence.length - 1;
+                    return;
+                }
+                this.playerInfo.position.currentIndex = index;
+                this.playerInfo.position.currentSOM = this.book.sequence[index].som;
+                this.playerInfo.position.currentTC = this.book.sequence[index].tcin;
+                this.playerInfo.position.absoluteTC = this.seconds2TC(this.playerInfo.position.currentSOM + this.playerInfo.position.currentTC);
+                this.playerInfo.position.currentTitle = this.book.sequence[index].title;
+            }
+            else if (this.playerInfo.position.navigationLevel === NuevaLuz.NAV_LEVEL_BOOKMARK) {
+            }
+            else if (this.playerInfo.position.navigationLevel === NuevaLuz.NAV_LEVEL_INTERVAL) {
+            }
+            var isPlaying = (this.playerInfo.status === Media.MEDIA_RUNNING);
+            if (!NuevaLuz.appleDevice) {
+                this.processStatusChange = false;
+            }
+            if (this.book.sequence[this.playerInfo.position.currentIndex].filename !== filename) {
                 this.loadNextFile(0);
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
@@ -291,7 +353,18 @@ var NuevaLuz;
                 .then(function (entry) {
                 _this.cordovaFile.readAsBinaryString(bdir, bfile)
                     .then(function (result) {
-                    _this.playerInfo.position = JSON.parse(atob(result));
+                    try {
+                        _this.playerInfo.position = JSON.parse(atob(result));
+                    }
+                    catch (e) {
+                        _this.playerInfo.position = new SeekInfo();
+                        _this.playerInfo.position.navigationLevel = 1;
+                        _this.playerInfo.position.currentIndex = 0;
+                        _this.playerInfo.position.currentSOM = _this.book.sequence[0].som;
+                        _this.playerInfo.position.currentTC = _this.book.sequence[0].som;
+                        _this.playerInfo.position.currentTitle = _this.book.sequence[0].title;
+                        _this.playerInfo.position.absoluteTC = "0:00:00";
+                    }
                     sucessCallback(_this.playerInfo);
                 });
             }, function (error) {
@@ -372,9 +445,20 @@ var NuevaLuz;
         return Bookmark;
     })();
     NuevaLuz.Bookmark = Bookmark;
+    NuevaLuz.NAV_LEVEL_1 = 1;
+    NuevaLuz.NAV_LEVEL_2 = 2;
+    NuevaLuz.NAV_LEVEL_3 = 3;
+    NuevaLuz.NAV_LEVEL_4 = 4;
+    NuevaLuz.NAV_LEVEL_5 = 5;
+    NuevaLuz.NAV_LEVEL_6 = 6;
+    NuevaLuz.NAV_LEVEL_PHRASE = 7;
+    NuevaLuz.NAV_LEVEL_PAGE = 8;
+    NuevaLuz.NAV_LEVEL_BOOKMARK = 9;
+    NuevaLuz.NAV_LEVEL_INTERVAL = 10;
     var DaisyBook = (function () {
         function DaisyBook() {
             this.maxLevels = 0;
+            this.hasPages = false;
             this.body = new Array();
             this.sequence = new Array();
         }
@@ -421,31 +505,33 @@ var NuevaLuz;
                 var level;
                 switch (bodyElements.item(i).tagName) {
                     case "h1":
-                        level = 1;
+                        level = NuevaLuz.NAV_LEVEL_1;
                         break;
                     case "h2":
-                        level = 2;
+                        level = NuevaLuz.NAV_LEVEL_2;
                         break;
                     case "h3":
-                        level = 3;
+                        level = NuevaLuz.NAV_LEVEL_3;
                         break;
                     case "h4":
-                        level = 4;
+                        level = NuevaLuz.NAV_LEVEL_4;
                         break;
                     case "h5":
-                        level = 5;
+                        level = NuevaLuz.NAV_LEVEL_5;
                         break;
                     case "h6":
-                        level = 6;
+                        level = NuevaLuz.NAV_LEVEL_6;
                         break;
                     case "span":
-                        level = 7;
+                        level = NuevaLuz.NAV_LEVEL_PAGE;
+                        this.hasPages = true;
                         break;
                     case "div":
-                        level = 7;
+                        level = NuevaLuz.NAV_LEVEL_PAGE;
+                        this.hasPages = true;
                         break;
                 }
-                if (level < 7 && this.maxLevels < level) {
+                if (level <= NuevaLuz.NAV_LEVEL_6 && this.maxLevels < level) {
                     this.maxLevels = level;
                 }
                 this.body.push({
@@ -471,7 +557,7 @@ var NuevaLuz;
                 this.sequence.push({
                     filename: audioElements.item(i).attributes.getNamedItem("src").value,
                     title: title,
-                    level: i === 0 ? level : 7,
+                    level: i === 0 ? level : NuevaLuz.NAV_LEVEL_PHRASE,
                     som: som,
                     tcin: tcin,
                     tcout: tcout
