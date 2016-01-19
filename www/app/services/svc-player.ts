@@ -281,12 +281,15 @@ module NuevaLuz {
             
             this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
 
-            if (isPlaying) {
-                this.playerInfo.media.play();
-                this.isPlaying = true;
-            }
+            this.playerInfo.media.play();
+            this.isPlaying = true;
 
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
+
+            if (!isPlaying) {
+                this.playerInfo.media.pause();
+                this.isPlaying = false;
+            }
 
         }
         
@@ -383,12 +386,15 @@ module NuevaLuz {
             
             this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
             
-            if (isPlaying) {
-                this.playerInfo.media.play();
-                this.isPlaying = true;
-            }
+            this.playerInfo.media.play();
+            this.isPlaying = true;
 
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
+
+            if (!isPlaying) {
+                this.playerInfo.media.pause();
+                this.isPlaying = false;
+            }
                         
         }
         
@@ -416,14 +422,15 @@ module NuevaLuz {
             this.playerInfo.position.currentSOM = bookmark.som;
             this.playerInfo.position.currentTC = bookmark.tc;
             this.playerInfo.position.currentTitle = this.book.sequence[bookmark.index].title;
-            
+           
+            this.playerInfo.media.play();
+            // Seek to the position in the player
+            this.playerInfo.media.seekTo(bookmark.tc*1000);            
             // play if running
-            if (isPlaying) {
-                this.playerInfo.media.play();
+            if (!isPlaying) {
+                this.playerInfo.media.pause();
             }
 
-            // Seek to the position in the player
-            this.playerInfo.media.seekTo(bookmark.tc*1000);                
         }
         
         loadBookmarks(sucessCallback : (bookmarks : Array<Bookmark>) => any) {
