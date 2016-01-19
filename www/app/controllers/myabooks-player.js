@@ -91,7 +91,12 @@ var NuevaLuz;
             this.scope.tmpBookmark.absoluteTC = s.absoluteTC;
             var counter = 1;
             if (this.scope.currentStatus.bookmarks && this.scope.currentStatus.bookmarks.length > 0) {
-                counter = this.scope.currentStatus.bookmarks[this.scope.currentStatus.bookmarks.length - 1].id + 1;
+                for (var i = 0; i < this.scope.currentStatus.bookmarks.length; i++) {
+                    if (counter < this.scope.currentStatus.bookmarks[i].id) {
+                        counter = this.scope.currentStatus.bookmarks[i].id;
+                    }
+                }
+                counter++;
             }
             this.scope.tmpBookmark.id = counter;
             this.scope.tmpBookmark.title = "Marcador " + counter;
@@ -112,6 +117,9 @@ var NuevaLuz;
             myPopup.then(function (result) {
                 if (result) {
                     _this.scope.currentStatus.bookmarks.push(_this.scope.tmpBookmark);
+                    _this.scope.currentStatus.bookmarks.sort(function (a, b) {
+                        return (a.som + a.tc) - (b.som + b.tc);
+                    });
                     _this.player.saveBooksmarks(_this.scope.currentStatus.bookmarks, function () { }, function (message) { });
                 }
             });

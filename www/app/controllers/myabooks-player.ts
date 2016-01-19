@@ -128,7 +128,12 @@ module NuevaLuz {
             
             var counter : number = 1;
             if (this.scope.currentStatus.bookmarks && this.scope.currentStatus.bookmarks.length>0) {
-                counter = this.scope.currentStatus.bookmarks[this.scope.currentStatus.bookmarks.length-1].id+1;
+                for (var i=0; i<this.scope.currentStatus.bookmarks.length; i++) {
+                    if (counter<this.scope.currentStatus.bookmarks[i].id) {
+                        counter = this.scope.currentStatus.bookmarks[i].id;
+                    }
+                }
+                counter++;
             }
             this.scope.tmpBookmark.id = counter;
             this.scope.tmpBookmark.title = "Marcador " + counter;
@@ -151,6 +156,9 @@ module NuevaLuz {
             myPopup.then((result : boolean) => {
                 if (result) {
                     this.scope.currentStatus.bookmarks.push(this.scope.tmpBookmark);
+                    this.scope.currentStatus.bookmarks.sort((a : Bookmark, b : Bookmark) => {
+                       return (a.som+a.tc)-(b.som+b.tc); 
+                    });
                     this.player.saveBooksmarks(this.scope.currentStatus.bookmarks, () => {}, (message: string) => {});                    
                 }
             });            
