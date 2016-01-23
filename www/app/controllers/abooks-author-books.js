@@ -36,6 +36,14 @@ var NuevaLuz;
                     _this.timer = null;
                     _this.scope.stopLoading = false;
                     _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                }, function (reason) {
+                    _this.sessionSvc.isSessionValid()
+                        .then(function (result) {
+                        _this.getNextTitles();
+                    })
+                        .catch(function (reason) {
+                        _this.location.path("/login");
+                    });
                 });
             }
             else {

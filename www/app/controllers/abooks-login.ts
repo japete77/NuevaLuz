@@ -16,14 +16,16 @@ module NuevaLuz {
         timeout : ng.ITimeoutService;
         ionicLoading : ionic.loading.IonicLoadingService;
         http : ng.IHttpService;
-        sessionService : SessionService;
         ionicHistory : ionic.navigation.IonicHistoryService;
+        SessionSvc : SessionService;
         
         constructor($scope : ILoginScope, $location : ng.ILocationService, 
             $timeout : ng.ITimeoutService, $http : ng.IHttpService,
             $ionicLoading : ionic.loading.IonicLoadingService, $ionicHistory : ionic.navigation.IonicHistoryService, 
-            sessionService : SessionService) {
+            SessionSvc : SessionService) {
             
+            // super(SessionSvc);
+            this.SessionSvc = SessionSvc;
             this.scope = $scope;
             this.scope.control = this;
             this.scope.showErrorLogin = false;
@@ -33,8 +35,11 @@ module NuevaLuz {
             this.timeout = $timeout;
             this.ionicLoading = $ionicLoading;
             this.http = $http;
-            this.sessionService = sessionService;
             this.ionicHistory = $ionicHistory;
+            
+            this.ionicHistory.clearHistory();
+            
+            //this.SessionSvc.loadSessionInfo();
         }
         
         // Login
@@ -48,48 +53,41 @@ module NuevaLuz {
                 });
             }, 0)
             
-            this.http({
-                method: 'GET',
-                url: baseUrl + 'Login?Username=' + username + '&Password=' + password
-            })
-            .then((response : any) => {
-                if (response.data.LoginResult.Success) {           
+            this.SessionSvc.login(username, password)
+            .then((result : SessionInfo) => {
                 
-                    this.sessionService.setSession(response.data.LoginResult.Session);
-            
-                    this.scope.showErrorLogin = false;
+                this.scope.showErrorLogin = false;
+
+                this.ionicHistory.nextViewOptions({
+                    disableAnimate: true,
+                    disableBack: true
+                });
+                
+                this.SessionSvc.saveSessionInfo()
+                .then(() => {
+                    this.location.path("/abooks/menu");
                     
-                    this.ionicHistory.nextViewOptions({
-                        disableAnimate: true,
-                        disableBack: true
-                    });
-                    
-                    this.location.path("/");
-                }
-                else {           
-                    this.scope.errorMessage = 'Acceso denegado';
-                    this.scope.showErrorLogin = true;
-                }
-            
-                // Close dialog  
-                this.timeout(() => {
-                    this.ionicLoading.hide();
-                }, 0);			
-            },
-            (response) => {
+                    this.timeout(() => {
+                        this.ionicLoading.hide();
+                    }, 0); 
+                });
+            })
+            .catch((reason : string) => {
                 
                 this.timeout(() => {
                     this.ionicLoading.hide();
                 }, 0);
                             
-                this.scope.errorMessage = 'Biblioteca de audio libros fuera de servicio';
-                this.scope.showErrorLogin = true;
-            })
+                this.scope.errorMessage = reason;
+                this.scope.showErrorLogin = true;  
+                              
+            });
+
         }
         
         // Get the link to next screen based on auth info
         getLink() : string {
-            if (this.isAuthenticated()) {
+            if (this.SessionSvc.isAuthenticated()) {
                 return '#/abooks/menu';
             }
             else {
@@ -97,10 +95,6 @@ module NuevaLuz {
             }
         }
         
-        // Checks if the user is authenticated
-        isAuthenticated() : boolean {
-            return this.sessionService.getSession()!=="";
-        }
     }
     
 }

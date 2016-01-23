@@ -2,7 +2,8 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var RadioController = (function () {
-        function RadioController($scope, svcRadio) {
+        function RadioController($scope, svcRadio, SessionSvc) {
+            // super(SessionSvc);
             this.scope = $scope;
             this.scope.control = this;
             this.svcRadio = svcRadio;

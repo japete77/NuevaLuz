@@ -9,7 +9,10 @@
 /// <reference path="./controllers/abooks-authors.ts" />
 /// <reference path="./controllers/abooks-detail.ts" />
 /// <reference path="./controllers/abooks-login.ts" />
+/// <reference path="./controllers/abooks-menu.ts" />
 /// <reference path="./controllers/abooks-titles.ts" />
+/// <reference path="./controllers/config.ts" />
+/// <reference path="./controllers/controller-base.ts" />
 /// <reference path="./controllers/myabooks.ts" />
 /// <reference path="./controllers/myabooks-player.ts" />
 /// <reference path="./controllers/myabooks-levels.ts" />
@@ -79,6 +82,7 @@ var NuevaLuz;
         $urlRouterProvider.otherwise("/");
         $stateProvider
             .state("index", {
+            cache: false,
             url: "/",
             templateUrl: "templates/home.html"
         })
@@ -86,11 +90,18 @@ var NuevaLuz;
             url: "/radio",
             templateUrl: "templates/radio.html"
         })
+            .state("config", {
+            cache: false,
+            url: "/config",
+            templateUrl: "templates/config.html"
+        })
             .state("abooks-login", {
+            cache: false,
             url: "/login",
             templateUrl: "templates/abooks-login.html"
         })
             .state("abooks-menu", {
+            cache: false,
             url: "/abooks/menu",
             templateUrl: "templates/abooks-menu.html"
         })
@@ -107,14 +118,17 @@ var NuevaLuz;
             templateUrl: "templates/abooks-author-books.html"
         })
             .state("abooks-detail", {
+            cache: false,
             url: "/abooks/menu/detail/:abookId",
             templateUrl: "templates/abooks-detail.html"
         })
             .state("myabooks", {
+            cache: false,
             url: "/myabooks/:command",
             templateUrl: "templates/myabooks.html"
         })
             .state("myabooks-player", {
+            cache: false,
             url: "/myabooks/player/:abookId",
             templateUrl: "templates/myabooks-player.html"
         })
@@ -133,7 +147,9 @@ var NuevaLuz;
     });
     // Register Services
     NuevaLuz.app.factory("RadioSvc", function () { return new NuevaLuz.RadioService(); });
-    NuevaLuz.app.factory("SessionSvc", function () { return new NuevaLuz.SessionService(); });
+    NuevaLuz.app.factory("SessionSvc", function ($http, $q, $cordovaFile) {
+        return new NuevaLuz.SessionService($http, $q, $cordovaFile);
+    });
     NuevaLuz.app.factory("DaisyPlayerSvc", function ($cordovaMedia, $cordovaFile, $interval, $rootScope, $q, $timeout) {
         return new NuevaLuz.DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q, $timeout);
     });
@@ -142,11 +158,17 @@ var NuevaLuz;
         return new NuevaLuz.DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc, $http, SessionSvc);
     });
     // Register Controllers
+    NuevaLuz.app.controller("ABooksMenuCtrl", function ($scope, SessionSvc, $location, $ionicLoading, $timeout) {
+        return new NuevaLuz.ABooksMenuController($scope, SessionSvc, $location, $ionicLoading, $timeout);
+    });
+    NuevaLuz.app.controller("ConfigCtrl", function ($scope, SessionSvc, $ionicPopup) {
+        return new NuevaLuz.ConfigController($scope, SessionSvc, $ionicPopup);
+    });
     NuevaLuz.app.controller("AuthorsBooksCtrl", function ($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc) {
         return new NuevaLuz.AuthorsBooksController($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc);
     });
-    NuevaLuz.app.controller("AuthorsCtrl", function ($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc) {
-        return new NuevaLuz.AuthorsController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc);
+    NuevaLuz.app.controller("AuthorsCtrl", function ($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc, $location) {
+        return new NuevaLuz.AuthorsController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc, $location);
     });
     NuevaLuz.app.controller("ABooksDetailCtrl", function ($scope, $timeout, $http, $location, $ionicLoading, $stateParams, $ionicPopup, SessionSvc, DownloadSvc, MyABooksSvc) {
         return new NuevaLuz.ABooksDetailController($scope, $timeout, $http, $location, $ionicLoading, $stateParams, $ionicPopup, SessionSvc, DownloadSvc, MyABooksSvc);
@@ -154,17 +176,17 @@ var NuevaLuz;
     NuevaLuz.app.controller("LoginCtrl", function ($scope, $location, $timeout, $http, $ionicLoading, $ionicHistory, SessionSvc) {
         return new NuevaLuz.LoginController($scope, $location, $timeout, $http, $ionicLoading, $ionicHistory, SessionSvc);
     });
-    NuevaLuz.app.controller("ABooksTitlesCtrl", function ($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc) {
-        return new NuevaLuz.ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc);
+    NuevaLuz.app.controller("ABooksTitlesCtrl", function ($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc, $location) {
+        return new NuevaLuz.ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc, $location);
     });
-    NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory) {
-        return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory);
+    NuevaLuz.app.controller("ABooksCtrl", function ($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory, SessionSvc) {
+        return new NuevaLuz.ABooksController($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory, SessionSvc);
     });
-    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc) {
-        return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc);
+    NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc, $timeout, SessionSvc) {
+        return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc, $timeout, SessionSvc);
     });
-    NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc) {
-        return new NuevaLuz.RadioController($scope, RadioSvc);
+    NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc, SessionSvc) {
+        return new NuevaLuz.RadioController($scope, RadioSvc, SessionSvc);
     });
     NuevaLuz.app.controller("ABookInfoCtrl", function ($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc) {
         return new NuevaLuz.ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc);

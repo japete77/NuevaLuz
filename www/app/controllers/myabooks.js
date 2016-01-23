@@ -1,9 +1,16 @@
 /// <reference path="../app.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var NuevaLuz;
 (function (NuevaLuz) {
-    var ABooksController = (function () {
-        function ABooksController($scope, $timeout, $http, myAbooksSvc, $stateParams, $ionicHistory) {
+    var ABooksController = (function (_super) {
+        __extends(ABooksController, _super);
+        function ABooksController($scope, $timeout, $http, myAbooksSvc, $stateParams, $ionicHistory, SessionSvc) {
             var _this = this;
+            _super.call(this, SessionSvc);
             this.scope = $scope;
             this.scope.control = this;
             this.timeout = $timeout;
@@ -62,6 +69,6 @@ var NuevaLuz;
             false;
         };
         return ABooksController;
-    })();
+    })(NuevaLuz.ControllerBase);
     NuevaLuz.ABooksController = ABooksController;
 })(NuevaLuz || (NuevaLuz = {}));

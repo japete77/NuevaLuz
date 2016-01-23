@@ -1,6 +1,7 @@
 <ion-view title="Autores" ng-controller="AuthorsCtrl">
 	<ion-nav-buttons side="right">
-        <a class="button button-icon icon ion-home" href="#/"></a>
+        <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
+        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
     </ion-nav-buttons>
 	<div class="bar bar-subheader">
 		<label class="item item-input">

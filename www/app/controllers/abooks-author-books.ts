@@ -60,7 +60,16 @@ module NuevaLuz {
                     this.timer = null;
                     this.scope.stopLoading = false;
                     this.scope.$broadcast('scroll.infiniteScrollComplete');
-                })
+                    }, 
+                    (reason : any) => {
+                        this.sessionSvc.isSessionValid()
+                        .then((result : number) => {
+                            this.getNextTitles();
+                        })
+                        .catch((reason : any) => {
+                            this.location.path("/login");
+                        })
+                    });
             }
             else {
                 this.scope.showScroll = false;

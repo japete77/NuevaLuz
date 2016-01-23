@@ -2,7 +2,7 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var ABooksTitlesController = (function () {
-        function ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, sessionSvc) {
+        function ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, sessionSvc, $location) {
             var _this = this;
             this.index = 1;
             this.maxTitles = 9999999;
@@ -19,6 +19,7 @@ var NuevaLuz;
             this.ionicLoading = $ionicLoading;
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.sessionSvc = sessionSvc;
+            this.location = $location;
             // Filter watch
             this.scope.$watch('filterText', function () {
                 _this.scope.stopLoading = true;
@@ -53,6 +54,14 @@ var NuevaLuz;
                         _this.timer = null;
                         _this.scope.stopLoading = false;
                         _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                    }, function (reason) {
+                        _this.sessionSvc.isSessionValid()
+                            .then(function (result) {
+                            _this.getNextTitles();
+                        })
+                            .catch(function (reason) {
+                            _this.location.path("/login");
+                        });
                     });
                 }
                 else {
@@ -69,6 +78,14 @@ var NuevaLuz;
                         _this.timer = null;
                         _this.scope.stopLoading = false;
                         _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                    }, function (reason) {
+                        _this.sessionSvc.isSessionValid()
+                            .then(function (result) {
+                            _this.getNextTitles();
+                        })
+                            .catch(function (reason) {
+                            _this.location.path("/login");
+                        });
                     });
                 }
             }

@@ -17,11 +17,14 @@ module NuevaLuz {
         private location: ng.ILocationService;
         private ionicLoading : ionic.loading.IonicLoadingService;
         private ionicPopup : ionic.popup.IonicPopupService;
+        private timeout : ng.ITimeoutService;
+        private SessionSvc : SessionService;
         
         private levelDescription : string[] = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4", "Nivel 5", "Nivel 6", "Frase", "Página", "Marcas", "Tiempo"];
         
         constructor($scope : IABooksPlayerScope, $stateParams : angular.ui.IStateParamsService, $location : ng.ILocationService, 
-            $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, player : DaisyPlayerService) {
+            $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, 
+            player : DaisyPlayerService, $timeout : ng.ITimeoutService, SessionSvc : SessionService) {
             this.scope = $scope;
             this.scope.ready = false;
             this.scope.control = this;
@@ -29,6 +32,8 @@ module NuevaLuz {
             this.location = $location;
             this.ionicLoading = $ionicLoading;
             this.ionicPopup = $ionicPopup;
+            this.timeout = $timeout;
+            this.SessionSvc = SessionSvc;
             
             this.ionicLoading.show({
                 template: 'Cargando...'
@@ -50,8 +55,31 @@ module NuevaLuz {
                     this.scope.currentBook = book;
                     this.scope.currentStatus = this.player.getPlayerInfo();
                     
-                    this.ionicLoading.hide();
-                    this.scope.ready = true;
+                    this.SessionSvc.setCurrentBook({
+                        id : book.id,
+                        title : book.title,
+                        statusKey : ""
+                    });
+                    
+                    this.SessionSvc.saveSessionInfo()
+                    .then(() => {
+                        this.ionicLoading.hide();
+                        this.scope.ready = true;                        
+                    });
+                }, 
+                () => {
+                    this.timeout(() => {
+                        this.ionicLoading.hide();                    
+                    });
+                    
+                    var alertPopup = $ionicPopup.alert({
+                        title: "Aviso",
+                        template: "<div class='col center'>Error cargado audio libro</div>"
+                    });
+
+                    alertPopup.then(() => {
+                        this.location.path("/");
+                    });
                 });
             }
             

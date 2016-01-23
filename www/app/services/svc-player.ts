@@ -78,7 +78,7 @@ module NuevaLuz {
             
         }
         
-        loadBook(id : string, sucessCallback : (book : DaisyBook) => any)  {
+        loadBook(id : string, sucessCallback : (book : DaisyBook) => any, errorCallback : () => any)  {
             // Save status of a previous book loaded
             if (this.playerInfo) {
                 this.saveStatus(this.playerInfo, () => {}, () => {})
@@ -110,9 +110,7 @@ module NuevaLuz {
                     for (var i=0; i<result.length; i++) {
                         this.book.parseSmils(result[i], this.book.body[i].id, this.book.body[i].title, this.book.body[i].level);     
                     }
-                    
-                    sucessCallback(this.book);
-                    
+                                        
                     // Initialize player info   
                     this.loadStatus((result : PlayerInfo) => { 
                         this.playerInfo = result;
@@ -134,9 +132,12 @@ module NuevaLuz {
                             sucessCallback(this.book);                         
                         });
                     });                    
+                },
+                (error : any) => {
+                    errorCallback();
                 });               
             }, (error : any) => {
-                console.log(error);
+                errorCallback();
             });
             
         }

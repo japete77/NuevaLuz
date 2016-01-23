@@ -9,7 +9,10 @@
 /// <reference path="./controllers/abooks-authors.ts" />
 /// <reference path="./controllers/abooks-detail.ts" />
 /// <reference path="./controllers/abooks-login.ts" />
+/// <reference path="./controllers/abooks-menu.ts" />
 /// <reference path="./controllers/abooks-titles.ts" />
+/// <reference path="./controllers/config.ts" />
+/// <reference path="./controllers/controller-base.ts" />
 /// <reference path="./controllers/myabooks.ts" />
 /// <reference path="./controllers/myabooks-player.ts" />
 /// <reference path="./controllers/myabooks-levels.ts" />
@@ -95,6 +98,7 @@ module NuevaLuz {
        
         $stateProvider
             .state("index", {
+                cache: false,
                 url: "/",
                 templateUrl: "templates/home.html"
             })
@@ -102,11 +106,18 @@ module NuevaLuz {
                 url: "/radio",
                 templateUrl: "templates/radio.html"
             })
+            .state("config", {
+                cache: false,
+                url: "/config",
+                templateUrl: "templates/config.html"
+            })
             .state("abooks-login", {
+                cache: false,
                 url: "/login",
                 templateUrl: "templates/abooks-login.html"
             })
             .state("abooks-menu", {
+                cache: false,
                 url: "/abooks/menu",
                 templateUrl: "templates/abooks-menu.html"
             })
@@ -123,14 +134,17 @@ module NuevaLuz {
                 templateUrl: "templates/abooks-author-books.html"
             })
             .state("abooks-detail", {
+                cache: false,
                 url: "/abooks/menu/detail/:abookId",
                 templateUrl: "templates/abooks-detail.html"
             })
             .state("myabooks", {
+                cache: false,
                 url: "/myabooks/:command",
                 templateUrl: "templates/myabooks.html"
             })
             .state("myabooks-player", {
+                cache: false,
                 url: "/myabooks/player/:abookId",
                 templateUrl: "templates/myabooks-player.html"
             })
@@ -151,7 +165,8 @@ module NuevaLuz {
     
     // Register Services
     app.factory("RadioSvc",() => new RadioService());
-    app.factory("SessionSvc",() => new SessionService());
+    app.factory("SessionSvc",($http : ng.IHttpService, $q : ng.IQService, $cordovaFile : ngCordova.IFileService) => 
+        new SessionService($http, $q, $cordovaFile));
     app.factory("DaisyPlayerSvc", ($cordovaMedia : any, $cordovaFile : ngCordova.IFileService, 
         $interval : ng.IIntervalService, $rootScope : ng.IScope, $q : ng.IQService, $timeout : ng.ITimeoutService) => 
         new DaisyPlayerService($cordovaMedia, $cordovaFile, $interval, $rootScope, $q, $timeout));
@@ -161,6 +176,14 @@ module NuevaLuz {
         $http : ng.IHttpService, SessionSvc : SessionService) => new DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc, $http, SessionSvc));
     
     // Register Controllers
+    app.controller("ABooksMenuCtrl", ($scope : IABooksMenuScope, SessionSvc : SessionService, 
+        $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService,
+        $timeout : ng.ITimeoutService) => 
+        new ABooksMenuController($scope, SessionSvc, $location, $ionicLoading, $timeout));
+        
+    app.controller("ConfigCtrl", ($scope : IConfigScope,SessionSvc : SessionService, $ionicPopup : ionic.popup.IonicPopupService) => 
+        new ConfigController($scope, SessionSvc, $ionicPopup));
+
     app.controller("AuthorsBooksCtrl", ($scope : IAuthorsBooksScope, $http : ng.IHttpService, 
         $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, 
         $stateParams : angular.ui.IStateParamsService, SessionSvc : SessionService) => 
@@ -168,8 +191,9 @@ module NuevaLuz {
         
     app.controller("AuthorsCtrl", ($scope : IAuthorsScope, $timeout : ng.ITimeoutService, 
             $http : ng.IHttpService, $ionicLoading : ionic.loading.IonicLoadingService, 
-            $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, SessionSvc : SessionService) => 
-        new AuthorsController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc));
+            $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, SessionSvc : SessionService,
+            $location : ng.ILocationService) => 
+        new AuthorsController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc, $location));
     
     app.controller("ABooksDetailCtrl", ($scope : IABooksDetailScope, $timeout : ng.ITimeoutService, 
             $http : ng.IHttpService, $location : ng.ILocationService, 
@@ -186,19 +210,21 @@ module NuevaLuz {
 
     app.controller("ABooksTitlesCtrl", ($scope : IABooksTitlesScope, $timeout : ng.ITimeoutService, 
         $http : ng.IHttpService, $ionicLoading : ionic.loading.IonicLoadingService, 
-        $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, SessionSvc : SessionService) => 
-        new ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc));
+        $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, SessionSvc : SessionService, $location : ng.ILocationService) => 
+        new ABooksTitlesController($scope, $timeout, $http, $ionicLoading, $ionicScrollDelegate, SessionSvc, $location));
  
     app.controller("ABooksCtrl", ($scope : IABooksScope, $timeout : ng.ITimeoutService, 
-        $http : ng.IHttpService, MyABooksSvc : MyABooksService, $stateParams : angular.ui.IStateParamsService, $ionicHistory : ionic.navigation.IonicHistoryService) => 
-        new ABooksController($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory));
+        $http : ng.IHttpService, MyABooksSvc : MyABooksService, $stateParams : angular.ui.IStateParamsService, 
+        $ionicHistory : ionic.navigation.IonicHistoryService, SessionSvc : SessionService) => 
+        new ABooksController($scope, $timeout, $http, MyABooksSvc, $stateParams, $ionicHistory, SessionSvc));
         
     app.controller("ABooksPlayerCtrl", ($scope : IABooksPlayerScope, 
-        $stateParams : angular.ui.IStateParamsService, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService) => 
-        new ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc));
+        $stateParams : angular.ui.IStateParamsService, $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, 
+        $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService, $timeout : ng.ITimeoutService, SessionSvc : SessionService) => 
+        new ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc, $timeout, SessionSvc));
         
-    app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService) => 
-        new RadioController($scope, RadioSvc));
+    app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService, SessionSvc : SessionService) => 
+        new RadioController($scope, RadioSvc, SessionSvc));
 
     app.controller("ABookInfoCtrl", ($scope : IABookInfoScope, $ionicPopup : ionic.popup.IonicPopupService, 
         $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService, MyABooksSvc : MyABooksService) => 

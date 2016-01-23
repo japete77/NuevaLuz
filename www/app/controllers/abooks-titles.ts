@@ -17,6 +17,7 @@ module NuevaLuz {
         private ionicLoading : ionic.loading.IonicLoadingService; 
         private ionicScrollDelegate : ionic.scroll.IonicScrollDelegate;
         private sessionSvc : SessionService;
+        private location : ng.ILocationService;
             
         private index : number = 1;
         private maxTitles : number = 9999999;
@@ -25,7 +26,8 @@ module NuevaLuz {
 
         constructor($scope : IABooksTitlesScope, $timeout : ng.ITimeoutService, 
         $http : ng.IHttpService, $ionicLoading : ionic.loading.IonicLoadingService, 
-        $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, sessionSvc : SessionService ) {
+        $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, sessionSvc : SessionService,
+        $location : ng.ILocationService) {
             this.scope = $scope;
             this.scope.control = this;
             this.scope.stopLoading = false;
@@ -38,7 +40,8 @@ module NuevaLuz {
             this.ionicLoading = $ionicLoading;
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.sessionSvc = sessionSvc;
-            
+            this.location = $location;
+
             // Filter watch
             this.scope.$watch('filterText', () => {
                 
@@ -82,7 +85,16 @@ module NuevaLuz {
                         this.timer = null;
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
-                    })
+                    },
+                    (reason : any) => {
+                        this.sessionSvc.isSessionValid()
+                        .then((result : number) => {
+                            this.getNextTitles();
+                        })
+                        .catch((reason : any) => {
+                            this.location.path("/login");
+                        })
+                    });
                 }
                 else {
                     
@@ -103,7 +115,15 @@ module NuevaLuz {
                         this.timer = null;
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
-                    })
+                    }, (reason : any) => {
+                        this.sessionSvc.isSessionValid()
+                        .then((result : number) => {
+                            this.getNextTitles();
+                        })
+                        .catch((reason : any) => {
+                            this.location.path("/login");
+                        })
+                    });
                 }
             }
             else {

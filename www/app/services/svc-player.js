@@ -52,7 +52,7 @@ var NuevaLuz;
                 this.saveStatus(this.playerInfo, function () { }, function (error) { });
             }
         };
-        DaisyPlayerService.prototype.loadBook = function (id, sucessCallback) {
+        DaisyPlayerService.prototype.loadBook = function (id, sucessCallback, errorCallback) {
             var _this = this;
             // Save status of a previous book loaded
             if (this.playerInfo) {
@@ -79,7 +79,6 @@ var NuevaLuz;
                     for (var i = 0; i < result.length; i++) {
                         _this.book.parseSmils(result[i], _this.book.body[i].id, _this.book.body[i].title, _this.book.body[i].level);
                     }
-                    sucessCallback(_this.book);
                     // Initialize player info   
                     _this.loadStatus(function (result) {
                         _this.playerInfo = result;
@@ -94,9 +93,11 @@ var NuevaLuz;
                             sucessCallback(_this.book);
                         });
                     });
+                }, function (error) {
+                    errorCallback();
                 });
             }, function (error) {
-                console.log(error);
+                errorCallback();
             });
         };
         DaisyPlayerService.prototype.getLevels = function () {

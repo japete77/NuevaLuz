@@ -26,6 +26,9 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
         color: red;
         text-align: center;
     }
+    &.center {
+        text-align: center;
+    }
 }
 
 $newHeight:110px;

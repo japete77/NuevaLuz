@@ -7,10 +7,13 @@ module NuevaLuz {
     }
     
     export class RadioController {
-        scope : IRadioScope;
-        svcRadio : IRadioService;
+        private scope : IRadioScope;
+        private svcRadio : IRadioService;
         
-        constructor($scope: IRadioScope, svcRadio : IRadioService) {
+        constructor($scope: IRadioScope, svcRadio : IRadioService, SessionSvc : SessionService) {        
+            
+            // super(SessionSvc);
+            
             this.scope = $scope;
             this.scope.control = this;
             this.svcRadio = svcRadio;
@@ -19,6 +22,7 @@ module NuevaLuz {
         switchRadio() {
             this.svcRadio.switchRadio();
         }
+        
     }
     
 }

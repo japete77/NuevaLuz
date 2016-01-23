@@ -2,7 +2,7 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var ABooksPlayerController = (function () {
-        function ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, player) {
+        function ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, player, $timeout, SessionSvc) {
             var _this = this;
             this.levelDescription = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4", "Nivel 5", "Nivel 6", "Frase", "Página", "Marcas", "Tiempo"];
             this.scope = $scope;
@@ -12,6 +12,8 @@ var NuevaLuz;
             this.location = $location;
             this.ionicLoading = $ionicLoading;
             this.ionicPopup = $ionicPopup;
+            this.timeout = $timeout;
+            this.SessionSvc = SessionSvc;
             this.ionicLoading.show({
                 template: 'Cargando...'
             });
@@ -28,8 +30,27 @@ var NuevaLuz;
                 this.player.loadBook($stateParams["abookId"], function (book) {
                     _this.scope.currentBook = book;
                     _this.scope.currentStatus = _this.player.getPlayerInfo();
-                    _this.ionicLoading.hide();
-                    _this.scope.ready = true;
+                    _this.SessionSvc.setCurrentBook({
+                        id: book.id,
+                        title: book.title,
+                        statusKey: ""
+                    });
+                    _this.SessionSvc.saveSessionInfo()
+                        .then(function () {
+                        _this.ionicLoading.hide();
+                        _this.scope.ready = true;
+                    });
+                }, function () {
+                    _this.timeout(function () {
+                        _this.ionicLoading.hide();
+                    });
+                    var alertPopup = $ionicPopup.alert({
+                        title: "Aviso",
+                        template: "<div class='col center'>Error cargado audio libro</div>"
+                    });
+                    alertPopup.then(function () {
+                        _this.location.path("/");
+                    });
                 });
             }
             this.scope.showPlay = true;

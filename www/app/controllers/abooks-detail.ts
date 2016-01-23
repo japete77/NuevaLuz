@@ -109,7 +109,18 @@ module NuevaLuz {
                 this.scope.detail = response.data.GetAudioBookDetailResult;
                 this.ionicLoading.hide();
                 this.scope.showDetail = true;
-            })
+            }, 
+            (reason : any) => {
+                this.sessionSvc.isSessionValid()
+                .then((result : number) => {
+                    this.initialize();
+                })
+                .catch((reason : any) => {
+                    this.location.path("/login");
+                    
+                    this.ionicLoading.hide();
+                })
+            });
         }
         
         public play(id : string) {

@@ -15,7 +15,6 @@ module NuevaLuz {
         status = false;
         
         constructor() { 
-            
         }
         
         // Turns On/Off radio steaming

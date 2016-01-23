@@ -1,0 +1,9 @@
+<ion-view title="" ng-controller="ConfigCtrl">
+	<ion-nav-buttons side="right">
+        <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
+        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
+    </ion-nav-buttons>
+	<ion-content class="padding">
+        <button class="button button-full button-assertive" ng-click="control.clearCredentials()">Eliminar Credenciales</button>
+	</ion-content>
+</ion-view>

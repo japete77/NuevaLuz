@@ -7,14 +7,19 @@ module NuevaLuz {
         abooks : Array<AudioBook>;
     }
     
-    export class ABooksController {
-        scope : IABooksScope;
-        timeout : ng.ITimeoutService;
-        http : ng.IHttpService;
-        myABooksSvc : MyABooksService;
+    export class ABooksController extends ControllerBase {
+        private scope : IABooksScope;
+        private timeout : ng.ITimeoutService;
+        private http : ng.IHttpService;
+        private myABooksSvc : MyABooksService;
+        
         
         constructor($scope : IABooksScope, $timeout : ng.ITimeoutService, $http : ng.IHttpService, 
-            myAbooksSvc : MyABooksService, $stateParams : angular.ui.IStateParamsService, $ionicHistory : ionic.navigation.IonicHistoryService) {
+            myAbooksSvc : MyABooksService, $stateParams : angular.ui.IStateParamsService, 
+            $ionicHistory : ionic.navigation.IonicHistoryService, SessionSvc : SessionService) {
+                               
+            super(SessionSvc);
+            
             this.scope = $scope;
             this.scope.control = this;
             this.timeout = $timeout;
@@ -78,6 +83,7 @@ module NuevaLuz {
             }
             false;
         }  
+        
     }
 
 }

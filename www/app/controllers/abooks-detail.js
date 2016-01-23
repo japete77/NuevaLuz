@@ -75,6 +75,15 @@ var NuevaLuz;
                 _this.scope.detail = response.data.GetAudioBookDetailResult;
                 _this.ionicLoading.hide();
                 _this.scope.showDetail = true;
+            }, function (reason) {
+                _this.sessionSvc.isSessionValid()
+                    .then(function (result) {
+                    _this.initialize();
+                })
+                    .catch(function (reason) {
+                    _this.location.path("/login");
+                    _this.ionicLoading.hide();
+                });
             });
         };
         ABooksDetailController.prototype.play = function (id) {

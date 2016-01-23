@@ -11,12 +11,13 @@ module NuevaLuz {
     }
     
     export class AuthorsController {
-        scope : IAuthorsScope;
-        timeout : ng.ITimeoutService;
-        http : ng.IHttpService;
-        ionicLoading : ionic.loading.IonicLoadingService; 
-        ionicScrollDelegate : ionic.scroll.IonicScrollDelegate;
-        sessionSvc : SessionService;
+        private scope : IAuthorsScope;
+        private timeout : ng.ITimeoutService;
+        private http : ng.IHttpService;
+        private ionicLoading : ionic.loading.IonicLoadingService; 
+        private ionicScrollDelegate : ionic.scroll.IonicScrollDelegate;
+        private sessionSvc : SessionService;
+        private location : ng.ILocationService;
             
         index : number = 1;
         maxAuthors : number = 9999999;
@@ -25,7 +26,8 @@ module NuevaLuz {
         
         constructor($scope : IAuthorsScope, $timeout : ng.ITimeoutService, 
             $http : ng.IHttpService, $ionicLoading : ionic.loading.IonicLoadingService, 
-            $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, sessionSvc : SessionService) {
+            $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, sessionSvc : SessionService,
+            $location : ng.ILocationService) {
             
             this.scope = $scope;
             this.scope.control = this;
@@ -40,6 +42,7 @@ module NuevaLuz {
             this.ionicLoading = $ionicLoading;
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.sessionSvc = sessionSvc;
+            this.location = $location;
             
             // Filter
             this.scope.$watch('filterText', () => {
@@ -83,7 +86,15 @@ module NuevaLuz {
                         this.timer = null;
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
-                    })
+                    }, (reason : any) => {
+                        this.sessionSvc.isSessionValid()
+                        .then((result : number) => {
+                            this.getNextAuthors();
+                        })
+                        .catch((reason : any) => {
+                            this.location.path("/login");
+                        })
+                    });
                 }
                 else {
                     this.http({
@@ -103,7 +114,15 @@ module NuevaLuz {
                         this.timer = null;
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
-                    })              
+                    }, (reason : any) => {
+                        this.sessionSvc.isSessionValid()
+                        .then((result : number) => {
+                            this.getNextAuthors();
+                        })
+                        .catch((reason : any) => {
+                            this.location.path("/login");
+                        })
+                    });
                 }
             }
             else {

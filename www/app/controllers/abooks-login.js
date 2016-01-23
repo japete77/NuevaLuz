@@ -4,7 +4,9 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var LoginController = (function () {
-        function LoginController($scope, $location, $timeout, $http, $ionicLoading, $ionicHistory, sessionService) {
+        function LoginController($scope, $location, $timeout, $http, $ionicLoading, $ionicHistory, SessionSvc) {
+            // super(SessionSvc);
+            this.SessionSvc = SessionSvc;
             this.scope = $scope;
             this.scope.control = this;
             this.scope.showErrorLogin = false;
@@ -13,8 +15,9 @@ var NuevaLuz;
             this.timeout = $timeout;
             this.ionicLoading = $ionicLoading;
             this.http = $http;
-            this.sessionService = sessionService;
             this.ionicHistory = $ionicHistory;
+            this.ionicHistory.clearHistory();
+            //this.SessionSvc.loadSessionInfo();
         }
         // Login
         LoginController.prototype.login = function (username, password) {
@@ -25,48 +28,37 @@ var NuevaLuz;
                     template: 'Verificando credenciales...'
                 });
             }, 0);
-            this.http({
-                method: 'GET',
-                url: NuevaLuz.baseUrl + 'Login?Username=' + username + '&Password=' + password
+            this.SessionSvc.login(username, password)
+                .then(function (result) {
+                _this.scope.showErrorLogin = false;
+                _this.ionicHistory.nextViewOptions({
+                    disableAnimate: true,
+                    disableBack: true
+                });
+                _this.SessionSvc.saveSessionInfo()
+                    .then(function () {
+                    _this.location.path("/abooks/menu");
+                    _this.timeout(function () {
+                        _this.ionicLoading.hide();
+                    }, 0);
+                });
             })
-                .then(function (response) {
-                if (response.data.LoginResult.Success) {
-                    _this.sessionService.setSession(response.data.LoginResult.Session);
-                    _this.scope.showErrorLogin = false;
-                    _this.ionicHistory.nextViewOptions({
-                        disableAnimate: true,
-                        disableBack: true
-                    });
-                    _this.location.path("/");
-                }
-                else {
-                    _this.scope.errorMessage = 'Acceso denegado';
-                    _this.scope.showErrorLogin = true;
-                }
-                // Close dialog  
+                .catch(function (reason) {
                 _this.timeout(function () {
                     _this.ionicLoading.hide();
                 }, 0);
-            }, function (response) {
-                _this.timeout(function () {
-                    _this.ionicLoading.hide();
-                }, 0);
-                _this.scope.errorMessage = 'Biblioteca de audio libros fuera de servicio';
+                _this.scope.errorMessage = reason;
                 _this.scope.showErrorLogin = true;
             });
         };
         // Get the link to next screen based on auth info
         LoginController.prototype.getLink = function () {
-            if (this.isAuthenticated()) {
+            if (this.SessionSvc.isAuthenticated()) {
                 return '#/abooks/menu';
             }
             else {
                 return '#/login';
             }
-        };
-        // Checks if the user is authenticated
-        LoginController.prototype.isAuthenticated = function () {
-            return this.sessionService.getSession() !== "";
         };
         return LoginController;
     })();

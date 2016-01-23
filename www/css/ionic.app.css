@@ -2982,7 +2982,7 @@ $dark:                            #444 !default;
   height: 110px !important; }
 
 .has-subheader.player {
-  top: 174px !important; }
+  top: 164px !important; }
 
 .bar-energized .button.button-icon {
   color: black; }
@@ -9101,3 +9101,15 @@ a.button {
 .col.warning {
   color: red;
   text-align: center; }
+
+.col.center {
+  text-align: center; }
+
+.bar-subheader.player {
+  height: 110px !important; }
+
+.has-subheader.player {
+  top: 164px !important; }
+
+.bar-energized .button.button-icon {
+  color: black; }
