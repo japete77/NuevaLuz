@@ -33,3 +33,4 @@ var NuevaLuz;
     })();
     NuevaLuz.ABookInfoController = ABookInfoController;
 })(NuevaLuz || (NuevaLuz = {}));
+;

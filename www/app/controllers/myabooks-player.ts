@@ -196,4 +196,4 @@ module NuevaLuz {
             this.location.path("/myabooks/player/bookmarks/" + this.scope.currentBook.id);            
         }
     }
-}
+};

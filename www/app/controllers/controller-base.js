@@ -28,3 +28,4 @@ var NuevaLuz;
     })();
     NuevaLuz.ControllerBase = ControllerBase;
 })(NuevaLuz || (NuevaLuz = {}));
+;

@@ -24,3 +24,4 @@ var NuevaLuz;
     })();
     NuevaLuz.ConfigController = ConfigController;
 })(NuevaLuz || (NuevaLuz = {}));
+;

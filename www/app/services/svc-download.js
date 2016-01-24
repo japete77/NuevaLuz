@@ -340,3 +340,4 @@ var NuevaLuz;
     })();
     NuevaLuz.DownloadService = DownloadService;
 })(NuevaLuz || (NuevaLuz = {}));
+;

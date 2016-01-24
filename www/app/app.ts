@@ -237,4 +237,4 @@ module NuevaLuz {
    app.controller("ABooksBookmarksCtrl", ($scope : IABooksBookmarksScope, $stateParams : angular.ui.IStateParamsService, 
         $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) =>
         new ABooksBookmarksController($scope, $stateParams, $location, DaisyPlayerSvc));
-}
+};

@@ -80,7 +80,7 @@ var NuevaLuz;
                     .then(function (result) {
                     _this.initialize();
                 })
-                    .catch(function (reason) {
+                    ['catch'](function (reason) {
                     _this.location.path("/login");
                     _this.ionicLoading.hide();
                 });
@@ -156,3 +156,4 @@ var NuevaLuz;
     })();
     NuevaLuz.ABooksDetailController = ABooksDetailController;
 })(NuevaLuz || (NuevaLuz = {}));
+;

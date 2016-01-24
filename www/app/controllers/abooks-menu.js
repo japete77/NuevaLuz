@@ -19,10 +19,10 @@ var NuevaLuz;
                 .then(function (result) {
                 _this.scope.ready = true;
             })
-                .catch(function (reason) {
+                ['catch'](function (reason) {
                 _this.location.path("/login");
             })
-                .finally(function () {
+                ['finally'](function () {
                 _this.timeout(function () {
                     _this.ionicLoading.hide();
                 }, 0);
@@ -51,3 +51,4 @@ var NuevaLuz;
     })();
     NuevaLuz.ABooksMenuController = ABooksMenuController;
 })(NuevaLuz || (NuevaLuz = {}));
+;

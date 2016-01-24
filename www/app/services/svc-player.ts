@@ -756,4 +756,4 @@ module NuevaLuz {
                     parseFloat(parts[2]);
         }
     }
-}
+};

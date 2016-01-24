@@ -59,7 +59,7 @@ var NuevaLuz;
                             .then(function (result) {
                             _this.getNextTitles();
                         })
-                            .catch(function (reason) {
+                            ['catch'](function (reason) {
                             _this.location.path("/login");
                         });
                     });
@@ -83,7 +83,7 @@ var NuevaLuz;
                             .then(function (result) {
                             _this.getNextTitles();
                         })
-                            .catch(function (reason) {
+                            ['catch'](function (reason) {
                             _this.location.path("/login");
                         });
                     });
@@ -102,3 +102,4 @@ var NuevaLuz;
     })();
     NuevaLuz.ABooksTitlesController = ABooksTitlesController;
 })(NuevaLuz || (NuevaLuz = {}));
+;

@@ -81,7 +81,7 @@ var NuevaLuz;
                         if (response.data.LoginResult.Success) {
                             _this.sessionInfo.session = response.data.LoginResult.Session;
                             _this.saveSessionInfo()
-                                .finally(function () {
+                                ['finally'](function () {
                                 defer.resolve(NuevaLuz.LOGIN_OK);
                             });
                         }
@@ -138,3 +138,4 @@ var NuevaLuz;
     })();
     NuevaLuz.SessionService = SessionService;
 })(NuevaLuz || (NuevaLuz = {}));
+;

@@ -7,6 +7,7 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
 var typescript = require('gulp-tsc');
+var replace = require('gulp-replace');
 
 var paths = {
   sass: ['./scss/**/*.scss'],
@@ -31,6 +32,8 @@ gulp.task('sass', function(done) {
 gulp.task('compile', function(){
   gulp.src(paths.src)
   .pipe(typescript({ emitError: false }))
+  .pipe(replace(".finally", "['finally']"))  
+  .pipe(replace(".catch", "['catch']"))  
   .pipe(gulp.dest('./www/app/'))
 })
 

@@ -14,7 +14,8 @@
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="js/ng-cordova.min.js"></script>
-    <script src="js/background-mode.js"></script>
+    <!--<script src="js/require.js"></script>
+    <script src="js/background-mode.js"></script>-->
     <script src="cordova.js"></script>
     
     <!-- app's js -->
@@ -42,16 +43,16 @@
   </head>
   
   <script>
-    document.addEventListener('deviceready', function() {
-        cordova.plugins.backgroundMode.setDefaults({
-            title:  "Nueva Luz",
-            ticker: "Nueva Luz",
-            text:   "Nueva Luz"
-        });
-        
-        // Enable background mode
-        cordova.plugins.backgroundMode.enable();
-    });
+    // document.addEventListener('deviceready', function() {
+    //     cordova.plugins.backgroundMode.setDefaults({
+    //         title:  "Nueva Luz",
+    //         ticker: "Nueva Luz",
+    //         text:   "Nueva Luz"
+    //     });
+    //     
+    //     // Enable background mode
+    //     cordova.plugins.backgroundMode.enable();
+    // });
   </script>
   
   <body ng-app="starter">

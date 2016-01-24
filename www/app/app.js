@@ -198,3 +198,4 @@ var NuevaLuz;
         return new NuevaLuz.ABooksBookmarksController($scope, $stateParams, $location, DaisyPlayerSvc);
     });
 })(NuevaLuz || (NuevaLuz = {}));
+;

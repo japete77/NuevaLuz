@@ -15,3 +15,4 @@ var NuevaLuz;
     })();
     NuevaLuz.RadioController = RadioController;
 })(NuevaLuz || (NuevaLuz = {}));
+;

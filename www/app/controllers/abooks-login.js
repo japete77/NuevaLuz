@@ -43,7 +43,7 @@ var NuevaLuz;
                     }, 0);
                 });
             })
-                .catch(function (reason) {
+                ['catch'](function (reason) {
                 _this.timeout(function () {
                     _this.ionicLoading.hide();
                 }, 0);
@@ -64,3 +64,4 @@ var NuevaLuz;
     })();
     NuevaLuz.LoginController = LoginController;
 })(NuevaLuz || (NuevaLuz = {}));
+;

@@ -56,4 +56,4 @@ module NuevaLuz {
             console.log(e);
         }
     }
-}
+};
