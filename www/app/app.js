@@ -158,6 +158,7 @@ var NuevaLuz;
         return new NuevaLuz.DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc, $http, SessionSvc);
     });
     // Register Controllers
+    NuevaLuz.app.controller("ControllerBase", function (SessionSvc) { return new NuevaLuz.ControllerBase(SessionSvc); });
     NuevaLuz.app.controller("ABooksMenuCtrl", function ($scope, SessionSvc, $location, $ionicLoading, $timeout) {
         return new NuevaLuz.ABooksMenuController($scope, SessionSvc, $location, $ionicLoading, $timeout);
     });
@@ -185,8 +186,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksPlayerCtrl", function ($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc, $timeout, SessionSvc) {
         return new NuevaLuz.ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc, $timeout, SessionSvc);
     });
-    NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc, SessionSvc) {
-        return new NuevaLuz.RadioController($scope, RadioSvc, SessionSvc);
+    NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc, SessionSvc, $controller) {
+        return new NuevaLuz.RadioController($scope, RadioSvc, SessionSvc, $controller);
     });
     NuevaLuz.app.controller("ABookInfoCtrl", function ($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc) {
         return new NuevaLuz.ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc);

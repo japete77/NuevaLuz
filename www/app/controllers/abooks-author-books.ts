@@ -15,7 +15,7 @@ module NuevaLuz {
         location : ng.ILocationService; 
         ionicLoading : ionic.loading.IonicLoadingService;
         stateParams : any;
-        sessionSvc : SessionService;
+        SessionSvc : SessionService;
             
         index : number = 1;
         maxTitles : number = 9999999;
@@ -32,7 +32,7 @@ module NuevaLuz {
                 this.ionicLoading = $ionicLoading;
                 this.stateParams = $stateParams;
                 this.stateParams = $stateParams;
-                this.sessionSvc = sessionSvc;
+                this.SessionSvc = sessionSvc;
                 
                 this.scope.showScroll = true;
                 this.scope.stopLoading = false;
@@ -45,7 +45,7 @@ module NuevaLuz {
 
                 this.http({
                     method: 'GET',
-                    url: baseUrl + 'GetTitlesByAuthor?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.authorId + '&Index=' + this.index + '&Count=' + this.pageSize
+                    url: baseUrl + 'GetTitlesByAuthor?Session=' + this.SessionSvc.getSession() + '&Id=' + this.stateParams.authorId + '&Index=' + this.index + '&Count=' + this.pageSize
                 })
                 .then((response : any) => {
                 
@@ -62,7 +62,7 @@ module NuevaLuz {
                     this.scope.$broadcast('scroll.infiniteScrollComplete');
                     }, 
                     (reason : any) => {
-                        this.sessionSvc.isSessionValid()
+                        this.SessionSvc.isSessionValid()
                         .then((result : number) => {
                             this.getNextTitles();
                         })
@@ -79,6 +79,28 @@ module NuevaLuz {
         public loadMore() {
             if (!this.scope.stopLoading) {
                 this.getNextTitles();
+            }
+        } 
+        
+        isBookLoaded() : boolean {
+            return this.SessionSvc.getCurrentBook()!=null && this.SessionSvc.getCurrentBook()!=undefined;
+        }
+        
+        getCurrentBookId() : string {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().id;
+            }
+            else {
+                return "";
+            }
+        }
+        
+        getCurrentBookTitle() : string {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().title;
+            }
+            else {
+                return "";
             }
         } 
     }

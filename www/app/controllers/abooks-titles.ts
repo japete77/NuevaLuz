@@ -16,7 +16,7 @@ module NuevaLuz {
         private http : ng.IHttpService;
         private ionicLoading : ionic.loading.IonicLoadingService; 
         private ionicScrollDelegate : ionic.scroll.IonicScrollDelegate;
-        private sessionSvc : SessionService;
+        private SessionSvc : SessionService;
         private location : ng.ILocationService;
             
         private index : number = 1;
@@ -28,6 +28,7 @@ module NuevaLuz {
         $http : ng.IHttpService, $ionicLoading : ionic.loading.IonicLoadingService, 
         $ionicScrollDelegate : ionic.scroll.IonicScrollDelegate, sessionSvc : SessionService,
         $location : ng.ILocationService) {
+            
             this.scope = $scope;
             this.scope.control = this;
             this.scope.stopLoading = false;
@@ -39,7 +40,7 @@ module NuevaLuz {
             this.http = $http;
             this.ionicLoading = $ionicLoading;
             this.ionicScrollDelegate = $ionicScrollDelegate;
-            this.sessionSvc = sessionSvc;
+            this.SessionSvc = sessionSvc;
             this.location = $location;
 
             // Filter watch
@@ -70,7 +71,7 @@ module NuevaLuz {
                 if (this.scope.filterText=="") {
                     this.http({
                         method: 'GET',
-                        url: baseUrl + 'GetTitles?Session=' + this.sessionSvc.getSession() + '&Index=' + this.index + '&Count=' + this.pageSize
+                        url: baseUrl + 'GetTitles?Session=' + this.SessionSvc.getSession() + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
                     .then((response : any) => {
                     
@@ -87,7 +88,7 @@ module NuevaLuz {
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
                     },
                     (reason : any) => {
-                        this.sessionSvc.isSessionValid()
+                        this.SessionSvc.isSessionValid()
                         .then((result : number) => {
                             this.getNextTitles();
                         })
@@ -100,7 +101,7 @@ module NuevaLuz {
                     
                     this.http({
                         method: 'GET',
-                        url: baseUrl + 'SearchTitles?Session=' + this.sessionSvc.getSession() + '&Text=' + this.scope.filterText + '&Index=' + this.index + '&Count=' + this.pageSize
+                        url: baseUrl + 'SearchTitles?Session=' + this.SessionSvc.getSession() + '&Text=' + this.scope.filterText + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
                     .then((response : any) => {
                     
@@ -116,7 +117,7 @@ module NuevaLuz {
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
                     }, (reason : any) => {
-                        this.sessionSvc.isSessionValid()
+                        this.SessionSvc.isSessionValid()
                         .then((result : number) => {
                             this.getNextTitles();
                         })
@@ -136,6 +137,28 @@ module NuevaLuz {
                 this.getNextTitles();
             }
         } 
+        
+        isBookLoaded() : boolean {
+            return this.SessionSvc.getCurrentBook()!=null && this.SessionSvc.getCurrentBook()!=undefined;
+        }
+        
+        getCurrentBookId() : string {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().id;
+            }
+            else {
+                return "";
+            }
+        }
+        
+        getCurrentBookTitle() : string {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().title;
+            }
+            else {
+                return "";
+            }
+        }
     }
 
 };

@@ -176,6 +176,7 @@ module NuevaLuz {
         $http : ng.IHttpService, SessionSvc : SessionService) => new DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc, $http, SessionSvc));
     
     // Register Controllers
+    app.controller("ControllerBase", (SessionSvc : SessionService) => new ControllerBase(SessionSvc));
     app.controller("ABooksMenuCtrl", ($scope : IABooksMenuScope, SessionSvc : SessionService, 
         $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService,
         $timeout : ng.ITimeoutService) => 
@@ -223,8 +224,8 @@ module NuevaLuz {
         $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService, $timeout : ng.ITimeoutService, SessionSvc : SessionService) => 
         new ABooksPlayerController($scope, $stateParams, $location, $ionicLoading, $ionicPopup, DaisyPlayerSvc, $timeout, SessionSvc));
         
-    app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService, SessionSvc : SessionService) => 
-        new RadioController($scope, RadioSvc, SessionSvc));
+    app.controller("RadioCtrl", ($scope : IRadioScope, RadioSvc : IRadioService, SessionSvc : SessionService, $controller : ng.IControllerService) => 
+        new RadioController($scope, RadioSvc, SessionSvc, $controller));
 
     app.controller("ABookInfoCtrl", ($scope : IABookInfoScope, $ionicPopup : ionic.popup.IonicPopupService, 
         $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService, MyABooksSvc : MyABooksService) => 

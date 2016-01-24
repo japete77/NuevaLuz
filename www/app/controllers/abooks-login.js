@@ -60,6 +60,25 @@ var NuevaLuz;
                 return '#/login';
             }
         };
+        LoginController.prototype.isBookLoaded = function () {
+            return this.SessionSvc.getCurrentBook() != null && this.SessionSvc.getCurrentBook() != undefined;
+        };
+        LoginController.prototype.getCurrentBookId = function () {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().id;
+            }
+            else {
+                return "";
+            }
+        };
+        LoginController.prototype.getCurrentBookTitle = function () {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().title;
+            }
+            else {
+                return "";
+            }
+        };
         return LoginController;
     })();
     NuevaLuz.LoginController = LoginController;

@@ -7,24 +7,23 @@ module NuevaLuz {
         abooks : Array<AudioBook>;
     }
     
-    export class ABooksController extends ControllerBase {
+    export class ABooksController {
         private scope : IABooksScope;
         private timeout : ng.ITimeoutService;
         private http : ng.IHttpService;
         private myABooksSvc : MyABooksService;
-        
+        private SessionSvc : SessionService;
         
         constructor($scope : IABooksScope, $timeout : ng.ITimeoutService, $http : ng.IHttpService, 
             myAbooksSvc : MyABooksService, $stateParams : angular.ui.IStateParamsService, 
             $ionicHistory : ionic.navigation.IonicHistoryService, SessionSvc : SessionService) {
-                               
-            super(SessionSvc);
             
             this.scope = $scope;
             this.scope.control = this;
             this.timeout = $timeout;
             this.http = $http;
             this.myABooksSvc = myAbooksSvc;
+            this.SessionSvc = SessionSvc;
             
             if ($stateParams["command"]=="clear") {
                 $ionicHistory.clearHistory();
@@ -84,6 +83,28 @@ module NuevaLuz {
             false;
         }  
         
+        isBookLoaded() : boolean {
+            return this.SessionSvc.getCurrentBook()!=null && this.SessionSvc.getCurrentBook()!=undefined;
+        }
+        
+        getCurrentBookId() : string {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().id;
+            }
+            else {
+                return "";
+            }
+        }
+        
+        getCurrentBookTitle() : string {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().title;
+            }
+            else {
+                return "";
+            }
+        }
+                
     }
 
 };

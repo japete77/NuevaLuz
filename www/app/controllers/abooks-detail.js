@@ -12,7 +12,7 @@ var NuevaLuz;
             this.ionicLoading = $ionicLoading;
             this.stateParams = $stateParams;
             this.ionicPopup = $ionicPopup;
-            this.sessionSvc = sessionSvc;
+            this.SessionSvc = sessionSvc;
             this.downloadSvc = DownloadSvc;
             this.myABooksSvc = MyABooksSvc;
             this.scope.downloadInfo = null;
@@ -69,14 +69,14 @@ var NuevaLuz;
             });
             this.http({
                 method: 'GET',
-                url: NuevaLuz.baseUrl + 'GetAudioBookDetail?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams["abookId"]
+                url: NuevaLuz.baseUrl + 'GetAudioBookDetail?Session=' + this.SessionSvc.getSession() + '&Id=' + this.stateParams["abookId"]
             })
                 .then(function (response) {
                 _this.scope.detail = response.data.GetAudioBookDetailResult;
                 _this.ionicLoading.hide();
                 _this.scope.showDetail = true;
             }, function (reason) {
-                _this.sessionSvc.isSessionValid()
+                _this.SessionSvc.isSessionValid()
                     .then(function (result) {
                     _this.initialize();
                 })
@@ -151,6 +151,25 @@ var NuevaLuz;
                 return this.myABooksSvc.abooks[index].statusKey === NuevaLuz.STATUS_ERROR;
             }
             return false;
+        };
+        ABooksDetailController.prototype.isBookLoaded = function () {
+            return this.SessionSvc.getCurrentBook() != null && this.SessionSvc.getCurrentBook() != undefined;
+        };
+        ABooksDetailController.prototype.getCurrentBookId = function () {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().id;
+            }
+            else {
+                return "";
+            }
+        };
+        ABooksDetailController.prototype.getCurrentBookTitle = function () {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().title;
+            }
+            else {
+                return "";
+            }
         };
         return ABooksDetailController;
     })();

@@ -15,7 +15,7 @@ var NuevaLuz;
             this.ionicLoading = $ionicLoading;
             this.stateParams = $stateParams;
             this.stateParams = $stateParams;
-            this.sessionSvc = sessionSvc;
+            this.SessionSvc = sessionSvc;
             this.scope.showScroll = true;
             this.scope.stopLoading = false;
         }
@@ -25,7 +25,7 @@ var NuevaLuz;
                 this.scope.showScroll = true;
                 this.http({
                     method: 'GET',
-                    url: NuevaLuz.baseUrl + 'GetTitlesByAuthor?Session=' + this.sessionSvc.getSession() + '&Id=' + this.stateParams.authorId + '&Index=' + this.index + '&Count=' + this.pageSize
+                    url: NuevaLuz.baseUrl + 'GetTitlesByAuthor?Session=' + this.SessionSvc.getSession() + '&Id=' + this.stateParams.authorId + '&Index=' + this.index + '&Count=' + this.pageSize
                 })
                     .then(function (response) {
                     _this.maxTitles = response.data.GetTitlesByAuthorResult.Total;
@@ -37,7 +37,7 @@ var NuevaLuz;
                     _this.scope.stopLoading = false;
                     _this.scope.$broadcast('scroll.infiniteScrollComplete');
                 }, function (reason) {
-                    _this.sessionSvc.isSessionValid()
+                    _this.SessionSvc.isSessionValid()
                         .then(function (result) {
                         _this.getNextTitles();
                     })
@@ -53,6 +53,25 @@ var NuevaLuz;
         AuthorsBooksController.prototype.loadMore = function () {
             if (!this.scope.stopLoading) {
                 this.getNextTitles();
+            }
+        };
+        AuthorsBooksController.prototype.isBookLoaded = function () {
+            return this.SessionSvc.getCurrentBook() != null && this.SessionSvc.getCurrentBook() != undefined;
+        };
+        AuthorsBooksController.prototype.getCurrentBookId = function () {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().id;
+            }
+            else {
+                return "";
+            }
+        };
+        AuthorsBooksController.prototype.getCurrentBookTitle = function () {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().title;
+            }
+            else {
+                return "";
             }
         };
         return AuthorsBooksController;

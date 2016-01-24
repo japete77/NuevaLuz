@@ -16,7 +16,7 @@ module NuevaLuz {
         private http : ng.IHttpService;
         private ionicLoading : ionic.loading.IonicLoadingService; 
         private ionicScrollDelegate : ionic.scroll.IonicScrollDelegate;
-        private sessionSvc : SessionService;
+        private SessionSvc : SessionService;
         private location : ng.ILocationService;
             
         index : number = 1;
@@ -41,7 +41,7 @@ module NuevaLuz {
             this.http = $http;
             this.ionicLoading = $ionicLoading;
             this.ionicScrollDelegate = $ionicScrollDelegate;
-            this.sessionSvc = sessionSvc;
+            this.SessionSvc = sessionSvc;
             this.location = $location;
             
             // Filter
@@ -71,7 +71,7 @@ module NuevaLuz {
                 if (this.scope.filterText=="") {
                     this.http({
                         method: 'GET',
-                        url: baseUrl + 'GetAuthors?Session=' + this.sessionSvc.getSession() + '&Index=' + this.index + '&Count=' + this.pageSize
+                        url: baseUrl + 'GetAuthors?Session=' + this.SessionSvc.getSession() + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
                     .then((response : any) => {
                     
@@ -87,7 +87,7 @@ module NuevaLuz {
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
                     }, (reason : any) => {
-                        this.sessionSvc.isSessionValid()
+                        this.SessionSvc.isSessionValid()
                         .then((result : number) => {
                             this.getNextAuthors();
                         })
@@ -99,7 +99,7 @@ module NuevaLuz {
                 else {
                     this.http({
                         method: 'GET',
-                        url: baseUrl + 'SearchAuthors?Session=' + this.sessionSvc.getSession() + '&Text=' + this.scope.filterText + '&Index=' + this.index + '&Count=' + this.pageSize
+                        url: baseUrl + 'SearchAuthors?Session=' + this.SessionSvc.getSession() + '&Text=' + this.scope.filterText + '&Index=' + this.index + '&Count=' + this.pageSize
                     })
                     .then((response : any) => {
                     
@@ -115,7 +115,7 @@ module NuevaLuz {
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
                     }, (reason : any) => {
-                        this.sessionSvc.isSessionValid()
+                        this.SessionSvc.isSessionValid()
                         .then((result : number) => {
                             this.getNextAuthors();
                         })
@@ -133,6 +133,28 @@ module NuevaLuz {
         public loadMore() {
             if (!this.scope.stopLoading) {
                 this.getNextAuthors();
+            }
+        }
+        
+        isBookLoaded() : boolean {
+            return this.SessionSvc.getCurrentBook()!=null && this.SessionSvc.getCurrentBook()!=undefined;
+        }
+        
+        getCurrentBookId() : string {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().id;
+            }
+            else {
+                return "";
+            }
+        }
+        
+        getCurrentBookTitle() : string {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().title;
+            }
+            else {
+                return "";
             }
         } 
     }

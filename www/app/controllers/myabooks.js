@@ -1,21 +1,15 @@
 /// <reference path="../app.ts" />
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var NuevaLuz;
 (function (NuevaLuz) {
-    var ABooksController = (function (_super) {
-        __extends(ABooksController, _super);
+    var ABooksController = (function () {
         function ABooksController($scope, $timeout, $http, myAbooksSvc, $stateParams, $ionicHistory, SessionSvc) {
             var _this = this;
-            _super.call(this, SessionSvc);
             this.scope = $scope;
             this.scope.control = this;
             this.timeout = $timeout;
             this.http = $http;
             this.myABooksSvc = myAbooksSvc;
+            this.SessionSvc = SessionSvc;
             if ($stateParams["command"] == "clear") {
                 $ionicHistory.clearHistory();
             }
@@ -68,8 +62,27 @@ var NuevaLuz;
             }
             false;
         };
+        ABooksController.prototype.isBookLoaded = function () {
+            return this.SessionSvc.getCurrentBook() != null && this.SessionSvc.getCurrentBook() != undefined;
+        };
+        ABooksController.prototype.getCurrentBookId = function () {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().id;
+            }
+            else {
+                return "";
+            }
+        };
+        ABooksController.prototype.getCurrentBookTitle = function () {
+            if (this.isBookLoaded()) {
+                return this.SessionSvc.getCurrentBook().title;
+            }
+            else {
+                return "";
+            }
+        };
         return ABooksController;
-    })(NuevaLuz.ControllerBase);
+    })();
     NuevaLuz.ABooksController = ABooksController;
 })(NuevaLuz || (NuevaLuz = {}));
 ;
