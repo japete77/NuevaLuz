@@ -3,7 +3,7 @@
 var NuevaLuz;
 (function (NuevaLuz) {
     var ABookInfoController = (function () {
-        function ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc) {
+        function ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc, SessionSvc) {
             this.scope = $scope;
             this.scope.control = this;
             this.location = $location;
@@ -11,6 +11,7 @@ var NuevaLuz;
             this.scope.currentBook = this.playerSvc.getCurrentBook();
             this.ionicPopup = $ionicPopup;
             this.myABooksSvc = MyABooksSvc;
+            this.SessionSvc = SessionSvc;
         }
         ABookInfoController.prototype.deleteBook = function (id) {
             var _this = this;
@@ -23,7 +24,11 @@ var NuevaLuz;
                     // Release player
                     _this.playerSvc.release();
                     // Delete book
-                    _this.myABooksSvc.deleteBook(id);
+                    _this.myABooksSvc.deleteBook(id)
+                        .then(function () {
+                        // Delete book from session
+                        _this.SessionSvc.deleteCurrentBook(id);
+                    });
                     // Redirect to my audio books cleaning history
                     _this.location.path("/myabooks/clear");
                 }

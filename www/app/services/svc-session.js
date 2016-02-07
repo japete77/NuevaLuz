@@ -19,13 +19,44 @@ var NuevaLuz;
             this.http = $http;
             this.q = $q;
             this.cordovaFile = $cordovaFile;
+            this.sessionInfo = new SessionInfo();
+            this.sessionInfo.session = "";
+            this.sessionInfo.currentBook = null;
+            this.sessionInfo.workingDir = null;
+            this.sessionInfo.playDir = null;
             ionic.Platform.ready(function () {
-                _this.loadSessionInfo().then(function () {
-                }, function (error) {
-                    _this.sessionInfo = new SessionInfo();
-                    _this.sessionInfo.session = "";
-                    _this.sessionInfo.currentBook = null;
-                });
+                if (ionic.Platform.isAndroid()) {
+                    NuevaLuz.internalStorage = cordova.file.dataDirectory;
+                    NuevaLuz.externalStorage = cordova.file.externalDataDirectory;
+                    // Check for external SD storage
+                    var ps = [];
+                    for (var i = 0; i < NuevaLuz.extStorageBase.length; i++) {
+                        ps.push($cordovaFile.checkDir(NuevaLuz.extStorageBase[i], NuevaLuz.extStorageDirs[i]));
+                    }
+                    ps.forEach(function (item) {
+                        item.then(function (dir) {
+                            // Create a subdir in external storage 2
+                            $cordovaFile.createDir(dir.toURL(), "NuevaLuz")
+                                .then(function (dir) {
+                                NuevaLuz.externalStorage2 = dir.toURL();
+                                _this.loadSessionInfo();
+                            })
+                                ['finally'](function () {
+                                NuevaLuz.externalStorage2 = dir.toURL() + "NuevaLuz/";
+                                _this.loadSessionInfo();
+                            });
+                        });
+                    });
+                    NuevaLuz.appleDevice = false;
+                }
+                else {
+                    NuevaLuz.workingDir = cordova.file.documentsDirectory;
+                    NuevaLuz.playDir = "documents:/";
+                    NuevaLuz.appleDevice = true;
+                    _this.sessionInfo.workingDir = NuevaLuz.workingDir;
+                    _this.sessionInfo.playDir = NuevaLuz.playDir;
+                }
+                _this.loadSessionInfo();
             });
         }
         SessionService.prototype.login = function (username, password) {
@@ -100,7 +131,7 @@ var NuevaLuz;
         };
         SessionService.prototype.saveSessionInfo = function () {
             var defer = this.q.defer();
-            this.cordovaFile.writeFile(NuevaLuz.workingDir, NuevaLuz.abooksSatusFilename, JSON.stringify(this.sessionInfo), true)
+            this.cordovaFile.writeFile(cordova.file.dataDirectory, NuevaLuz.abooksSatusFilename, JSON.stringify(this.sessionInfo), true)
                 .then(function (success) {
                 defer.resolve(true);
             }, function (error) {
@@ -112,13 +143,41 @@ var NuevaLuz;
         SessionService.prototype.loadSessionInfo = function () {
             var _this = this;
             var defer = this.q.defer();
-            this.cordovaFile.readAsBinaryString(NuevaLuz.workingDir, NuevaLuz.abooksSatusFilename)
+            this.cordovaFile.readAsBinaryString(cordova.file.dataDirectory, NuevaLuz.abooksSatusFilename)
                 .then(function (result) {
                 _this.sessionInfo = JSON.parse(result);
                 defer.resolve(true);
             }, function (error) {
                 console.log(error);
                 defer.reject(false);
+            })
+                ['finally'](function () {
+                NuevaLuz.workingDir = _this.sessionInfo.workingDir;
+                NuevaLuz.playDir = _this.sessionInfo.playDir;
+                console.log("NLUZ FROMFILE WD: " + NuevaLuz.workingDir + ", PD: " + NuevaLuz.playDir);
+                if (!_this.sessionInfo.workingDir) {
+                    if (ionic.Platform.isAndroid()) {
+                        if (NuevaLuz.externalStorage2) {
+                            NuevaLuz.workingDir = NuevaLuz.externalStorage2;
+                            NuevaLuz.playDir = NuevaLuz.externalStorage2;
+                        }
+                        else if (NuevaLuz.externalStorage) {
+                            NuevaLuz.workingDir = NuevaLuz.externalStorage;
+                            NuevaLuz.playDir = NuevaLuz.externalStorage;
+                        }
+                        else {
+                            NuevaLuz.workingDir = NuevaLuz.internalStorage;
+                            NuevaLuz.playDir = NuevaLuz.internalStorage;
+                        }
+                        _this.sessionInfo.workingDir = NuevaLuz.workingDir;
+                        _this.sessionInfo.playDir = NuevaLuz.playDir;
+                    }
+                    else {
+                        NuevaLuz.workingDir = _this.sessionInfo.workingDir;
+                        NuevaLuz.playDir = _this.sessionInfo.playDir;
+                    }
+                    console.log("NLUZ WD: " + NuevaLuz.workingDir + ", PD: " + NuevaLuz.playDir);
+                }
             });
             return defer.promise;
         };
@@ -133,6 +192,18 @@ var NuevaLuz;
         };
         SessionService.prototype.getCurrentBook = function () {
             return this.sessionInfo.currentBook;
+        };
+        SessionService.prototype.deleteCurrentBook = function (id) {
+            if (this.sessionInfo.currentBook.id === id) {
+                this.sessionInfo.currentBook = null;
+                this.saveSessionInfo();
+            }
+        };
+        SessionService.prototype.copy2SD = function (id) {
+            return this.cordovaFile.copyDir(cordova.file.dataDirectory, id, cordova.file.externalDataDirectory, id);
+        };
+        SessionService.prototype.copy2Phone = function (id) {
+            return this.cordovaFile.copyDir(cordova.file.externalDataDirectory, id, cordova.file.dataDirectory, id);
         };
         return SessionService;
     })();

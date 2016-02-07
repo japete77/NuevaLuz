@@ -34,14 +34,21 @@ module NuevaLuz {
     export var workingDir : string = "";
     export var playDir : string = "";
     export var appleDevice : boolean;
+    
+    export var internalStorage : string = null;
+    export var externalStorage : string = null;
+    export var externalStorage2 : string = null;
+    
+    export var extStorageBase : string[] = [ "file:///Removable/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///storage/", "file:///mnt/" ];
+    export var extStorageDirs : string[] = [ "MicroSD", "ext_sd", "external", "sdcard2", "_ExternalSD", "sdcard-ext", "external1", "external_sd", "extSdCard", "extSdCard" ];
 
     // main angular app
     export var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
 
-    app.run(["$ionicPlatform", "$cordovaSplashscreen", "$ionicPopup", "DaisyPlayerSvc",
+    app.run(["$ionicPlatform", "$cordovaSplashscreen", "$ionicPopup", "DaisyPlayerSvc", "$ionicHistory", "$cordovaFile",
     ($ionicPlatform : ionic.platform.IonicPlatformService, $cordovaSplashscreen : any, 
         $ionicPopup : ionic.popup.IonicPopupService, DaisyPlayerSvc : DaisyPlayerService, 
-        $ionicHistory : ionic.navigation.IonicHistoryService ) => {
+        $ionicHistory : ionic.navigation.IonicHistoryService, $cordovaFile: ngCordova.IFileService) => {
             
         setTimeout(function() {
             $cordovaSplashscreen.hide();
@@ -52,17 +59,6 @@ module NuevaLuz {
         }
                 
         $ionicPlatform.ready(() => {
-            if (ionic.Platform.isAndroid()) {
-                workingDir = cordova.file.dataDirectory;
-                playDir = cordova.file.dataDirectory;
-                appleDevice = false;
-            }
-            else {
-                workingDir = cordova.file.documentsDirectory;
-                playDir = "documents:/";
-                appleDevice = true;                
-            }
-            
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
             if(Keyboard) {
@@ -228,8 +224,8 @@ module NuevaLuz {
         new RadioController($scope, RadioSvc, SessionSvc, $controller));
 
     app.controller("ABookInfoCtrl", ($scope : IABookInfoScope, $ionicPopup : ionic.popup.IonicPopupService, 
-        $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService, MyABooksSvc : MyABooksService) => 
-        new ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc));
+        $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService, MyABooksSvc : MyABooksService, SessionSvc : SessionService) => 
+        new ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc, SessionSvc));
         
    app.controller("ABooksLevelsCtrl", ($scope : IABooksLevelsScope, $stateParams : angular.ui.IStateParamsService, 
         $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) =>

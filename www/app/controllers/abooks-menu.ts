@@ -19,6 +19,7 @@ module NuevaLuz {
             $timeout : ng.ITimeoutService) {
             
             this.scope = $scope;
+            this.scope.control = this;
             this.scope.ready = false;
             this.SessionSvc = SessionSvc;
             this.location = $location;
@@ -65,7 +66,7 @@ module NuevaLuz {
             else {
                 return "";
             }
-        }
+        } 
                 
     }
     

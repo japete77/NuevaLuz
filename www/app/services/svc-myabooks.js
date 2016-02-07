@@ -29,7 +29,7 @@ var NuevaLuz;
         MyABooksService.prototype.updateABooksFile = function () {
             var q = this.q.defer();
             if (this.ready) {
-                this.cordovaFile.writeFile(NuevaLuz.workingDir, this.abooksIndexFilename, JSON.stringify(this.abooks), true)
+                this.cordovaFile.writeFile(cordova.file.dataDirectory, this.abooksIndexFilename, JSON.stringify(this.abooks), true)
                     .then(function (success) {
                     q.resolve();
                 }, function (error) {
@@ -87,9 +87,9 @@ var NuevaLuz;
         MyABooksService.prototype.getBooks = function (callback) {
             var _this = this;
             if (this.ready) {
-                this.cordovaFile.checkFile(NuevaLuz.workingDir, this.abooksIndexFilename)
+                this.cordovaFile.checkFile(cordova.file.dataDirectory, this.abooksIndexFilename)
                     .then(function (success) {
-                    _this.cordovaFile.readAsText(NuevaLuz.workingDir, _this.abooksIndexFilename)
+                    _this.cordovaFile.readAsText(cordova.file.dataDirectory, _this.abooksIndexFilename)
                         .then(function (result) {
                         _this.abooks = JSON.parse(result);
                         callback(_this.abooks);
@@ -97,7 +97,7 @@ var NuevaLuz;
                         console.log(error);
                     });
                 }, function (error) {
-                    _this.cordovaFile.createFile(NuevaLuz.workingDir, _this.abooksIndexFilename, true);
+                    _this.cordovaFile.createFile(cordova.file.dataDirectory, _this.abooksIndexFilename, true);
                     console.log(error);
                 });
             }

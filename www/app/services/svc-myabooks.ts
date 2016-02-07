@@ -40,7 +40,7 @@ module NuevaLuz {
             var q = this.q.defer();
             
             if (this.ready) {
-                this.cordovaFile.writeFile(workingDir, this.abooksIndexFilename, JSON.stringify(this.abooks), true)
+                this.cordovaFile.writeFile(cordova.file.dataDirectory, this.abooksIndexFilename, JSON.stringify(this.abooks), true)
                     .then((success : any) => {
                         q.resolve();	
                     },
@@ -107,9 +107,9 @@ module NuevaLuz {
         
         getBooks(callback : (response : Array<AudioBook>) => any) {
             if (this.ready) {
-                this.cordovaFile.checkFile(workingDir, this.abooksIndexFilename)
+                this.cordovaFile.checkFile(cordova.file.dataDirectory, this.abooksIndexFilename)
                 .then((success) => {
-                    this.cordovaFile.readAsText(workingDir, this.abooksIndexFilename)
+                    this.cordovaFile.readAsText(cordova.file.dataDirectory, this.abooksIndexFilename)
                     .then((result : string) => {
                         this.abooks = JSON.parse(result);
                         callback(this.abooks);
@@ -119,7 +119,7 @@ module NuevaLuz {
                     });
                 }, 
                 (error) => {
-                    this.cordovaFile.createFile(workingDir, this.abooksIndexFilename, true);
+                    this.cordovaFile.createFile(cordova.file.dataDirectory, this.abooksIndexFilename, true);
                     console.log(error);
                 });
             }

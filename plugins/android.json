@@ -137,6 +137,9 @@
         },
         "de.appplant.cordova.plugin.background-mode": {
             "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+        },
+        "cordova-custom-config": {
+            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
         }
     },
     "dependent_plugins": {}

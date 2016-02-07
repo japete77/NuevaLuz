@@ -5,7 +5,6 @@ var NuevaLuz;
 (function (NuevaLuz) {
     var LoginController = (function () {
         function LoginController($scope, $location, $timeout, $http, $ionicLoading, $ionicHistory, SessionSvc) {
-            // super(SessionSvc);
             this.SessionSvc = SessionSvc;
             this.scope = $scope;
             this.scope.control = this;
@@ -17,7 +16,6 @@ var NuevaLuz;
             this.http = $http;
             this.ionicHistory = $ionicHistory;
             this.ionicHistory.clearHistory();
-            //this.SessionSvc.loadSessionInfo();
         }
         // Login
         LoginController.prototype.login = function (username, password) {

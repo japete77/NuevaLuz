@@ -93,56 +93,48 @@ var NuevaLuz;
                         // Unzip file
                         _this.unzip(currentDownload.id, function (result) {
                             if (result != -1) {
-                                // Delete .zip
-                                _this.cordovaFile.removeFile(NuevaLuz.workingDir, _this.sourceZip);
                                 // Create target dir
-                                var res = _this.cordovaFile.createDir(NuevaLuz.workingDir, '/' + _this.targetFolder + '/', true);
+                                var res = _this.cordovaFile.createDir(NuevaLuz.workingDir, _this.targetFolder, true);
                                 var callback = _this.q.defer();
                                 // Read files from tmp folder to move them to target dir
                                 window.resolveLocalFileSystemURI(NuevaLuz.workingDir + _this.tmpFolder, function (entry) {
-                                    _this.addFileEntry(entry, callback);
-                                    callback.promise.then(function (result) {
-                                        if (result == 0) {
-                                            // Register download
-                                            _this.http({
-                                                method: 'GET',
-                                                url: NuevaLuz.baseUrl + 'RegisterDownload?Session=' + _this.sessionSvc.getSession() + '&IdAudio=' + currentDownload.id
-                                            })
-                                                .then(function (response) {
-                                                currentDownload.statusDescription = "";
-                                                currentDownload.statusKey = NuevaLuz.STATUS_COMPLETED;
-                                                _this.rootScope.$broadcast(NuevaLuz.STATUS_COMPLETED, currentDownload);
-                                                _this.myABooksSvc.addUpdateBook(currentDownload);
-                                                _this.myABooksSvc.updateABooksFile()
-                                                    .then(function () {
-                                                    // Delete from download list
-                                                    _this.downloads.splice(_this.getDownloadIndex(currentDownload.id), 1);
-                                                    // go for next item to process...
-                                                    _this.processDownloadQueue();
-                                                });
-                                            }, function (reason) {
-                                                currentDownload.statusDescription = 'Error registrando descarga';
-                                                currentDownload.statusKey = NuevaLuz.STATUS_ERROR;
-                                                _this.rootScope.$broadcast(NuevaLuz.STATUS_ERROR, currentDownload);
-                                                _this.myABooksSvc.addUpdateBook(currentDownload);
-                                                _this.myABooksSvc.updateABooksFile()
-                                                    .then(function () {
-                                                    // go for next item to process...
-                                                    _this.processDownloadQueue();
+                                    entry.createReader().readEntries(function (entries) {
+                                        if (entries && entries[0].isDirectory) {
+                                            _this.cordovaFile.moveDir(NuevaLuz.workingDir + _this.tmpFolder, entries[0].name, NuevaLuz.workingDir, currentDownload.id).then(function (result) {
+                                                // Register download
+                                                _this.http({
+                                                    method: 'GET',
+                                                    url: NuevaLuz.baseUrl + 'RegisterDownload?Session=' + _this.sessionSvc.getSession() + '&IdAudio=' + currentDownload.id
+                                                })
+                                                    .then(function (response) {
+                                                    currentDownload.statusDescription = "";
+                                                    currentDownload.statusKey = NuevaLuz.STATUS_COMPLETED;
+                                                    _this.rootScope.$broadcast(NuevaLuz.STATUS_COMPLETED, currentDownload);
+                                                    _this.myABooksSvc.addUpdateBook(currentDownload);
+                                                    _this.myABooksSvc.updateABooksFile()
+                                                        .then(function () {
+                                                        // Delete from download list
+                                                        _this.downloads.splice(_this.getDownloadIndex(currentDownload.id), 1);
+                                                        // Delete .zip
+                                                        _this.cordovaFile.removeFile(NuevaLuz.workingDir, currentDownload.filename);
+                                                        _this.cordovaFile.removeRecursively(NuevaLuz.workingDir, _this.tmpFolder);
+                                                        // go for next item to process...
+                                                        _this.processDownloadQueue();
+                                                    });
+                                                }, function (reason) {
+                                                    currentDownload.statusDescription = 'Error registrando descarga';
+                                                    currentDownload.statusKey = NuevaLuz.STATUS_ERROR;
+                                                    _this.rootScope.$broadcast(NuevaLuz.STATUS_ERROR, currentDownload);
+                                                    _this.myABooksSvc.addUpdateBook(currentDownload);
+                                                    _this.myABooksSvc.updateABooksFile()
+                                                        .then(function () {
+                                                        // go for next item to process...
+                                                        _this.processDownloadQueue();
+                                                    });
                                                 });
                                             });
                                         }
-                                        else {
-                                            currentDownload.statusDescription = 'Error moviendo audio libro';
-                                            currentDownload.statusKey = NuevaLuz.STATUS_ERROR;
-                                            _this.rootScope.$broadcast(NuevaLuz.STATUS_ERROR, currentDownload);
-                                            _this.myABooksSvc.addUpdateBook(currentDownload);
-                                            _this.myABooksSvc.updateABooksFile()
-                                                .then(function () {
-                                                // go for next item to process...
-                                                _this.processDownloadQueue();
-                                            });
-                                        }
+                                        ;
                                     });
                                 }, function (error) {
                                     currentDownload.statusDescription = "Error preparando audio libro";
@@ -210,43 +202,13 @@ var NuevaLuz;
                 });
             });
         };
-        DownloadService.prototype.addFileEntry = function (entry, callback) {
-            var _this = this;
-            var dirReader = entry.createReader();
-            dirReader.readEntries(function (entries) {
-                var i = 0;
-                for (i = 0; i < entries.length; i++) {
-                    if (entries[i].isDirectory === true) {
-                        // Recursive -- calback into this subdirectory
-                        _this.addFileEntry(entries[i], callback);
-                    }
-                    else {
-                        var r = /[^\/]*$/;
-                        var sourcePath = entries[i].fullPath.replace(r, '');
-                        var filename = entries[i].name;
-                        _this.cordovaFile.moveFile(NuevaLuz.workingDir + sourcePath, filename, NuevaLuz.workingDir + '/' + _this.targetFolder + '/', filename)
-                            .then(function (success) {
-                            // Delete tmp folder at the end...
-                            if (i == entries.length) {
-                                _this.cordovaFile.removeRecursively(NuevaLuz.workingDir, _this.tmpFolder);
-                                callback.resolve(0);
-                            }
-                        }, function (error) {
-                            // clean tmp folder in case of error
-                            _this.cordovaFile.removeRecursively(NuevaLuz.workingDir, _this.tmpFolder);
-                            callback.resolve(-1);
-                        });
-                    }
-                }
-            });
-        };
         DownloadService.prototype.unzip = function (downloadId, sucessCallback, progressCallback) {
             // Generate tmp folder
             var d = new Date();
-            this.tmpFolder = '/' + d.getTime().toString() + '/';
+            this.tmpFolder = d.getTime().toString();
             // Source file and target folder using id with left padding
             this.targetFolder = downloadId;
-            this.sourceZip = '/' + this.targetFolder + '.zip';
+            this.sourceZip = this.targetFolder + '.zip';
             // Unzip
             zip.unzip(NuevaLuz.workingDir + this.sourceZip, NuevaLuz.workingDir + this.tmpFolder, function (result) {
                 sucessCallback(result);
@@ -277,6 +239,7 @@ var NuevaLuz;
             var url = NuevaLuz.abookBaseUrl + id + ".zip";
             // File name only
             var filename = url.split("/").pop();
+            console.log("NLUZ Download to: " + NuevaLuz.workingDir);
             // Add item to the queue
             var downloadItem = {
                 id: id,

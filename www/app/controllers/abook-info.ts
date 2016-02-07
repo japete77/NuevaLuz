@@ -14,9 +14,11 @@ module NuevaLuz {
         private playerSvc : DaisyPlayerService;
         private ionicPopup : ionic.popup.IonicPopupService;
         private myABooksSvc : MyABooksService;
+        private SessionSvc : SessionService;
   
         constructor($scope : IABookInfoScope, $ionicPopup : ionic.popup.IonicPopupService, 
-            $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService, MyABooksSvc : MyABooksService) {
+            $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService, 
+            MyABooksSvc : MyABooksService, SessionSvc : SessionService) {
             this.scope = $scope;
             this.scope.control = this;
             this.location = $location;
@@ -24,6 +26,7 @@ module NuevaLuz {
             this.scope.currentBook = this.playerSvc.getCurrentBook();
             this.ionicPopup = $ionicPopup;
             this.myABooksSvc = MyABooksSvc;
+            this.SessionSvc = SessionSvc;
         }
         
         deleteBook(id : string) {
@@ -38,7 +41,11 @@ module NuevaLuz {
                     this.playerSvc.release();
                     
                     // Delete book
-                    this.myABooksSvc.deleteBook(id);
+                    this.myABooksSvc.deleteBook(id)
+                    .then(() => {
+                        // Delete book from session
+                        this.SessionSvc.deleteCurrentBook(id);
+                    });
                     
                     // Redirect to my audio books cleaning history
                     this.location.path("/myabooks/clear");

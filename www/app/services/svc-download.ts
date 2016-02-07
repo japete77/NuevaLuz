@@ -124,69 +124,60 @@ module NuevaLuz {
                         this.unzip(currentDownload.id, 
                             (result : number) => {
                                 if (result!=-1) {
-                                    
-                                    // Delete .zip
-                                    this.cordovaFile.removeFile(workingDir, this.sourceZip);
-
                                     // Create target dir
-                                    var res = this.cordovaFile.createDir(workingDir, '/' + this.targetFolder + '/', true);
+                                    var res = this.cordovaFile.createDir(workingDir, this.targetFolder, true);
                                                     
                                     var callback = this.q.defer<number>();
                                     
                                     // Read files from tmp folder to move them to target dir
                                     window.resolveLocalFileSystemURI(
-                                        workingDir + this.tmpFolder, 
+                                        workingDir + this.tmpFolder,
                                         (entry : DirectoryEntry) => { 
-                                            this.addFileEntry(entry, callback);
-                                            
-                                            callback.promise.then((result : number ) => {
-                                                if (result==0) {
-                                                    // Register download
-                                                    this.http({
-                                                        method: 'GET',
-                                                        url: baseUrl + 'RegisterDownload?Session=' + this.sessionSvc.getSession() + '&IdAudio=' + currentDownload.id
-                                                    })
-                                                    .then((response : any) => {
-                                                        currentDownload.statusDescription = "";
-                                                        currentDownload.statusKey = STATUS_COMPLETED;
-                                                        this.rootScope.$broadcast(STATUS_COMPLETED, currentDownload);
-                                                        
-                                                        this.myABooksSvc.addUpdateBook(currentDownload);
-                                                        this.myABooksSvc.updateABooksFile()
-                                                        .then(() => {
+                                            entry.createReader().readEntries((entries: Entry[]) => {
+                                                if (entries && entries[0].isDirectory) {                                                    
+                                                    this.cordovaFile.moveDir(workingDir + this.tmpFolder, 
+                                                    entries[0].name, workingDir, currentDownload.id).then((result: DirectoryEntry) => {
+                                                                                                                
+                                                        // Register download
+                                                        this.http({
+                                                            method: 'GET',
+                                                            url: baseUrl + 'RegisterDownload?Session=' + this.sessionSvc.getSession() + '&IdAudio=' + currentDownload.id
+                                                        })
+                                                        .then((response : any) => {
+                                                            currentDownload.statusDescription = "";
+                                                            currentDownload.statusKey = STATUS_COMPLETED;
+                                                            this.rootScope.$broadcast(STATUS_COMPLETED, currentDownload);
                                                             
-                                                            // Delete from download list
-                                                            this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
+                                                            this.myABooksSvc.addUpdateBook(currentDownload);
+                                                            this.myABooksSvc.updateABooksFile()
+                                                            .then(() => {
+                                                                
+                                                                // Delete from download list
+                                                                this.downloads.splice(this.getDownloadIndex(currentDownload.id), 1);
+                                                                
+                                                                // Delete .zip
+                                                                this.cordovaFile.removeFile(workingDir, currentDownload.filename);
+                                                                this.cordovaFile.removeRecursively(workingDir, this.tmpFolder);
+                                                                
+                                                                // go for next item to process...
+                                                                this.processDownloadQueue();
+                                                            });                                                    
+                                                        },
+                                                        (reason : any) => {
+                                                            currentDownload.statusDescription = 'Error registrando descarga';
+                                                            currentDownload.statusKey = STATUS_ERROR;
+                                                            this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
                                                             
-                                                            // go for next item to process...
-                                                            this.processDownloadQueue();
-                                                        });                                                    
-                                                    },
-                                                    (reason : any) => {
-                                                        currentDownload.statusDescription = 'Error registrando descarga';
-                                                        currentDownload.statusKey = STATUS_ERROR;
-                                                        this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
-                                                        
-                                                        this.myABooksSvc.addUpdateBook(currentDownload);
-                                                        this.myABooksSvc.updateABooksFile()
-                                                        .then(() => {
-                                                            // go for next item to process...
-                                                            this.processDownloadQueue();  
-                                                        });                                                        
-                                                    })                                                    
-                                                }
-                                                else {
-                                                    currentDownload.statusDescription = 'Error moviendo audio libro';
-                                                    currentDownload.statusKey = STATUS_ERROR;
-                                                    this.rootScope.$broadcast(STATUS_ERROR, currentDownload);
-                                                    
-                                                    this.myABooksSvc.addUpdateBook(currentDownload);
-                                                    this.myABooksSvc.updateABooksFile()
-                                                    .then(() => {
-                                                        // go for next item to process...
-                                                        this.processDownloadQueue();  
-                                                    });                                             
-                                                }
+                                                            this.myABooksSvc.addUpdateBook(currentDownload);
+                                                            this.myABooksSvc.updateABooksFile()
+                                                            .then(() => {
+                                                                // go for next item to process...
+                                                                this.processDownloadQueue();  
+                                                            });                                                        
+                                                        });
+
+                                                    });
+                                                };
                                             });
                                         },
                                         (error : any) => {
@@ -265,49 +256,16 @@ module NuevaLuz {
                 });
            });
         }
-                
-        addFileEntry(entry : DirectoryEntry, callback : ng.IDeferred<number>) {
-            var dirReader = entry.createReader();       
-            dirReader.readEntries((entries : DirectoryEntry[]) => {
-                    var i : number = 0;
-                    for (i = 0; i < entries.length; i++) {
-                        if (entries[i].isDirectory === true) {
-                            // Recursive -- calback into this subdirectory
-                            this.addFileEntry(entries[i], callback);
-                        } else {
-                            var r : RegExp = /[^\/]*$/;
-                            var sourcePath : string = entries[i].fullPath.replace(r,'');
-                            var filename : string = entries[i].name;
-                            this.cordovaFile.moveFile(workingDir + sourcePath, filename, 
-                                workingDir + '/' + this.targetFolder + '/', filename)
-                                .then((success : any) => {
-                                    // Delete tmp folder at the end...
-                                    if (i==entries.length) {
-                                        this.cordovaFile.removeRecursively(workingDir, this.tmpFolder);
-                                        callback.resolve(0);
-                                    }
-                                },
-                                (error : any) => {
-                                    // clean tmp folder in case of error
-                                    this.cordovaFile.removeRecursively(workingDir, this.tmpFolder);
-                                    callback.resolve(-1);
-                                }
-                            );
-                        }
-                    }			
-                }
-            );
-        }
         
         private unzip(downloadId : string, sucessCallback : (result : number) => any, progressCallback : (progressEvent : IUnzipEvent) => any) {
             
             // Generate tmp folder
             var d = new Date();
-            this.tmpFolder = '/' + d.getTime().toString() + '/';
+            this.tmpFolder = d.getTime().toString();
             
             // Source file and target folder using id with left padding
             this.targetFolder = downloadId;
-            this.sourceZip = '/' +  this.targetFolder + '.zip';
+            this.sourceZip = this.targetFolder + '.zip';
             
             // Unzip
             zip.unzip(
@@ -349,7 +307,9 @@ module NuevaLuz {
             
             // File name only
             var filename : string = url.split("/").pop();
-                    
+                                
+            console.log("NLUZ Download to: " + workingDir);
+            
             // Add item to the queue
             var downloadItem : DownloadItem = {
                 id : id,

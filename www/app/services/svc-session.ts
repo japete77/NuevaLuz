@@ -14,6 +14,8 @@ module NuevaLuz {
         password : string;
         session : string;
         currentBook : AudioBook;
+        workingDir : string;
+        playDir : string;
     }
     
     export class SessionService {
@@ -29,14 +31,51 @@ module NuevaLuz {
             this.q = $q;
             this.cordovaFile = $cordovaFile;
             
+            this.sessionInfo = new SessionInfo();
+            this.sessionInfo.session = "";
+            this.sessionInfo.currentBook = null;   
+            this.sessionInfo.workingDir = null;
+            this.sessionInfo.playDir = null;             
+
             ionic.Platform.ready(() => {
-                this.loadSessionInfo().then(()=>{
-                }, 
-                (error : any) => {
-                    this.sessionInfo = new SessionInfo();
-                    this.sessionInfo.session = "";
-                    this.sessionInfo.currentBook = null;                    
-                });
+                
+                if (ionic.Platform.isAndroid()) {
+                
+                    internalStorage = cordova.file.dataDirectory;
+                    externalStorage = cordova.file.externalDataDirectory;
+
+                    // Check for external SD storage
+                    var ps : ngCordova.IFilePromise<DirectoryEntry>[] = [];
+                    for (var i=0; i<extStorageBase.length; i++) {
+                        ps.push($cordovaFile.checkDir(extStorageBase[i], extStorageDirs[i]));
+                    }
+                    ps.forEach((item: ngCordova.IFilePromise<DirectoryEntry>) => {
+                        item.then((dir: DirectoryEntry) => {
+                            // Create a subdir in external storage 2
+                            $cordovaFile.createDir(dir.toURL(), "NuevaLuz")
+                            .then((dir: DirectoryEntry) => {
+                                externalStorage2 = dir.toURL();
+                                this.loadSessionInfo();
+                            })
+                            .finally(() => {
+                                externalStorage2 = dir.toURL() + "NuevaLuz/";
+                                this.loadSessionInfo();
+                            });
+                        });
+                    });
+                                        
+                    appleDevice = false;
+                }
+                else {
+                    workingDir = cordova.file.documentsDirectory;
+                    playDir = "documents:/";
+                    appleDevice = true;    
+                    this.sessionInfo.workingDir = workingDir;
+                    this.sessionInfo.playDir = playDir;                         
+                }
+                
+                this.loadSessionInfo();
+                
             });
         }
         
@@ -127,7 +166,7 @@ module NuevaLuz {
         saveSessionInfo() : ng.IPromise<boolean> {
             var defer = this.q.defer<boolean>();
             
-            this.cordovaFile.writeFile(workingDir, abooksSatusFilename, JSON.stringify(this.sessionInfo), true)
+            this.cordovaFile.writeFile(cordova.file.dataDirectory, abooksSatusFilename, JSON.stringify(this.sessionInfo), true)
             .then((success : any) => {
                 defer.resolve(true);	
             },
@@ -142,14 +181,47 @@ module NuevaLuz {
         loadSessionInfo() : ng.IPromise<boolean> {
             var defer = this.q.defer<boolean>();
             
-            this.cordovaFile.readAsBinaryString(workingDir, abooksSatusFilename)
+            this.cordovaFile.readAsBinaryString(cordova.file.dataDirectory, abooksSatusFilename)
             .then((result : string) => {
                 this.sessionInfo = JSON.parse(result);
+                
                 defer.resolve(true);	
             },
             (error : any) => {
                 console.log(error);
                 defer.reject(false);
+            })
+            .finally(() => {
+                
+                workingDir = this.sessionInfo.workingDir;
+                playDir = this.sessionInfo.playDir;
+                
+                console.log("NLUZ FROMFILE WD: " + workingDir + ", PD: " + playDir);
+                
+                if (!this.sessionInfo.workingDir) {
+                    if (ionic.Platform.isAndroid()) {
+                        if (externalStorage2) {
+                            workingDir = externalStorage2;
+                            playDir = externalStorage2;
+                        }
+                        else if (externalStorage) {
+                            workingDir = externalStorage;
+                            playDir = externalStorage;
+                        }
+                        else {
+                            workingDir = internalStorage;
+                            playDir = internalStorage;
+                        }
+                        this.sessionInfo.workingDir = workingDir;
+                        this.sessionInfo.playDir = playDir;
+                    }
+                    else {
+                        workingDir = this.sessionInfo.workingDir;
+                        playDir = this.sessionInfo.playDir;
+                    }
+                    
+                    console.log("NLUZ WD: " + workingDir + ", PD: " + playDir);
+                }
             });
             
             return defer.promise;
@@ -169,7 +241,21 @@ module NuevaLuz {
         getCurrentBook() : AudioBook {
             return this.sessionInfo.currentBook;
         }
+        
+        deleteCurrentBook(id: string) {
+            if (this.sessionInfo.currentBook.id===id) {
+                this.sessionInfo.currentBook = null;
+                this.saveSessionInfo();
+            }
+        }
+        
+        copy2SD(id: string) : ngCordova.IFilePromise<DirectoryEntry> {
+            return this.cordovaFile.copyDir(cordova.file.dataDirectory, id, cordova.file.externalDataDirectory, id);
+        }
 
+        copy2Phone(id: string) : ngCordova.IFilePromise<DirectoryEntry> {
+            return this.cordovaFile.copyDir(cordova.file.externalDataDirectory, id, cordova.file.dataDirectory, id);
+        }
     }
     
 };

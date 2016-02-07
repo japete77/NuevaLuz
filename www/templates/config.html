@@ -14,9 +14,20 @@
             <div class="item item-divider">
             Almacenamiento Audio Libros
             </div>
-            <a class="item">
-                    Ruta....
-            </a>
+            <ion-list ng-if="config.showStorageConfig">
+                 <label class="item item-input item-select">
+                    <div class="input-label">
+                    Seleccione ubicación
+                    </div>
+                    <select ng-model="config.storage" ng-change="control.storageChange()">
+                        <option ng-repeat="item in config.availableStorages" ng-value="item">{{item}}</option>
+                    </select>
+                </label>
+
+                <!--<ion-radio ng-model="storage" ng-value="INT" ng-change="control.storageChange()">Memoria interna</ion-radio>
+                <ion-radio ng-model="storage" ng-value="EXT1" ng-change="control.storageChange()">Memoria externa 1</ion-radio>
+                <ion-radio ng-model="storage" ng-value="EXT2" ng-change="control.storageChange()">Memoria externa 2</ion-radio>-->
+            </ion-list>
         </div>
 	</ion-content>
 </ion-view>

@@ -221,6 +221,24 @@ module NuevaLuz {
                 return "";
             }
         } 
+        
+        copy2SD(id: string) {
+            this.SessionSvc.copy2SD(id)
+            .then((res: DirectoryEntry) => {
+                alert("Ok!"); 
+            }, (error: ngCordova.IFileError) => {
+                alert(error.code + ": " + error.message);
+            });
+        }
+        
+        copy2Phone(id: string) {
+            this.SessionSvc.copy2Phone(id)
+            .then((res: DirectoryEntry) => {
+                alert("Ok!"); 
+            }, (error: ngCordova.IFileError) => {
+                alert(error.code + ": " + error.message);
+            });
+        }
     }
 
 };

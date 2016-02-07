@@ -30,10 +30,15 @@ var NuevaLuz;
     NuevaLuz.radioStreamingUrl = "http://nlradio.dyndns.org:8294/;";
     NuevaLuz.workingDir = "";
     NuevaLuz.playDir = "";
+    NuevaLuz.internalStorage = null;
+    NuevaLuz.externalStorage = null;
+    NuevaLuz.externalStorage2 = null;
+    NuevaLuz.extStorageBase = ["file:///Removable/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///storage/", "file:///mnt/"];
+    NuevaLuz.extStorageDirs = ["MicroSD", "ext_sd", "external", "sdcard2", "_ExternalSD", "sdcard-ext", "external1", "external_sd", "extSdCard", "extSdCard"];
     // main angular app
     NuevaLuz.app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
-    NuevaLuz.app.run(["$ionicPlatform", "$cordovaSplashscreen", "$ionicPopup", "DaisyPlayerSvc",
-        function ($ionicPlatform, $cordovaSplashscreen, $ionicPopup, DaisyPlayerSvc, $ionicHistory) {
+    NuevaLuz.app.run(["$ionicPlatform", "$cordovaSplashscreen", "$ionicPopup", "DaisyPlayerSvc", "$ionicHistory", "$cordovaFile",
+        function ($ionicPlatform, $cordovaSplashscreen, $ionicPopup, DaisyPlayerSvc, $ionicHistory, $cordovaFile) {
             setTimeout(function () {
                 $cordovaSplashscreen.hide();
             }, 3000);
@@ -41,16 +46,6 @@ var NuevaLuz;
                 return str.substring(0, prefix.length) == prefix;
             }
             $ionicPlatform.ready(function () {
-                if (ionic.Platform.isAndroid()) {
-                    NuevaLuz.workingDir = cordova.file.dataDirectory;
-                    NuevaLuz.playDir = cordova.file.dataDirectory;
-                    NuevaLuz.appleDevice = false;
-                }
-                else {
-                    NuevaLuz.workingDir = cordova.file.documentsDirectory;
-                    NuevaLuz.playDir = "documents:/";
-                    NuevaLuz.appleDevice = true;
-                }
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
                 if (Keyboard) {
@@ -189,8 +184,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("RadioCtrl", function ($scope, RadioSvc, SessionSvc, $controller) {
         return new NuevaLuz.RadioController($scope, RadioSvc, SessionSvc, $controller);
     });
-    NuevaLuz.app.controller("ABookInfoCtrl", function ($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc) {
-        return new NuevaLuz.ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc);
+    NuevaLuz.app.controller("ABookInfoCtrl", function ($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc, SessionSvc) {
+        return new NuevaLuz.ABookInfoController($scope, $ionicPopup, $location, DaisyPlayerSvc, MyABooksSvc, SessionSvc);
     });
     NuevaLuz.app.controller("ABooksLevelsCtrl", function ($scope, $stateParams, $location, DaisyPlayerSvc) {
         return new NuevaLuz.ABooksLevelsController($scope, $stateParams, $location, DaisyPlayerSvc);

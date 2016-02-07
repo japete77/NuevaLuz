@@ -171,6 +171,22 @@ var NuevaLuz;
                 return "";
             }
         };
+        ABooksDetailController.prototype.copy2SD = function (id) {
+            this.SessionSvc.copy2SD(id)
+                .then(function (res) {
+                alert("Ok!");
+            }, function (error) {
+                alert(error.code + ": " + error.message);
+            });
+        };
+        ABooksDetailController.prototype.copy2Phone = function (id) {
+            this.SessionSvc.copy2Phone(id)
+                .then(function (res) {
+                alert("Ok!");
+            }, function (error) {
+                alert(error.code + ": " + error.message);
+            });
+        };
         return ABooksDetailController;
     })();
     NuevaLuz.ABooksDetailController = ABooksDetailController;

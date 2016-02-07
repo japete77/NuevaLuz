@@ -24,7 +24,6 @@ module NuevaLuz {
             $ionicLoading : ionic.loading.IonicLoadingService, $ionicHistory : ionic.navigation.IonicHistoryService, 
             SessionSvc : SessionService) {
             
-            // super(SessionSvc);
             this.SessionSvc = SessionSvc;
             this.scope = $scope;
             this.scope.control = this;
@@ -37,9 +36,7 @@ module NuevaLuz {
             this.http = $http;
             this.ionicHistory = $ionicHistory;
             
-            this.ionicHistory.clearHistory();
-            
-            //this.SessionSvc.loadSessionInfo();
+            this.ionicHistory.clearHistory();            
         }
         
         // Login
@@ -115,6 +112,6 @@ module NuevaLuz {
             else {
                 return "";
             }
-        }
+        } 
     }
 };

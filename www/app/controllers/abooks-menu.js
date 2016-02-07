@@ -5,6 +5,7 @@ var NuevaLuz;
         function ABooksMenuController($scope, SessionSvc, $location, ionicLoading, $timeout) {
             var _this = this;
             this.scope = $scope;
+            this.scope.control = this;
             this.scope.ready = false;
             this.SessionSvc = SessionSvc;
             this.location = $location;
