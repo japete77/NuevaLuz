@@ -193,6 +193,37 @@ var NuevaLuz;
         SessionService.prototype.getCurrentBook = function () {
             return this.sessionInfo.currentBook;
         };
+        SessionService.prototype.setStorage = function (storage) {
+            switch (storage) {
+                case NuevaLuz.storageTypes[0]:
+                    NuevaLuz.workingDir = NuevaLuz.internalStorage;
+                    NuevaLuz.playDir = NuevaLuz.internalStorage;
+                    break;
+                case NuevaLuz.storageTypes[1]:
+                    NuevaLuz.workingDir = NuevaLuz.externalStorage;
+                    NuevaLuz.playDir = NuevaLuz.externalStorage;
+                    break;
+                case NuevaLuz.storageTypes[2]:
+                    NuevaLuz.workingDir = NuevaLuz.externalStorage2;
+                    NuevaLuz.playDir = NuevaLuz.externalStorage2;
+                    break;
+            }
+            this.sessionInfo.workingDir = NuevaLuz.workingDir;
+            this.sessionInfo.playDir = NuevaLuz.playDir;
+        };
+        SessionService.prototype.getStorage = function () {
+            switch (this.sessionInfo.workingDir) {
+                case NuevaLuz.internalStorage:
+                    return NuevaLuz.storageTypes[0];
+                    break;
+                case NuevaLuz.externalStorage:
+                    return NuevaLuz.storageTypes[1];
+                    break;
+                case NuevaLuz.externalStorage2:
+                    return NuevaLuz.storageTypes[2];
+                    break;
+            }
+        };
         SessionService.prototype.deleteCurrentBook = function (id) {
             if (this.sessionInfo.currentBook.id === id) {
                 this.sessionInfo.currentBook = null;

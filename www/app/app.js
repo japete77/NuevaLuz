@@ -35,6 +35,7 @@ var NuevaLuz;
     NuevaLuz.externalStorage2 = null;
     NuevaLuz.extStorageBase = ["file:///Removable/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///storage/", "file:///mnt/"];
     NuevaLuz.extStorageDirs = ["MicroSD", "ext_sd", "external", "sdcard2", "_ExternalSD", "sdcard-ext", "external1", "external_sd", "extSdCard", "extSdCard"];
+    NuevaLuz.storageTypes = ["Interno", "Externo 1", "Externo 2"];
     // main angular app
     NuevaLuz.app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
     NuevaLuz.app.run(["$ionicPlatform", "$cordovaSplashscreen", "$ionicPopup", "DaisyPlayerSvc", "$ionicHistory", "$cordovaFile",
@@ -89,6 +90,11 @@ var NuevaLuz;
             cache: false,
             url: "/config",
             templateUrl: "templates/config.html"
+        })
+            .state("config-storage", {
+            cache: false,
+            url: "/config/storage",
+            templateUrl: "templates/config-storage.html"
         })
             .state("abooks-login", {
             cache: false,
@@ -157,8 +163,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksMenuCtrl", function ($scope, SessionSvc, $location, $ionicLoading, $timeout) {
         return new NuevaLuz.ABooksMenuController($scope, SessionSvc, $location, $ionicLoading, $timeout);
     });
-    NuevaLuz.app.controller("ConfigCtrl", function ($scope, SessionSvc, $ionicPopup) {
-        return new NuevaLuz.ConfigController($scope, SessionSvc, $ionicPopup);
+    NuevaLuz.app.controller("ConfigCtrl", function ($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading) {
+        return new NuevaLuz.ConfigController($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading);
     });
     NuevaLuz.app.controller("AuthorsBooksCtrl", function ($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc) {
         return new NuevaLuz.AuthorsBooksController($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc);

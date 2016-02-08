@@ -1,0 +1,7 @@
+<ion-view title="Almacenamiento" ng-controller="ConfigCtrl">
+	<ion-content class="padding">
+        <ion-list>
+            <ion-radio ng-model="config.storage" ng-repeat="item in config.availableStorages" ng-value="item" ng-change="control.storageChange()">{{item}}</ion-radio>
+        </ion-list>	
+	</ion-content>
+</ion-view>

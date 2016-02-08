@@ -102,6 +102,8 @@ var NuevaLuz;
                 });
             }
         };
+        MyABooksService.prototype.moveBooks = function (sourcePath, targetPath) {
+        };
         return MyABooksService;
     })();
     NuevaLuz.MyABooksService = MyABooksService;

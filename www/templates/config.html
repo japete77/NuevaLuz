@@ -1,33 +1,20 @@
-<ion-view title="" ng-controller="ConfigCtrl">
+<ion-view title="Almacenamiento" ng-controller="ConfigCtrl">
 	<ion-nav-buttons side="right">
         <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
         <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
     </ion-nav-buttons>
 	<ion-content class="padding">
-        <div class="list">
-            <div class="item item-divider">
-            Acceso Audioteca
-            </div>
-            <a class="item">
-                <button class="button button-full button-assertive" ng-click="control.clearCredentials()">Resetear Credenciales</button>
-            </a>
-            <div class="item item-divider">
-            Almacenamiento Audio Libros
-            </div>
-            <ion-list ng-if="config.showStorageConfig">
-                 <label class="item item-input item-select">
-                    <div class="input-label">
-                    Seleccione ubicación
-                    </div>
-                    <select ng-model="config.storage" ng-change="control.storageChange()">
-                        <option ng-repeat="item in config.availableStorages" ng-value="item">{{item}}</option>
-                    </select>
-                </label>
-
-                <!--<ion-radio ng-model="storage" ng-value="INT" ng-change="control.storageChange()">Memoria interna</ion-radio>
-                <ion-radio ng-model="storage" ng-value="EXT1" ng-change="control.storageChange()">Memoria externa 1</ion-radio>
-                <ion-radio ng-model="storage" ng-value="EXT2" ng-change="control.storageChange()">Memoria externa 2</ion-radio>-->
-            </ion-list>
-        </div>
+		<div class="list">
+			<a class="item item-icon-left item-icon-right" ng-click="control.clearCredentials()">
+				<i class="icon ion-refresh"></i>
+				Resetear Credenciales
+				<i class="icon ion-ios-arrow-right"></i>
+			</a>
+			<a ng-if="config.showStorageConfig" class="item item-icon-left item-icon-right" href="#/config/storage">
+				<i class="icon ion-android-archive"></i>
+				Ubicación Audio Libros
+				<i class="icon ion-ios-arrow-right"></i>
+			</a>
+		</div>
 	</ion-content>
 </ion-view>

@@ -124,6 +124,10 @@ module NuevaLuz {
                 });
             }
         }
+        
+        moveBooks(sourcePath: string, targetPath: string) {
+            
+        }
     }
 
 };

@@ -41,6 +41,7 @@ module NuevaLuz {
     
     export var extStorageBase : string[] = [ "file:///Removable/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///storage/", "file:///mnt/" ];
     export var extStorageDirs : string[] = [ "MicroSD", "ext_sd", "external", "sdcard2", "_ExternalSD", "sdcard-ext", "external1", "external_sd", "extSdCard", "extSdCard" ];
+    export var storageTypes: string[] = [ "Interno", "Externo 1", "Externo 2" ];
 
     // main angular app
     export var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
@@ -106,6 +107,11 @@ module NuevaLuz {
                 cache: false,
                 url: "/config",
                 templateUrl: "templates/config.html"
+            })
+            .state("config-storage", {
+                cache: false,
+                url: "/config/storage",
+                templateUrl: "templates/config-storage.html"
             })
             .state("abooks-login", {
                 cache: false,
@@ -178,8 +184,10 @@ module NuevaLuz {
         $timeout : ng.ITimeoutService) => 
         new ABooksMenuController($scope, SessionSvc, $location, $ionicLoading, $timeout));
         
-    app.controller("ConfigCtrl", ($scope : IConfigScope,SessionSvc : SessionService, $ionicPopup : ionic.popup.IonicPopupService) => 
-        new ConfigController($scope, SessionSvc, $ionicPopup));
+    app.controller("ConfigCtrl", ($scope : IConfigScope,SessionSvc : SessionService, 
+        $ionicPopup : ionic.popup.IonicPopupService, $timeout: ng.ITimeoutService, 
+        $ionicLoading : ionic.loading.IonicLoadingService) => 
+        new ConfigController($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading));
 
     app.controller("AuthorsBooksCtrl", ($scope : IAuthorsBooksScope, $http : ng.IHttpService, 
         $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, 

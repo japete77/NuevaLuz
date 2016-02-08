@@ -242,6 +242,41 @@ module NuevaLuz {
             return this.sessionInfo.currentBook;
         }
         
+        setStorage(storage: string) {
+
+            switch (storage) {
+                case storageTypes[0]:
+                    workingDir = internalStorage;
+                    playDir = internalStorage;
+                    break;
+                case storageTypes[1]:
+                    workingDir = externalStorage;
+                    playDir = externalStorage;
+                    break;
+                case storageTypes[2]:
+                    workingDir = externalStorage2;
+                    playDir = externalStorage2;
+                    break;
+            }
+            
+            this.sessionInfo.workingDir = workingDir;
+            this.sessionInfo.playDir = playDir;
+        }
+        
+        getStorage() : string {
+            switch (this.sessionInfo.workingDir) {
+                case internalStorage:
+                    return storageTypes[0];
+                    break;
+                case externalStorage:
+                    return storageTypes[1];
+                    break;
+                case externalStorage2:
+                    return storageTypes[2];
+                    break;
+            }
+        }
+        
         deleteCurrentBook(id: string) {
             if (this.sessionInfo.currentBook.id===id) {
                 this.sessionInfo.currentBook = null;
