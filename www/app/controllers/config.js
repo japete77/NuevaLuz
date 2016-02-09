@@ -40,7 +40,6 @@ var NuevaLuz;
                 .then(function (result) {
                 if (result) {
                     var temp = _this.SessionSvc.getStorage();
-                    console.log("NLUZ Storage selected: " + temp);
                     if (temp) {
                         _this.scope.config.storage = temp;
                         _this.prevStorage = temp;
@@ -89,12 +88,7 @@ var NuevaLuz;
                 if (result) {
                     _this.SessionSvc.setStorage(_this.scope.config.storage);
                     _this.SessionSvc.saveSessionInfo().then(function (result) {
-                        console.log("NLUZ Saved config " + _this.scope.config.storage);
                     });
-                    console.log("NLUZ PrevStorage: " + _this.prevStorage);
-                    console.log("NLUZ Storage: " + _this.scope.config.storage);
-                    console.log("NLUZ Source: " + _this.SessionSvc.getStoragePath(_this.prevStorage));
-                    console.log("NLUZ Target: " + _this.SessionSvc.getStoragePath(_this.scope.config.storage));
                     _this.moveBooks(_this.SessionSvc.getStoragePath(_this.prevStorage), _this.SessionSvc.getStoragePath(_this.scope.config.storage));
                     _this.prevStorage = _this.scope.config.storage;
                 }

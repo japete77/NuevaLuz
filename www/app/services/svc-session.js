@@ -154,7 +154,6 @@ var NuevaLuz;
                 ['finally'](function () {
                 NuevaLuz.workingDir = _this.sessionInfo.workingDir;
                 NuevaLuz.playDir = _this.sessionInfo.playDir;
-                console.log("NLUZ FROMFILE WD: " + NuevaLuz.workingDir + ", PD: " + NuevaLuz.playDir);
                 if (!_this.sessionInfo.workingDir) {
                     if (ionic.Platform.isAndroid()) {
                         if (NuevaLuz.externalStorage2) {
@@ -176,7 +175,6 @@ var NuevaLuz;
                         NuevaLuz.workingDir = _this.sessionInfo.workingDir;
                         NuevaLuz.playDir = _this.sessionInfo.playDir;
                     }
-                    console.log("NLUZ WD: " + NuevaLuz.workingDir + ", PD: " + NuevaLuz.playDir);
                 }
             });
             return defer.promise;

@@ -307,8 +307,6 @@ module NuevaLuz {
             
             // File name only
             var filename : string = url.split("/").pop();
-                                
-            console.log("NLUZ Download to: " + workingDir);
             
             // Add item to the queue
             var downloadItem : DownloadItem = {
