@@ -194,9 +194,7 @@ module NuevaLuz {
                 
                 workingDir = this.sessionInfo.workingDir;
                 playDir = this.sessionInfo.playDir;
-                
-                console.log("NLUZ FROMFILE WD: " + workingDir + ", PD: " + playDir);
-                
+                                
                 if (!this.sessionInfo.workingDir) {
                     if (ionic.Platform.isAndroid()) {
                         if (externalStorage2) {
@@ -217,9 +215,7 @@ module NuevaLuz {
                     else {
                         workingDir = this.sessionInfo.workingDir;
                         playDir = this.sessionInfo.playDir;
-                    }
-                    
-                    console.log("NLUZ WD: " + workingDir + ", PD: " + playDir);
+                    }                    
                 }
             });
             
