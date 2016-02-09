@@ -25,7 +25,6 @@ module NuevaLuz {
         private q : ng.IQService;
         private cordovaFile : ngCordova.IFileService;
 
-        
         constructor($http : ng.IHttpService, $q : ng.IQService, $cordovaFile : ngCordova.IFileService) {
             this.http = $http;   
             this.q = $q;
@@ -240,6 +239,20 @@ module NuevaLuz {
         
         getCurrentBook() : AudioBook {
             return this.sessionInfo.currentBook;
+        }
+        
+        getStoragePath(storage: string) {
+            switch (storage) {
+                case storageTypes[0]:
+                    return internalStorage;
+                    break;
+                case storageTypes[1]:
+                    return  externalStorage;
+                    break;
+                case storageTypes[2]:
+                    return externalStorage2;
+                    break;
+            }
         }
         
         setStorage(storage: string) {

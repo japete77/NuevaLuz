@@ -103,6 +103,16 @@ var NuevaLuz;
             }
         };
         MyABooksService.prototype.moveBooks = function (sourcePath, targetPath) {
+            var _this = this;
+            var deferred = this.q.defer();
+            var promises = [];
+            this.abooks.forEach(function (book) {
+                promises.push(_this.cordovaFile.moveDir(sourcePath, book.id, targetPath, book.id));
+            });
+            this.q.all(promises).then(function () {
+                deferred.resolve();
+            });
+            return deferred.promise;
         };
         return MyABooksService;
     })();

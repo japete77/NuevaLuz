@@ -163,8 +163,8 @@ var NuevaLuz;
     NuevaLuz.app.controller("ABooksMenuCtrl", function ($scope, SessionSvc, $location, $ionicLoading, $timeout) {
         return new NuevaLuz.ABooksMenuController($scope, SessionSvc, $location, $ionicLoading, $timeout);
     });
-    NuevaLuz.app.controller("ConfigCtrl", function ($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading) {
-        return new NuevaLuz.ConfigController($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading);
+    NuevaLuz.app.controller("ConfigCtrl", function ($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading, MyABooksSvc) {
+        return new NuevaLuz.ConfigController($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading, MyABooksSvc);
     });
     NuevaLuz.app.controller("AuthorsBooksCtrl", function ($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc) {
         return new NuevaLuz.AuthorsBooksController($scope, $http, $location, $ionicLoading, $stateParams, SessionSvc);

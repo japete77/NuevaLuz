@@ -125,8 +125,19 @@ module NuevaLuz {
             }
         }
         
-        moveBooks(sourcePath: string, targetPath: string) {
+        moveBooks(sourcePath: string, targetPath: string) : ng.IPromise<{}> {
+            var deferred = this.q.defer();
             
+            var promises : ngCordova.IFilePromise<DirectoryEntry>[] = [];
+            this.abooks.forEach((book: AudioBook) => {
+                promises.push(this.cordovaFile.moveDir(sourcePath, book.id, targetPath, book.id));
+            });
+            
+            this.q.all(promises).then(() => {
+                deferred.resolve();
+            });
+            
+            return deferred.promise;
         }
     }
 

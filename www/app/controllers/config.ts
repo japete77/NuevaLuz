@@ -19,17 +19,19 @@ module NuevaLuz {
         private prevStorage : string;
         private timeout: ng.ITimeoutService;
         private ionicLoading : ionic.loading.IonicLoadingService;
+        private myABooksSvc : MyABooksService;
         private movingMessages : string = "Moviendo audio libros ...";
         
         constructor($scope : IConfigScope, SessionSvc : SessionService, 
             $ionicPopup : ionic.popup.IonicPopupService, $timeout: ng.ITimeoutService, 
-            $ionicLoading : ionic.loading.IonicLoadingService) {
+            $ionicLoading : ionic.loading.IonicLoadingService, MyABooksSvc : MyABooksService) {
             this.SessionSvc = SessionSvc;
             this.scope = $scope;
             this.scope.control = this;
             this.ionicPopup = $ionicPopup; 
             this.timeout = $timeout;
             this.ionicLoading = $ionicLoading;
+            this.myABooksSvc = MyABooksSvc;
             
             this.scope.config = new StorageConfig();
             this.scope.config.showStorageConfig = ionic.Platform.isAndroid();
@@ -54,8 +56,10 @@ module NuevaLuz {
             .then((result: boolean) => {
                 if (result) {
                     var temp = this.SessionSvc.getStorage();
-                    console.log("NLUZ Storage selected: " + temp);
-                    if (temp) this.scope.config.storage = temp;
+                    if (temp) {
+                        this.scope.config.storage = temp;
+                        this.prevStorage = temp;
+                    }
                 }
             });
             
@@ -104,10 +108,11 @@ module NuevaLuz {
                 if (result) {
                     this.SessionSvc.setStorage(this.scope.config.storage);
                     this.SessionSvc.saveSessionInfo().then((result: boolean) => {
-                        console.log("NLUZ Saved config " + this.scope.config.storage);
                     });
+                                        
+                    this.moveBooks(this.SessionSvc.getStoragePath(this.prevStorage), this.SessionSvc.getStoragePath(this.scope.config.storage));
+
                     this.prevStorage = this.scope.config.storage;
-                    this.moveBooks("","");
                 }
                 else {
                     this.scope.config.storage = this.prevStorage;
@@ -123,20 +128,14 @@ module NuevaLuz {
                 });
             }, 0)
 
-            // this.SessionSvc.isSessionValid()
-            // .then((result : number) => {
-            // })
-            // .catch((reason : any) => {
-            // })
-            // .finally(() => {
-            //     this.timeout(() => {
-            //         this.ionicLoading.hide();
-            //     }, 0); 
-            // });
-
-            this.timeout(() => {
-                this.ionicLoading.hide();
-            }, 0); 
+            console.log("NLUZ Source: " + sourcePath + ", Target: " + targetPath);
+            this.myABooksSvc.moveBooks(sourcePath, targetPath).catch(() => {
+                
+            }).finally(() => {
+                this.timeout(() => {
+                    this.ionicLoading.hide();
+                }, 0); 
+            });
         }
         
     }

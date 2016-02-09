@@ -193,6 +193,19 @@ var NuevaLuz;
         SessionService.prototype.getCurrentBook = function () {
             return this.sessionInfo.currentBook;
         };
+        SessionService.prototype.getStoragePath = function (storage) {
+            switch (storage) {
+                case NuevaLuz.storageTypes[0]:
+                    return NuevaLuz.internalStorage;
+                    break;
+                case NuevaLuz.storageTypes[1]:
+                    return NuevaLuz.externalStorage;
+                    break;
+                case NuevaLuz.storageTypes[2]:
+                    return NuevaLuz.externalStorage2;
+                    break;
+            }
+        };
         SessionService.prototype.setStorage = function (storage) {
             switch (storage) {
                 case NuevaLuz.storageTypes[0]:

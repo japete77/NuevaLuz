@@ -186,8 +186,8 @@ module NuevaLuz {
         
     app.controller("ConfigCtrl", ($scope : IConfigScope,SessionSvc : SessionService, 
         $ionicPopup : ionic.popup.IonicPopupService, $timeout: ng.ITimeoutService, 
-        $ionicLoading : ionic.loading.IonicLoadingService) => 
-        new ConfigController($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading));
+        $ionicLoading : ionic.loading.IonicLoadingService, MyABooksSvc : MyABooksService) => 
+        new ConfigController($scope, SessionSvc, $ionicPopup, $timeout, $ionicLoading, MyABooksSvc));
 
     app.controller("AuthorsBooksCtrl", ($scope : IAuthorsBooksScope, $http : ng.IHttpService, 
         $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService, 
