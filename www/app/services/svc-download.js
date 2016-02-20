@@ -239,7 +239,6 @@ var NuevaLuz;
             var url = NuevaLuz.abookBaseUrl + id + ".zip";
             // File name only
             var filename = url.split("/").pop();
-            console.log("NLUZ Download to: " + NuevaLuz.workingDir);
             // Add item to the queue
             var downloadItem = {
                 id: id,

@@ -43,20 +43,20 @@
   </head>
   
   <script>
-    // document.addEventListener('deviceready', function() {
-    //     cordova.plugins.backgroundMode.setDefaults({
-    //         title:  "Nueva Luz",
-    //         ticker: "Nueva Luz",
-    //         text:   "Nueva Luz"
-    //     });
-    //     
-    //     // Enable background mode
-    //     cordova.plugins.backgroundMode.enable();
-    // });
+    document.addEventListener('deviceready', function() {
+        cordova.plugins.backgroundMode.setDefaults({
+            title:  "Nueva Luz",
+            ticker: "Nueva Luz",
+            text:   "Nueva Luz"
+        });
+        
+        // Enable background mode
+        cordova.plugins.backgroundMode.enable();
+    });
   </script>
   
   <body ng-app="starter">
-    <ion-nav-bar class="bar-energized nav-title-slide-ios7">
+    <ion-nav-bar class="bar-calm nav-title-slide-ios7">
       <ion-nav-back-button class="button-icon ion-arrow-left-c">
       </ion-nav-back-button>
     </ion-nav-bar>
