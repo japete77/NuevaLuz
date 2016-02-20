@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.nuevaluz667548" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ionicframework.nuevaluz667548" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>NuevaLuz</name>
   <description>
         Club del Libro Nueva Luz
     </description>
-  <author email="nuevaluz@nuevaluz.org" href="http://www.nuevaluz.org//">
+  <author email="nuevaluz@nuevaluz.org" href="http://www.nuevaluz.org">
       Nueva Luz
     </author>
   <content src="index.html"/>
   <access origin="*"/>
   <allow-navigation href="*"/>
   <gap:config-file platform="android" parent="/manifest">
-    <application android:debuggable="true"/>
+    <application android:debuggable="false"/>
   </gap:config-file>
   <gap:plugin name="de.appplant.cordova.plugin.background-mode" version="0.6.3"/>
   <preference name="webviewbounce" value="false"/>
@@ -25,6 +25,8 @@
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
   <platform name="android">
+    <preference name="AndroidLaunchMode" value="singleTop"/>
+    <preference name="android-minSdkVersion" value="8"/>
     <preference name="android-manifest/@android:installLocation" value="preferExternal"/>
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
     <icon src="resources/android/icon/drawable-mdpi-icon.png" density="mdpi"/>
@@ -72,28 +74,6 @@
     <splash src="resources/ios/splash/Default-Portrait~ipad.png" width="768" height="1024"/>
     <splash src="resources/ios/splash/Default@2x~iphone.png" width="640" height="960"/>
     <splash src="resources/ios/splash/Default~iphone.png" width="320" height="480"/>
-  </platform>
-  <platform name="android">
-    <preference name="AndroidLaunchMode" value="singleTop"/>
-    <preference name="android-minSdkVersion" value="8"/>
-    <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
-    <icon src="resources/android/icon/drawable-mdpi-icon.png" density="mdpi"/>
-    <icon src="resources/android/icon/drawable-hdpi-icon.png" density="hdpi"/>
-    <icon src="resources/android/icon/drawable-xhdpi-icon.png" density="xhdpi"/>
-    <icon src="resources/android/icon/drawable-xxhdpi-icon.png" density="xxhdpi"/>
-    <icon src="resources/android/icon/drawable-xxxhdpi-icon.png" density="xxxhdpi"/>
-    <splash src="resources/android/splash/drawable-land-ldpi-screen.png" density="land-ldpi"/>
-    <splash src="resources/android/splash/drawable-land-mdpi-screen.png" density="land-mdpi"/>
-    <splash src="resources/android/splash/drawable-land-hdpi-screen.png" density="land-hdpi"/>
-    <splash src="resources/android/splash/drawable-land-xhdpi-screen.png" density="land-xhdpi"/>
-    <splash src="resources/android/splash/drawable-land-xxhdpi-screen.png" density="land-xxhdpi"/>
-    <splash src="resources/android/splash/drawable-land-xxxhdpi-screen.png" density="land-xxxhdpi"/>
-    <splash src="resources/android/splash/drawable-port-ldpi-screen.png" density="port-ldpi"/>
-    <splash src="resources/android/splash/drawable-port-mdpi-screen.png" density="port-mdpi"/>
-    <splash src="resources/android/splash/drawable-port-hdpi-screen.png" density="port-hdpi"/>
-    <splash src="resources/android/splash/drawable-port-xhdpi-screen.png" density="port-xhdpi"/>
-    <splash src="resources/android/splash/drawable-port-xxhdpi-screen.png" density="port-xxhdpi"/>
-    <splash src="resources/android/splash/drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
   </platform>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>
