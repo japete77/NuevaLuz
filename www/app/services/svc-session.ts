@@ -66,15 +66,18 @@ module NuevaLuz {
                     appleDevice = false;
                 }
                 else {
-                    workingDir = cordova.file.documentsDirectory;
-                    playDir = "documents:/";
-                    appleDevice = true;    
-                    this.sessionInfo.workingDir = workingDir;
-                    this.sessionInfo.playDir = playDir;                         
-                }
-                
-                this.loadSessionInfo();
-                
+                    this.loadSessionInfo()
+                    .finally(() => {
+                        workingDir = cordova.file.documentsDirectory;
+                        playDir = "documents:/";
+
+                        appleDevice = true;    
+
+                        this.sessionInfo.workingDir = workingDir;
+                        this.sessionInfo.playDir = playDir;                        
+                    });
+
+                }                
             });
         }
         

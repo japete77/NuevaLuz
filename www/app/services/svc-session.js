@@ -50,13 +50,15 @@ var NuevaLuz;
                     NuevaLuz.appleDevice = false;
                 }
                 else {
-                    NuevaLuz.workingDir = cordova.file.documentsDirectory;
-                    NuevaLuz.playDir = "documents:/";
-                    NuevaLuz.appleDevice = true;
-                    _this.sessionInfo.workingDir = NuevaLuz.workingDir;
-                    _this.sessionInfo.playDir = NuevaLuz.playDir;
+                    _this.loadSessionInfo()
+                        ['finally'](function () {
+                        NuevaLuz.workingDir = cordova.file.documentsDirectory;
+                        NuevaLuz.playDir = "documents:/";
+                        NuevaLuz.appleDevice = true;
+                        _this.sessionInfo.workingDir = NuevaLuz.workingDir;
+                        _this.sessionInfo.playDir = NuevaLuz.playDir;
+                    });
                 }
-                _this.loadSessionInfo();
             });
         }
         SessionService.prototype.login = function (username, password) {
