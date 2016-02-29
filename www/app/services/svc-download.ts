@@ -105,7 +105,7 @@ module NuevaLuz {
            this.myABooksSvc.addUpdateBook(currentDownload);
            this.myABooksSvc.updateABooksFile()
            .then(() => {
-                this.rootScope.$emit(STATUS_DOWNLOADING, currentDownload);                
+                this.rootScope.$emit(STATUS_DOWNLOADING, currentDownload);   
                 currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, 
                 (entry : FileEntry) => {
                     // Notify downloaded

@@ -56,23 +56,6 @@ var NuevaLuz;
                     window.StatusBar.styleDefault();
                 }
             });
-            // // Disable BACK button on home
-            // $ionicPlatform.registerBackButtonAction(function(event : ng.IAngularEvent) {
-            //     // if ($ionicHistory.currentStateName()==="/") { // your check here
-            //         $ionicPopup.confirm({
-            //             title: "Hola",
-            //             template: '¿Estás seguro de querer salir de la aplicación?'
-            //         }).then(function(res) {
-            //             if (res) {
-            //                 DaisyPlayerSvc.saveStatus(DaisyPlayerSvc.getPlayerInfo(), 
-            //                     () => {
-            //                         ionic.Platform.exitApp();                            
-            //                     },
-            //                     () => {}
-            //                 );
-            //             }
-            //         })
-            // }, 100);
         }]);
     NuevaLuz.app.config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise("/");

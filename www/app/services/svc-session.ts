@@ -48,21 +48,68 @@ module NuevaLuz {
                     for (var i=0; i<extStorageBase.length; i++) {
                         ps.push($cordovaFile.checkDir(extStorageBase[i], extStorageDirs[i]));
                     }
-                    ps.forEach((item: ngCordova.IFilePromise<DirectoryEntry>) => {
-                        item.then((dir: DirectoryEntry) => {
-                            // Create a subdir in external storage 2
-                            $cordovaFile.createDir(dir.toURL(), "NuevaLuz")
-                            .then((dir: DirectoryEntry) => {
-                                externalStorage2 = dir.toURL();
-                                this.loadSessionInfo();
-                            })
-                            .finally(() => {
-                                externalStorage2 = dir.toURL() + "NuevaLuz/";
-                                this.loadSessionInfo();
-                            });
+                    
+                    var storageConfigured : boolean = false;
+                    
+                    // Load session info...
+                    this.loadSessionInfo()
+                    .then(() => {
+                       
+                        if (this.sessionInfo.workingDir) {
+                            storageConfigured = true;
+                        } else {
+                            storageConfigured = false;
+                        }
+            
+                        // Default storage                        
+                        this.setStorage(storageTypes[1]);
+                        
+                        // save
+                        this.saveSessionInfo()
+                        .then(() => {
+                            ps.forEach((item: ngCordova.IFilePromise<DirectoryEntry>) => {
+                                item.then((dir: DirectoryEntry) => {
+                                    // Create a subdir in external storage 2
+                                    $cordovaFile.createDir(dir.toURL(), "NuevaLuz");
+                                    
+                                    if (!storageConfigured) {
+                                        externalStorage2 = dir.toURL() + "NuevaLuz/";
+                                        workingDir = externalStorage2;
+                                        playDir = externalStorage2;
+                                        this.sessionInfo.workingDir = workingDir;
+                                        this.sessionInfo.playDir = playDir;
+                                        this.saveSessionInfo();
+                                    }
+                                });
+                            }); 
+                        });
+                    })
+                    .catch(() => {
+                        // Default storage                        
+                        this.setStorage(storageTypes[1]);
+                                                
+                        // save
+                        this.saveSessionInfo()
+                        .then(() => {
+                            ps.forEach((item: ngCordova.IFilePromise<DirectoryEntry>) => {
+                                item.then((dir: DirectoryEntry) => {
+                                    // Create a subdir in external storage 2
+                                    $cordovaFile.createDir(dir.toURL(), "NuevaLuz");
+                                    
+                                    if (!storageConfigured) {
+                                        externalStorage2 = dir.toURL() + "NuevaLuz/";
+                                        workingDir = externalStorage2;
+                                        playDir = externalStorage2;
+                                        this.sessionInfo.workingDir = workingDir;
+                                        this.sessionInfo.playDir = playDir;
+                                        this.saveSessionInfo();
+                                    }
+                                    
+                                });
+                            }); 
                         });
                     });
-                                        
+
                     appleDevice = false;
                 }
                 else {
@@ -181,12 +228,12 @@ module NuevaLuz {
         }
         
         loadSessionInfo() : ng.IPromise<boolean> {
+            
             var defer = this.q.defer<boolean>();
             
             this.cordovaFile.readAsBinaryString(cordova.file.dataDirectory, abooksSatusFilename)
             .then((result : string) => {
                 this.sessionInfo = JSON.parse(result);
-                
                 defer.resolve(true);	
             },
             (error : any) => {
@@ -198,28 +245,6 @@ module NuevaLuz {
                 workingDir = this.sessionInfo.workingDir;
                 playDir = this.sessionInfo.playDir;
                                 
-                if (!this.sessionInfo.workingDir) {
-                    if (ionic.Platform.isAndroid()) {
-                        if (externalStorage2) {
-                            workingDir = externalStorage2;
-                            playDir = externalStorage2;
-                        }
-                        else if (externalStorage) {
-                            workingDir = externalStorage;
-                            playDir = externalStorage;
-                        }
-                        else {
-                            workingDir = internalStorage;
-                            playDir = internalStorage;
-                        }
-                        this.sessionInfo.workingDir = workingDir;
-                        this.sessionInfo.playDir = playDir;
-                    }
-                    else {
-                        workingDir = this.sessionInfo.workingDir;
-                        playDir = this.sessionInfo.playDir;
-                    }                    
-                }
             });
             
             return defer.promise;

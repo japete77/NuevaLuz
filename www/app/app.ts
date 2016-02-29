@@ -40,8 +40,8 @@ module NuevaLuz {
     export var externalStorage2 : string = null;
     
     export var extStorageBase : string[] = [ "file:///Removable/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///mnt/", "file:///mnt/", "file:///mnt/sdcard/", "file:///storage/", "file:///mnt/" ];
-    export var extStorageDirs : string[] = [ "MicroSD", "ext_sd", "external", "sdcard2", "_ExternalSD", "sdcard-ext", "external1", "external_sd", "extSdCard", "extSdCard" ];
-    export var storageTypes: string[] = [ "Interno", "Externo 1", "Externo 2" ];
+    export var extStorageDirs : string[] = [ "MicroSD",            "ext_sd",              "external",     "sdcard2",      "_ExternalSD",         "sdcard-ext",   "external1",    "external_sd",         "extSdCard",        "extSdCard" ];
+    export var storageTypes: string[]    = [ "Interno", "Externo 1", "Externo 2" ];
 
     // main angular app
     export var app = angular.module('starter', ['ionic', 'ngIOS9UIWebViewPatch', 'ngCordova']);
@@ -70,24 +70,6 @@ module NuevaLuz {
             }            
         });
         
-        // // Disable BACK button on home
-        // $ionicPlatform.registerBackButtonAction(function(event : ng.IAngularEvent) {
-        //     // if ($ionicHistory.currentStateName()==="/") { // your check here
-        //         $ionicPopup.confirm({
-        //             title: "Hola",
-        //             template: '¿Estás seguro de querer salir de la aplicación?'
-        //         }).then(function(res) {
-        //             if (res) {
-        //                 DaisyPlayerSvc.saveStatus(DaisyPlayerSvc.getPlayerInfo(), 
-        //                     () => {
-        //                         ionic.Platform.exitApp();                            
-        //                     },
-        //                     () => {}
-        //                 );
-        //             }
-        //         })
-        // }, 100);
-
     }]);
 
     app.config(($stateProvider : angular.ui.IStateProvider, $urlRouterProvider : angular.ui.IUrlRouterProvider) => {

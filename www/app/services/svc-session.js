@@ -33,17 +33,56 @@ var NuevaLuz;
                     for (var i = 0; i < NuevaLuz.extStorageBase.length; i++) {
                         ps.push($cordovaFile.checkDir(NuevaLuz.extStorageBase[i], NuevaLuz.extStorageDirs[i]));
                     }
-                    ps.forEach(function (item) {
-                        item.then(function (dir) {
-                            // Create a subdir in external storage 2
-                            $cordovaFile.createDir(dir.toURL(), "NuevaLuz")
-                                .then(function (dir) {
-                                NuevaLuz.externalStorage2 = dir.toURL();
-                                _this.loadSessionInfo();
-                            })
-                                ['finally'](function () {
-                                NuevaLuz.externalStorage2 = dir.toURL() + "NuevaLuz/";
-                                _this.loadSessionInfo();
+                    var storageConfigured = false;
+                    // Load session info...
+                    _this.loadSessionInfo()
+                        .then(function () {
+                        if (_this.sessionInfo.workingDir) {
+                            storageConfigured = true;
+                        }
+                        else {
+                            storageConfigured = false;
+                        }
+                        // Default storage                        
+                        _this.setStorage(NuevaLuz.storageTypes[1]);
+                        // save
+                        _this.saveSessionInfo()
+                            .then(function () {
+                            ps.forEach(function (item) {
+                                item.then(function (dir) {
+                                    // Create a subdir in external storage 2
+                                    $cordovaFile.createDir(dir.toURL(), "NuevaLuz");
+                                    if (!storageConfigured) {
+                                        NuevaLuz.externalStorage2 = dir.toURL() + "NuevaLuz/";
+                                        NuevaLuz.workingDir = NuevaLuz.externalStorage2;
+                                        NuevaLuz.playDir = NuevaLuz.externalStorage2;
+                                        _this.sessionInfo.workingDir = NuevaLuz.workingDir;
+                                        _this.sessionInfo.playDir = NuevaLuz.playDir;
+                                        _this.saveSessionInfo();
+                                    }
+                                });
+                            });
+                        });
+                    })
+                        ['catch'](function () {
+                        // Default storage                        
+                        _this.setStorage(NuevaLuz.storageTypes[1]);
+                        // save
+                        _this.saveSessionInfo()
+                            .then(function () {
+                            ps.forEach(function (item) {
+                                item.then(function (dir) {
+                                    // Create a subdir in external storage 2
+                                    $cordovaFile.createDir(dir.toURL(), "NuevaLuz");
+                                    if (!storageConfigured) {
+                                        NuevaLuz.externalStorage2 = dir.toURL() + "NuevaLuz/";
+                                        NuevaLuz.workingDir = NuevaLuz.externalStorage2;
+                                        NuevaLuz.playDir = NuevaLuz.externalStorage2;
+                                        _this.sessionInfo.workingDir = NuevaLuz.workingDir;
+                                        _this.sessionInfo.playDir = NuevaLuz.playDir;
+                                        _this.saveSessionInfo();
+                                    }
+                                });
                             });
                         });
                     });
@@ -156,28 +195,6 @@ var NuevaLuz;
                 ['finally'](function () {
                 NuevaLuz.workingDir = _this.sessionInfo.workingDir;
                 NuevaLuz.playDir = _this.sessionInfo.playDir;
-                if (!_this.sessionInfo.workingDir) {
-                    if (ionic.Platform.isAndroid()) {
-                        if (NuevaLuz.externalStorage2) {
-                            NuevaLuz.workingDir = NuevaLuz.externalStorage2;
-                            NuevaLuz.playDir = NuevaLuz.externalStorage2;
-                        }
-                        else if (NuevaLuz.externalStorage) {
-                            NuevaLuz.workingDir = NuevaLuz.externalStorage;
-                            NuevaLuz.playDir = NuevaLuz.externalStorage;
-                        }
-                        else {
-                            NuevaLuz.workingDir = NuevaLuz.internalStorage;
-                            NuevaLuz.playDir = NuevaLuz.internalStorage;
-                        }
-                        _this.sessionInfo.workingDir = NuevaLuz.workingDir;
-                        _this.sessionInfo.playDir = NuevaLuz.playDir;
-                    }
-                    else {
-                        NuevaLuz.workingDir = _this.sessionInfo.workingDir;
-                        NuevaLuz.playDir = _this.sessionInfo.playDir;
-                    }
-                }
             });
             return defer.promise;
         };
