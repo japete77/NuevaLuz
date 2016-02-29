@@ -80,7 +80,6 @@ var NuevaLuz;
             this.myABooksSvc.updateABooksFile()
                 .then(function () {
                 _this.rootScope.$emit(NuevaLuz.STATUS_DOWNLOADING, currentDownload);
-                console.log("NLUZ Download: " + currentDownload.path + "#" + currentDownload.filename);
                 currentDownload.transfer.download(currentDownload.url, currentDownload.path + currentDownload.filename, function (entry) {
                     // Notify downloaded
                     currentDownload.progress = 100;
