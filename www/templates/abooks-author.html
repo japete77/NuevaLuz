@@ -1,8 +1,4 @@
-<ion-view title="Autores" ng-controller="AuthorsCtrl">
-	<ion-nav-buttons side="right">
-        <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
-        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
-    </ion-nav-buttons>
+<ion-view ng-controller="AuthorsCtrl">
 	<div class="bar bar-subheader">
 		<label class="item item-input">
 			<i class="icon ion-search placeholder-icon"></i>
@@ -12,12 +8,12 @@
 	<ion-content class="padding has-subheader">
 		<div class="list">
 			<a ng-repeat="author in authors" class="item item-icon-right" href="#/abooks/menu/author/{{author.Id}}">
-				<i class="icon ion-ios-arrow-right"></i>
-				<h2>{{author.Name}}</h2>
+				{{author.Name}}
+                <i class="icon ion-ios-arrow-right"></i>
 			</a>
 		</div>
-		
-		<ion-infinite-scroll ng-if="showScroll" on-infinite="control.loadMore()" distance="1%">
-		</ion-infinite-scroll>
+        <div class="row" ng-if="!loading">
+            <button class="button button-full button-positive" ng-click="control.loadMore()">Ver mas autores</button>
+        </div>		
 	</ion-content>
 </ion-view>

@@ -6,7 +6,7 @@ var NuevaLuz;
             var _this = this;
             this.index = 1;
             this.maxTitles = 9999999;
-            this.pageSize = 15;
+            this.pageSize = 20;
             this.timer = null;
             this.scope = $scope;
             this.scope.control = this;
@@ -20,6 +20,7 @@ var NuevaLuz;
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.SessionSvc = sessionSvc;
             this.location = $location;
+            this.scope.loading = true;
             // Filter watch
             this.scope.$watch('filterText', function () {
                 _this.scope.stopLoading = true;
@@ -38,6 +39,7 @@ var NuevaLuz;
         }
         ABooksTitlesController.prototype.getNextTitles = function () {
             var _this = this;
+            this.scope.loading = true;
             if (this.index < this.maxTitles) {
                 this.scope.showScroll = true;
                 if (this.scope.filterText == "") {
@@ -54,6 +56,7 @@ var NuevaLuz;
                         _this.timer = null;
                         _this.scope.stopLoading = false;
                         _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        _this.scope.loading = false;
                     }, function (reason) {
                         _this.SessionSvc.isSessionValid()
                             .then(function (result) {
@@ -62,6 +65,7 @@ var NuevaLuz;
                             ['catch'](function (reason) {
                             _this.location.path("/login");
                         });
+                        _this.scope.loading = false;
                     });
                 }
                 else {
@@ -78,6 +82,7 @@ var NuevaLuz;
                         _this.timer = null;
                         _this.scope.stopLoading = false;
                         _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        _this.scope.loading = false;
                     }, function (reason) {
                         _this.SessionSvc.isSessionValid()
                             .then(function (result) {
@@ -86,6 +91,7 @@ var NuevaLuz;
                             ['catch'](function (reason) {
                             _this.location.path("/login");
                         });
+                        _this.scope.loading = false;
                     });
                 }
             }

@@ -1,13 +1,13 @@
 <ion-view title="Titulos" ng-controller="AuthorsBooksCtrl">
-	<ion-nav-buttons side="right">
+	<!--<ion-nav-buttons side="right">
         <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
         <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
-    </ion-nav-buttons>
-	<ion-content class="padding">
+    </ion-nav-buttons>-->
+	<ion-content class="padding has-header">
 		<ion-list>
 			<a ng-repeat="title in titles" class="item item-icon-right" ng-href="#/abooks/menu/detail/{{title.Id}}">
+                {{title.Name}}
 				<i class="icon ion-ios-arrow-right"></i>
-				<h2>{{title.Name}}</h2>
 			</a>
 		</ion-list>
 		

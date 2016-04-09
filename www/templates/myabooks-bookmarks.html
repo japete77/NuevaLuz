@@ -1,8 +1,5 @@
-<ion-view title="Marcadores" ng-controller="ABooksBookmarksCtrl">
-    <ion-nav-buttons side="right">
-        <a class="button" ng-click="control.setEditMode(!editMode)">{{editMode?"Cancelar":"Editar"}}</a>
-    </ion-nav-buttons>
-	<ion-content class="padding">
+<ion-view ng-controller="ABooksBookmarksCtrl">
+	<ion-content class="padding has-header">
         <div class="list" ng-hide="editMode">
             <a class="item" ng-click="control.seekTo($index)" ng-repeat="bookmark in bookmarks track by $index">{{bookmark.title}}<span class="item-note">{{bookmark.absoluteTC}}</span></a>
         </div>

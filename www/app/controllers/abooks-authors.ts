@@ -8,6 +8,7 @@ module NuevaLuz {
         showScroll : boolean;
         authors : Array<any>;
         filterText : string;
+        loading : boolean;
     }
     
     export class AuthorsController {
@@ -43,6 +44,7 @@ module NuevaLuz {
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.SessionSvc = sessionSvc;
             this.location = $location;
+            this.scope.loading = true;
             
             // Filter
             this.scope.$watch('filterText', () => {
@@ -65,6 +67,8 @@ module NuevaLuz {
          
          public getNextAuthors() {
             
+            this.scope.loading = true;
+
             if (this.index<this.maxAuthors) {
                 this.scope.showScroll = true;		
                 
@@ -86,6 +90,8 @@ module NuevaLuz {
                         this.timer = null;
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        this.scope.loading = false;
+
                     }, (reason : any) => {
                         this.SessionSvc.isSessionValid()
                         .then((result : number) => {
@@ -94,6 +100,7 @@ module NuevaLuz {
                         .catch((reason : any) => {
                             this.location.path("/login");
                         })
+                        this.scope.loading = false;
                     });
                 }
                 else {
@@ -114,6 +121,7 @@ module NuevaLuz {
                         this.timer = null;
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        this.scope.loading = false;
                     }, (reason : any) => {
                         this.SessionSvc.isSessionValid()
                         .then((result : number) => {
@@ -122,6 +130,7 @@ module NuevaLuz {
                         .catch((reason : any) => {
                             this.location.path("/login");
                         })
+                        this.scope.loading = false;
                     });
                 }
             }

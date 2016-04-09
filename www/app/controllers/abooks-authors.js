@@ -21,6 +21,7 @@ var NuevaLuz;
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.SessionSvc = sessionSvc;
             this.location = $location;
+            this.scope.loading = true;
             // Filter
             this.scope.$watch('filterText', function () {
                 _this.scope.stopLoading = true;
@@ -39,6 +40,7 @@ var NuevaLuz;
         }
         AuthorsController.prototype.getNextAuthors = function () {
             var _this = this;
+            this.scope.loading = true;
             if (this.index < this.maxAuthors) {
                 this.scope.showScroll = true;
                 if (this.scope.filterText == "") {
@@ -55,6 +57,7 @@ var NuevaLuz;
                         _this.timer = null;
                         _this.scope.stopLoading = false;
                         _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        _this.scope.loading = false;
                     }, function (reason) {
                         _this.SessionSvc.isSessionValid()
                             .then(function (result) {
@@ -63,6 +66,7 @@ var NuevaLuz;
                             ['catch'](function (reason) {
                             _this.location.path("/login");
                         });
+                        _this.scope.loading = false;
                     });
                 }
                 else {
@@ -79,6 +83,7 @@ var NuevaLuz;
                         _this.timer = null;
                         _this.scope.stopLoading = false;
                         _this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        _this.scope.loading = false;
                     }, function (reason) {
                         _this.SessionSvc.isSessionValid()
                             .then(function (result) {
@@ -87,6 +92,7 @@ var NuevaLuz;
                             ['catch'](function (reason) {
                             _this.location.path("/login");
                         });
+                        _this.scope.loading = false;
                     });
                 }
             }

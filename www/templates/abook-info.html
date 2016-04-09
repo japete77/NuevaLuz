@@ -1,8 +1,5 @@
-<ion-view title="Info" ng-controller="ABookInfoCtrl">
-	<ion-nav-buttons side="right">
-        <a class="button button-icon icon ion-home" href="#/"></a>
-    </ion-nav-buttons>
-	<ion-content class="padding">
+<ion-view ng-controller="ABookInfoCtrl">
+	<ion-content class="padding has-header">
         <div class="list">
             <a ng-if="currentBook.title" class="item">Título<span class="item-note">{{currentBook.title}}</span></a>
             <a ng-if="currentBook.subject" class="item">Tema<span class="item-note">{{currentBook.subject}}</span></a>

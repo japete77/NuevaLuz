@@ -1,9 +1,5 @@
-<ion-view title="Menu" ng-controller="ABooksMenuCtrl">
-	<ion-nav-buttons side="right">
-        <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
-        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
-	</ion-nav-buttons>
-	<ion-content class="padding">
+<ion-view ng-controller="ABooksMenuCtrl">
+	<ion-content class="padding has-header">
 		<div class="list" ng-show="ready">
 			<a class="item item-icon-left item-icon-right" href="#/abooks/menu/title">
 				<i class="icon ion-clipboard"></i>

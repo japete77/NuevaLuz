@@ -115,46 +115,46 @@
     },
     "installed_plugins": {
         "com.keosu.cordova.stream": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-console": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-file-transfer": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-zip": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "ionic-plugin-keyboard": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-keyboard": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-media": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "de.appplant.cordova.plugin.background-mode": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-custom-config": {
-            "PACKAGE_NAME": "com.ionicframework.nuevaluz667548"
+            "PACKAGE_NAME": "com.nuevaluz"
         }
     },
     "dependent_plugins": {}

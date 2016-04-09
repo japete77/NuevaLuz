@@ -8,7 +8,7 @@ var NuevaLuz;
         }
         // Turns On/Off radio steaming
         RadioService.prototype.switchRadio = function () {
-            if (this.status) {
+            if (!this.status) {
                 this.initializeStream(true);
                 this.stream.play();
             }
@@ -17,6 +17,7 @@ var NuevaLuz;
                     this.stream.stop();
                 }
             }
+            this.status = !this.status;
         };
         // Initialize streaming
         RadioService.prototype.initializeStream = function (create) {

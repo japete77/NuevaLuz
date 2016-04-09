@@ -1,15 +1,9 @@
-<ion-view title="Almacenamiento" ng-controller="ConfigCtrl">
-	<ion-nav-buttons side="right">
-        <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
-        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
-    </ion-nav-buttons>
-	<ion-content class="padding">
+<ion-view ng-controller="ConfigCtrl">
+	<ion-content class="padding has-header">
 		<div class="list">
-			<a class="item item-icon-left item-icon-right" ng-click="control.clearCredentials()">
-				<i class="icon ion-refresh"></i>
-				Resetear Credenciales
-				<i class="icon ion-ios-arrow-right"></i>
-			</a>
+            <button title="Resetear credenciales" class="button button-full icon-left ion-refresh" ng-click="control.clearCredentials()">
+                Resetear Credenciales
+            </button>
 			<a ng-if="config.showStorageConfig" class="item item-icon-left item-icon-right" href="#/config/storage">
 				<i class="icon ion-android-archive"></i>
 				Ubicación Audio Libros

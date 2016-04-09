@@ -58,10 +58,18 @@
   </script>
   
   <body ng-app="starter">
-    <ion-nav-bar class="bar-calm nav-title-slide-ios7">
-      <ion-nav-back-button class="button-icon ion-arrow-left-c">
-      </ion-nav-back-button>
-    </ion-nav-bar>
+    <ion-header-bar align-title="center" class="bar-calm nav-title-slide-ios7" ng-controller="ControllerBase">
+        <div class="title">{{control.getViewName()}}</div>
+        <div ng-if="control.isBookLoaded()" class="buttons">
+            <button class="button button-icon icon ion-ios-book" style="width:50px;" ng-click="control.goCurrentBook()">Reproducir libro</button>
+        </div>
+        <div ng-if="control.hasBackView()" class="buttons">
+            <button class="button button-icon icon ion-arrow-left-c" style="width:50px;" ng-click="control.goBack()">Atras</button>
+        </div>
+        <div ng-if="control.showGoHome()" class="buttons">
+            <button class="button button-icon icon ion-ios-home" style="width:50px;" ng-click="control.goHome()">Ir a inicio</button>
+        </div>
+    </ion-header-bar>
     <ion-nav-view class="slide-left-right"></ion-nav-view>
   </body>
 </html>

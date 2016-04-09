@@ -1,5 +1,5 @@
-<ion-view title="Navegación" ng-controller="ABooksLevelsCtrl">
-	<ion-content class="padding">
+<ion-view ng-controller="ABooksLevelsCtrl">
+	<ion-content class="padding has-header">
         <ion-list>
             <ion-radio ng-model="currentLevel" ng-repeat="level in levels" ng-value="$index+1" ng-click="control.setLevel($index+1)">{{level}}</ion-radio>
             <ion-radio ng-model="currentLevel" ng-value="7" ng-click="control.setLevel(7)">Frase</ion-radio>            

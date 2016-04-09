@@ -1,19 +1,6 @@
-<ion-view title="Radio" ng-controller="RadioCtrl">
-	<ion-nav-buttons side="right">
-        <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
-        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
-    </ion-nav-buttons>
-	<ion-content class="padding">
-		<ul class="list">
-			<li class="item item-toggle">
-				{{ control.getStatus() ? 'Apagar' : 'Encender' }}
-				<label class="toggle toggle-balanced">
-				<input type="checkbox" ng-model="control.svcRadio.status" ng-change="control.switchRadio()">
-				<div class="track">
-					<div class="handle"></div>
-				</div>
-				</label>
-			</li>
-		</ul>
+<ion-view ng-controller="RadioCtrl">
+	<ion-content class="padding has-header ng-cloak">
+        <button ng-class="{'button button-full button-light':!control.getStatus(), 'button button-full button-balanced': control.getStatus()}" 
+            ng-click="control.switchRadio()">{{ control.getStatus() ? 'Apagar radio' : 'Encender radio' }}</button>
 	</ion-content>
 </ion-view>

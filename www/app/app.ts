@@ -76,71 +76,71 @@ module NuevaLuz {
         $urlRouterProvider.otherwise("/");
        
         $stateProvider
-            .state("index", {
+            .state("Inicio", {
                 cache: false,
                 url: "/",
                 templateUrl: "templates/home.html"
             })
-            .state("radio", {
+            .state("Radio", {
                 url: "/radio",
                 templateUrl: "templates/radio.html"
             })
-            .state("config", {
+            .state("Configuracion", {
                 cache: false,
                 url: "/config",
                 templateUrl: "templates/config.html"
             })
-            .state("config-storage", {
+            .state("Almacenamiento", {
                 cache: false,
                 url: "/config/storage",
                 templateUrl: "templates/config-storage.html"
             })
-            .state("abooks-login", {
+            .state("Acceso", {
                 cache: false,
                 url: "/login",
                 templateUrl: "templates/abooks-login.html"
             })
-            .state("abooks-menu", {
+            .state("Menu", {
                 cache: false,
                 url: "/abooks/menu",
                 templateUrl: "templates/abooks-menu.html"
             })
-            .state("abooks-title", {
+            .state("Por Titulo", {
                 url: "/abooks/menu/title",
                 templateUrl: "templates/abooks-title.html"
             })
-            .state("abooks-author", {
+            .state("Por Autores", {
                 url: "/abooks/menu/author",
                 templateUrl: "templates/abooks-author.html"
             })
-            .state("abooks-author-books", {
+            .state("Libros", {
                 url: "/abooks/menu/author/:authorId",
                 templateUrl: "templates/abooks-author-books.html"
             })
-            .state("abooks-detail", {
+            .state("Detalle", {
                 cache: false,
                 url: "/abooks/menu/detail/:abookId",
                 templateUrl: "templates/abooks-detail.html"
             })
-            .state("myabooks", {
+            .state("Mis Libros", {
                 cache: false,
                 url: "/myabooks/:command",
                 templateUrl: "templates/myabooks.html"
             })
-            .state("myabooks-player", {
+            .state("Reproductor", {
                 cache: false,
                 url: "/myabooks/player/:abookId",
                 templateUrl: "templates/myabooks-player.html"
             })
-            .state("myabooks-level", {
+            .state("Niveles", {
                 url: "/myabooks/player/level/:abookId",
                 templateUrl: "templates/myabooks-levels.html"
             })
-            .state("myabooks-bookmarks", {
+            .state("Marcadores", {
                 url: "/myabooks/player/bookmarks/:abookId",
                 templateUrl: "templates/myabooks-bookmarks.html"
             })
-            .state("myabooks-info", {
+            .state("Informacion", {
                 url: "/myabooks/info/:abookId",
                 templateUrl: "templates/abook-info.html"
             })
@@ -160,7 +160,7 @@ module NuevaLuz {
         $http : ng.IHttpService, SessionSvc : SessionService) => new DownloadService($rootScope, $interval, $cordovaFile, $q, MyABooksSvc, $http, SessionSvc));
     
     // Register Controllers
-    app.controller("ControllerBase", (SessionSvc : SessionService) => new ControllerBase(SessionSvc));
+    app.controller("ControllerBase", ($scope: IBaseScope, SessionSvc : SessionService, $ionicHistory : ionic.navigation.IonicHistoryService, $location : ng.ILocationService) => new ControllerBase($scope, SessionSvc, $ionicHistory, $location));
     app.controller("ABooksMenuCtrl", ($scope : IABooksMenuScope, SessionSvc : SessionService, 
         $location : ng.ILocationService, $ionicLoading : ionic.loading.IonicLoadingService,
         $timeout : ng.ITimeoutService) => 

@@ -19,7 +19,7 @@ module NuevaLuz {
         
         // Turns On/Off radio steaming
         public switchRadio() {
-            if (this.status) {
+            if (!this.status) {
                 this.initializeStream(true);
                 this.stream.play();                
             }
@@ -27,7 +27,8 @@ module NuevaLuz {
                 if (this.stream) {
                     this.stream.stop();
                 }    
-            }       
+            }
+            this.status = !this.status;       
         }
         
         // Initialize streaming

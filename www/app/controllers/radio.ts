@@ -4,6 +4,7 @@ module NuevaLuz {
     
     export interface IRadioScope extends ng.IScope {
         control : RadioController;
+        count : number;
     }
     
     export class RadioController {
@@ -22,6 +23,14 @@ module NuevaLuz {
         
         switchRadio() {
             this.svcRadio.switchRadio();
+        }
+        
+        getStatus() : boolean {
+            return this.svcRadio.status;
+        }
+        
+        addCounter() {
+            this.scope.count = this.scope.count + 1;
         }
         
         isBookLoaded() : boolean {

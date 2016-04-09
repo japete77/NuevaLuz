@@ -1,17 +1,15 @@
 <ion-view title="" ng-controller="ABooksPlayerCtrl">
-	<ion-nav-buttons side="right">
-        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
-    </ion-nav-buttons>
 	<div ng-if="ready" class="bar bar-subheader player">
 		<div class="row">
 			<div class="col col-25">
-				<button title="Retroceder" class="button button-full button-dark icon ion-ios-rewind" ng-click="control.prev()"></button>
+				<button class="button button-full button-dark icon ion-ios-rewind" style="height:25px; overflow: hidden" ng-click="control.prev()">Retroceder</button>
 			</div>
 			<div class="col col-50">
-				<button ng-attr-title="{{showPlay?'Escuchar':'Parar'}}" ng-class="{'button button-full button-dark icon ion-play':showPlay, 'button button-full button-dark icon ion-pause':!showPlay}" ng-click="control.play(showPlay)"></button>
+				<button ng-class="{'button button-full button-dark icon ion-play':showPlay, 'button button-full button-dark icon ion-pause':!showPlay}" 
+                    style="height:25px; overflow: hidden" ng-click="control.play(showPlay)"><br/>{{showPlay?'Iniciar Reproduccion':'Parar Reproduccion'}}</button>
 			</div>
 			<div class="col col-25">
-				<button title="Avanzar" class="button button-full button-dark icon ion-ios-fastforward" ng-click="control.next()"></button>
+				<button class="button button-full button-dark icon ion-ios-fastforward" style="height:25px; overflow: hidden" ng-click="control.next()">Avanzar</button>
 			</div>
 		</div>
         <div class="row">
@@ -27,21 +25,21 @@
 	</div>
 	<ion-content class="padding has-subheader player">
         <div ng-if="ready" class="list">
-            <a class="item item-icon-left" ng-click="control.addBookmark()">
-                <i class="icon ion-bookmark"></i>
+            <a class="item item-icon-left" href="#" ng-click="control.addBookmark()">
                 Crear marcador
+                <i class="icon ion-bookmark"></i>
             </a>
-            <a class="item item-icon-left item-icon-right" ng-click="control.showBookmarks()">
+            <a class="item item-icon-left item-icon-right" href="#" ng-click="control.showBookmarks()">
                 <i class="icon ion-ios-bookmarks"></i>
                 Ir a marcador
                 <i class="icon ion-ios-arrow-right"></i>
             </a>
-            <a class="item item-icon-left item-icon-right" ng-click="control.selectLevel()">
+            <a class="item item-icon-left item-icon-right" href="#" ng-click="control.selectLevel()">
                 <i class="icon ion-ios-browsers"></i>
                 Niveles de navegación
                 <i class="icon ion-ios-arrow-right"></i>
             </a>
-            <a class="item item-icon-left item-icon-right" ng-click="control.showInfo(currentBook.id)">
+            <a class="item item-icon-left item-icon-right" href="#" ng-click="control.showInfo(currentBook.id)">
                 <i class="icon ion-ios-information"></i>
                 Más información
                 <i class="icon ion-ios-arrow-right"></i>

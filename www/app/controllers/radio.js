@@ -11,6 +11,12 @@ var NuevaLuz;
         RadioController.prototype.switchRadio = function () {
             this.svcRadio.switchRadio();
         };
+        RadioController.prototype.getStatus = function () {
+            return this.svcRadio.status;
+        };
+        RadioController.prototype.addCounter = function () {
+            this.scope.count = this.scope.count + 1;
+        };
         RadioController.prototype.isBookLoaded = function () {
             return this.SessionSvc.getCurrentBook() != null && this.SessionSvc.getCurrentBook() != undefined;
         };

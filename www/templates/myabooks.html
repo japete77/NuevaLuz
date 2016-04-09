@@ -1,8 +1,4 @@
-<ion-view title="Mis Libros" ng-controller="ABooksCtrl">
-	<ion-nav-buttons side="right">
-        <a ng-title="control.getCurrentBookTitle()" ng-if="control.isBookLoaded()" class="button button-icon icon ion-ios-book" ng-href="#/myabooks/player/{{control.getCurrentBookId()}}"></a>
-        <a title="Ir a Inicio" class="button button-icon icon ion-home" href="#/"></a>
-    </ion-nav-buttons>
+<ion-view ng-controller="ABooksCtrl">
 	<div class="bar bar-subheader">
 		<label class="item item-input">
 			<i class="icon ion-search placeholder-icon"></i>
@@ -13,8 +9,8 @@
 		<div class="list">
 			<a ng-if="control.isShowable(book.id)" ng-repeat="book in abooks | filter: searchText | orderBy: 'title'" class="item item-icon-right"  ng-href="{{control.getLink(book.id)}}">
 				<ion-spinner ng-if="control.isProgressing(book.id)" class="icon" icon="ios"></ion-spinner>
-				<i ng-if="control.isCompleted(book.id)" class="icon ion-ios-arrow-right"></i>
-				<h2>{{book.title}}</h2>
+				{{book.title}}
+                <i ng-if="control.isCompleted(book.id)" class="icon ion-ios-arrow-right"></i>
 			</a>
 		</div>	
 	</ion-content>

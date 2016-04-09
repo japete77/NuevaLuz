@@ -8,6 +8,7 @@ module NuevaLuz {
         showScroll : boolean;
         titles : Array<any>;
         filterText : string;
+        loading : boolean;
     }
     
     export class ABooksTitlesController {
@@ -21,7 +22,7 @@ module NuevaLuz {
             
         private index : number = 1;
         private maxTitles : number = 9999999;
-        private pageSize : number = 15;
+        private pageSize : number = 20;
         private timer : ng.IPromise<void> = null;
 
         constructor($scope : IABooksTitlesScope, $timeout : ng.ITimeoutService, 
@@ -42,6 +43,7 @@ module NuevaLuz {
             this.ionicScrollDelegate = $ionicScrollDelegate;
             this.SessionSvc = sessionSvc;
             this.location = $location;
+            this.scope.loading = true;
 
             // Filter watch
             this.scope.$watch('filterText', () => {
@@ -65,6 +67,8 @@ module NuevaLuz {
         
         public getNextTitles() {
             
+            this.scope.loading = true;
+            
             if (this.index<this.maxTitles) {
                 this.scope.showScroll = true;
 
@@ -86,6 +90,7 @@ module NuevaLuz {
                         this.timer = null;
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        this.scope.loading = false;
                     },
                     (reason : any) => {
                         this.SessionSvc.isSessionValid()
@@ -95,6 +100,7 @@ module NuevaLuz {
                         .catch((reason : any) => {
                             this.location.path("/login");
                         })
+                        this.scope.loading = false;
                     });
                 }
                 else {
@@ -116,6 +122,7 @@ module NuevaLuz {
                         this.timer = null;
                         this.scope.stopLoading = false;
                         this.scope.$broadcast('scroll.infiniteScrollComplete');
+                        this.scope.loading = false;
                     }, (reason : any) => {
                         this.SessionSvc.isSessionValid()
                         .then((result : number) => {
@@ -124,6 +131,7 @@ module NuevaLuz {
                         .catch((reason : any) => {
                             this.location.path("/login");
                         })
+                        this.scope.loading = false;
                     });
                 }
             }
