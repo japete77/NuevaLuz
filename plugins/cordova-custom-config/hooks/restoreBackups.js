@@ -3,13 +3,18 @@
 /**********
  * Globals
  **********/
-var path = require('path'),
-    cwd = path.resolve(),
-    logger,
-    hooksPath,
+
+// Pre-existing Cordova npm modules
+var deferral, path, cwd;
+
+// Npm dependencies
+var logger,
     fs,
     _,
     fileUtils;
+
+// Other globals
+var hooksPath;
 
 var restoreBackups = (function(){
 
@@ -35,7 +40,7 @@ var restoreBackups = (function(){
     /*********************
      * Internal functions
      *********************/
-    
+
     function restorePlatformBackups(platform){
         var configFiles = PLATFORM_CONFIG_FILES[platform],
             backupFile, backupFileName, backupFilePath, backupFileExists, targetFilePath;
@@ -57,23 +62,32 @@ var restoreBackups = (function(){
         return fileName.replace(/{(projectName)}/g, projectName);
     }
 
+    // Script operations are complete, so resolve deferred promises
+    function complete(){
+        deferral.resolve();
+    }
+
     /*************
      * Public API
      *************/
+    restoreBackups.loadDependencies = function(ctx){
+        fs = require('fs-extra'),
+        _ = require('lodash'),
+        fileUtils = require(path.resolve(hooksPath, "fileUtils.js"))(ctx);
+        logger.debug("Loaded module dependencies");
+        restoreBackups.init(ctx);
+    };
+
     restoreBackups.init = function(ctx){
         context = ctx;
-
-        // Load modules
-        fs = require('fs-extra'),
-            _ = require('lodash'),
-            fileUtils = require(path.resolve(hooksPath, "fileUtils.js"))(context);
 
         projectName = fileUtils.getProjectName();
         logFn = context.hook === "before_plugin_uninstall" ? logger.log : logger.debug;
 
         settings = fileUtils.getSettings();
-        if(typeof(settings.autorestore) !== "undefined" && settings.autorestore == "false"){
-            logger.log("Skipping auto-restore of config file backup(s) due to config.xml preference");
+        if(typeof(settings.autorestore) === "undefined" || settings.autorestore == "false"){
+            logger.log("Skipping auto-restore of config file backup(s)");
+            complete();
             return;
         }
 
@@ -81,13 +95,20 @@ var restoreBackups = (function(){
         var platforms = _.filter(fs.readdirSync('platforms'), function (file) {
             return fs.statSync(path.resolve('platforms', file)).isDirectory();
         });
-        _.each(platforms, function (platform) {
+        _.each(platforms, function (platform, index) {
             platform = platform.trim().toLowerCase();
             try{
                 restorePlatformBackups(platform);
+                if(index == platforms.length - 1){
+                    logger.debug("Finished restoring backups");
+                    complete();
+                }
             }catch(e){
-                logger.error("Error restoring backups for platform '"+platform+"': "+ e.message);
-                if(settings.stoponerror) throw e;
+                var msg = "Error restoring backups for platform '"+platform+"': "+ e.message;
+                logger.error(msg);
+                if(settings.stoponerror){
+                    deferral.reject(msg);
+                }
             }
         });
     };
@@ -96,13 +117,19 @@ var restoreBackups = (function(){
 })();
 
 module.exports = function(ctx) {
+    deferral = ctx.requireCordovaModule('q').defer();
+    path = ctx.requireCordovaModule('path');
+    cwd = path.resolve();
+
     hooksPath = path.resolve(ctx.opts.projectRoot, "plugins", ctx.opts.plugin.id, "hooks");
     logger = require(path.resolve(hooksPath, "logger.js"))(ctx);
     logger.debug("Running restoreBackups.js");
-
-    if(ctx.hook === "before_plugin_uninstall"){
-        restoreBackups.init(ctx); // no time to check for deps or files will get removed by plugin rm before backups can be restored
-    }else{
-        require(path.resolve(hooksPath, "resolveDependencies.js"))(ctx, restoreBackups.init.bind(this, ctx));
+    try{
+        restoreBackups.loadDependencies(ctx);
+    }catch(e){
+        logger.warn("Error loading dependencies ("+e.message+") - attempting to resolve");
+        require(path.resolve(hooksPath, "resolveDependencies.js"))(ctx).then(restoreBackups.loadDependencies.bind(this, ctx));
     }
+
+    return deferral.promise;
 };

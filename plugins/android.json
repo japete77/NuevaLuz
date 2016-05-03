@@ -4,105 +4,10 @@
         "uninstalled": []
     },
     "config_munge": {
-        "files": {
-            "res/xml/config.xml": {
-                "parents": {
-                    "/*": [
-                        {
-                            "xml": "<feature name=\"Stream\"><param name=\"android-package\" value=\"org.apache.cordova.media.AudioHandler\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"FileTransfer\"><param name=\"android-package\" value=\"org.apache.cordova.filetransfer.FileTransfer\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"SplashScreen\"><param name=\"android-package\" value=\"org.apache.cordova.splashscreen.SplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"StatusBar\"><param name=\"android-package\" value=\"org.apache.cordova.statusbar.StatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Media\"><param name=\"android-package\" value=\"org.apache.cordova.media.AudioHandler\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"BackgroundMode\"><param name=\"android-package\" value=\"de.appplant.cordova.plugin.background.BackgroundMode\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<preference name=\"KeepRunning\" value=\"true\" />",
-                            "count": 1
-                        }
-                    ],
-                    "/widget": [
-                        {
-                            "xml": "<feature name=\"Zip\"><param name=\"android-package\" value=\"org.apache.cordova.Zip\" /></feature>",
-                            "count": 1
-                        }
-                    ]
-                }
-            },
-            "AndroidManifest.xml": {
-                "parents": {
-                    "/*": [
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
-                            "count": 3
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.RECORD_AUDIO\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\" />",
-                            "count": 1
-                        }
-                    ],
-                    "/manifest/application": [
-                        {
-                            "xml": "<service android:name=\"de.appplant.cordova.plugin.background.ForegroundService\" />",
-                            "count": 1
-                        }
-                    ]
-                }
-            },
-            "config.xml": {
-                "parents": {
-                    "/*": [
-                        {
-                            "xml": "<preference name=\"AndroidPersistentFileLocation\" value=\"Internal\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Keyboard\"><param name=\"android-package\" onload=\"true\" value=\"org.apache.cordova.labs.keyboard.Keyboard\" /></feature>",
-                            "count": 1
-                        }
-                    ]
-                }
-            }
-        }
+        "files": {}
     },
     "installed_plugins": {
-        "com.keosu.cordova.stream": {
+        "cordova-custom-config": {
             "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-console": {
@@ -117,28 +22,28 @@
         "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "com.nuevaluz"
         },
-        "cordova-plugin-whitelist": {
+        "cordova-plugin-keyboard": {
             "PACKAGE_NAME": "com.nuevaluz"
         },
-        "cordova-plugin-splashscreen": {
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.nuevaluz"
         },
         "cordova-plugin-zip": {
             "PACKAGE_NAME": "com.nuevaluz"
         },
-        "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "com.nuevaluz"
-        },
-        "cordova-plugin-keyboard": {
-            "PACKAGE_NAME": "com.nuevaluz"
-        },
         "cordova-plugin-media": {
             "PACKAGE_NAME": "com.nuevaluz"
         },
-        "de.appplant.cordova.plugin.background-mode": {
+        "com.keosu.cordova.stream": {
             "PACKAGE_NAME": "com.nuevaluz"
         },
-        "cordova-custom-config": {
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.nuevaluz"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.nuevaluz"
+        },
+        "cordova-plugin-background-mode": {
             "PACKAGE_NAME": "com.nuevaluz"
         }
     },

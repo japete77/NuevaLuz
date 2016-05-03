@@ -55,6 +55,7 @@ var NuevaLuz;
             }
             this.scope.showPlay = true;
             this.scope.$on('playerInfo', function (event, info) {
+                // this.scope.msg = "S: " + JSON.stringify(info);
                 _this.scope.showPlay = !info.status ||
                     info.status === Media.MEDIA_NONE ||
                     info.status === Media.MEDIA_STARTING ||
@@ -101,6 +102,9 @@ var NuevaLuz;
         };
         ABooksPlayerController.prototype.selectLevel = function () {
             this.location.path("/myabooks/player/level/" + this.scope.currentBook.id);
+        };
+        ABooksPlayerController.prototype.goToIndex = function () {
+            this.location.path("/myabooks/player/index/" + this.scope.currentBook.id);
         };
         ABooksPlayerController.prototype.addBookmark = function () {
             var _this = this;

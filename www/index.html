@@ -3,8 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src  'self' 'unsafe-inline' *">
-    <title></title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' * ws://localhost:35729 data: gap: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *;script-src 'self' localhost:35729 'unsafe-eval' 'unsafe-inline';">    <title></title>
     
     <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -33,6 +32,7 @@
     <script src="app/controllers/myabooks.js"></script>
     <script src="app/controllers/myabooks-player.js"></script>
     <script src="app/controllers/myabooks-levels.js"></script>
+    <script src="app/controllers/myabooks-index.js"></script>
     <script src="app/controllers/myabooks-bookmarks.js"></script>
     <script src="app/services/svc-download.js"></script>
     <script src="app/services/svc-player.js"></script>
@@ -57,17 +57,17 @@
     });
   </script>
   
-  <body ng-app="starter">
+  <body ng-csp ng-app="starter">
     <ion-header-bar align-title="center" class="bar-calm nav-title-slide-ios7" ng-controller="ControllerBase">
         <div class="title">{{control.getViewName()}}</div>
         <div ng-if="control.isBookLoaded()" class="buttons">
-            <button class="button button-icon icon ion-ios-book" style="width:50px;" ng-click="control.goCurrentBook()">Reproducir libro</button>
+            <button class="button button-icon icon ion-ios-book" style="width:50px; overflow:hidden;" ng-click="control.goCurrentBook()">Reproducir libro</button>
         </div>
         <div ng-if="control.hasBackView()" class="buttons">
-            <button class="button button-icon icon ion-arrow-left-c" style="width:50px;" ng-click="control.goBack()">Atras</button>
+            <button class="button button-icon icon ion-arrow-left-c" style="width:50px; overflow:hidden;" ng-click="control.goBack()">Atras</button>
         </div>
         <div ng-if="control.showGoHome()" class="buttons">
-            <button class="button button-icon icon ion-ios-home" style="width:50px;" ng-click="control.goHome()">Ir a inicio</button>
+            <button class="button button-icon icon ion-ios-home" style="width:50px; overflow:hidden;" ng-click="control.goHome()">Ir a inicio</button>
         </div>
     </ion-header-bar>
     <ion-nav-view class="slide-left-right"></ion-nav-view>

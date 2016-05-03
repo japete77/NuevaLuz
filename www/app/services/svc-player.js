@@ -18,7 +18,9 @@ var NuevaLuz;
                         if (position > -1) {
                             _this.playerInfo.position.currentTC = position;
                         }
-                        if (_this.isPlaying && _this.playerInfo.status === Media.MEDIA_STOPPED) {
+                        // if (this.isPlaying && this.playerInfo.status===Media.MEDIA_STOPPED) {
+                        if (_this.isPlaying && (_this.playerInfo.position.currentTC < 0 ||
+                            _this.playerInfo.status === Media.MEDIA_STOPPED)) {
                             _this.loadNextFile(1);
                             _this.playerInfo.status = Media.MEDIA_RUNNING;
                             _this.play(_this.playerInfo.position);
@@ -61,6 +63,7 @@ var NuevaLuz;
             this.playerInfo = new PlayerInfo();
             this.playerInfo.position = new SeekInfo();
             this.playerInfo.position.currentIndex = -1;
+            this.playerInfo.status = Media.MEDIA_STOPPED;
             this.release();
             var bdir = NuevaLuz.workingDir + id + "/";
             var bfile = "ncc.html";
@@ -113,28 +116,39 @@ var NuevaLuz;
         DaisyPlayerService.prototype.getPlayerInfo = function () {
             return this.playerInfo;
         };
+        DaisyPlayerService.prototype.playFromCurrentPos = function () {
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.play();
+                this.playerInfo.status = Media.MEDIA_RUNNING;
+                this.isPlaying = true;
+            }
+        };
         DaisyPlayerService.prototype.play = function (position) {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.play();
                 this.playerInfo.media.seekTo(position.currentTC * 1000);
+                this.playerInfo.status = Media.MEDIA_RUNNING;
                 this.isPlaying = true;
             }
         };
         DaisyPlayerService.prototype.stop = function () {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.stop();
+                this.playerInfo.status = Media.MEDIA_STOPPED;
                 this.isPlaying = false;
             }
         };
         DaisyPlayerService.prototype.pause = function () {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.pause();
+                this.playerInfo.status = Media.MEDIA_PAUSED;
                 this.isPlaying = false;
             }
         };
         DaisyPlayerService.prototype.release = function () {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.release();
+                this.playerInfo.status = Media.MEDIA_NONE;
                 this.isPlaying = false;
             }
         };
@@ -216,10 +230,12 @@ var NuevaLuz;
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
             this.playerInfo.media.play();
+            this.playerInfo.status = Media.MEDIA_RUNNING;
             this.isPlaying = true;
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
             if (!isPlaying) {
                 this.playerInfo.media.pause();
+                this.playerInfo.status = Media.MEDIA_PAUSED;
                 this.isPlaying = false;
             }
         };
@@ -300,10 +316,12 @@ var NuevaLuz;
             }
             this.saveStatus(this.playerInfo, function () { }, function (error) { });
             this.playerInfo.media.play();
+            this.playerInfo.status = Media.MEDIA_RUNNING;
             this.isPlaying = true;
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC * 1000);
             if (!isPlaying) {
                 this.playerInfo.media.pause();
+                this.playerInfo.status = Media.MEDIA_PAUSED;
                 this.isPlaying = false;
             }
         };
@@ -575,6 +593,7 @@ var NuevaLuz;
                 var tcin = this.ntp2number(audioElements.item(i).attributes.getNamedItem("clip-begin").value);
                 var tcout = this.ntp2number(audioElements.item(i).attributes.getNamedItem("clip-end").value);
                 this.sequence.push({
+                    id: id,
                     filename: audioElements.item(i).attributes.getNamedItem("src").value,
                     title: title,
                     level: i === 0 ? level : NuevaLuz.NAV_LEVEL_PHRASE,

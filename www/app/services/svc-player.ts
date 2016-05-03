@@ -33,7 +33,9 @@ module NuevaLuz {
                             this.playerInfo.position.currentTC = position;
                         }
 
-                        if (this.isPlaying && this.playerInfo.status===Media.MEDIA_STOPPED) {
+                        // if (this.isPlaying && this.playerInfo.status===Media.MEDIA_STOPPED) {
+                        if (this.isPlaying && (this.playerInfo.position.currentTC<0 ||
+                            this.playerInfo.status===Media.MEDIA_STOPPED)) {
                             this.loadNextFile(1);
                             this.playerInfo.status = Media.MEDIA_RUNNING;
                             this.play(this.playerInfo.position);
@@ -87,6 +89,7 @@ module NuevaLuz {
             this.playerInfo = new PlayerInfo();
             this.playerInfo.position = new SeekInfo();
             this.playerInfo.position.currentIndex = -1;
+            this.playerInfo.status = Media.MEDIA_STOPPED;
                   
             this.release();
             
@@ -158,10 +161,19 @@ module NuevaLuz {
             return this.playerInfo;
         }
         
+        playFromCurrentPos() {
+            if (this.playerInfo && this.playerInfo.media) {
+                this.playerInfo.media.play();   
+                this.playerInfo.status = Media.MEDIA_RUNNING;
+                this.isPlaying = true;
+            }
+        }
+        
         play(position : SeekInfo) {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.play();   
                 this.playerInfo.media.seekTo(position.currentTC*1000);
+                this.playerInfo.status = Media.MEDIA_RUNNING;
                 this.isPlaying = true;
             }
         }
@@ -169,6 +181,7 @@ module NuevaLuz {
         stop() {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.stop();
+                this.playerInfo.status = Media.MEDIA_STOPPED;
                 this.isPlaying = false;
             }
         }
@@ -176,6 +189,7 @@ module NuevaLuz {
         pause() {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.pause();
+                this.playerInfo.status = Media.MEDIA_PAUSED;
                 this.isPlaying = false;
             }
         }
@@ -183,6 +197,7 @@ module NuevaLuz {
         release() {
             if (this.playerInfo && this.playerInfo.media) {
                 this.playerInfo.media.release();
+                this.playerInfo.status = Media.MEDIA_NONE;
                 this.isPlaying = false;
             }
         }
@@ -283,12 +298,14 @@ module NuevaLuz {
             this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
 
             this.playerInfo.media.play();
+            this.playerInfo.status = Media.MEDIA_RUNNING;
             this.isPlaying = true;
 
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
 
             if (!isPlaying) {
                 this.playerInfo.media.pause();
+                this.playerInfo.status = Media.MEDIA_PAUSED;
                 this.isPlaying = false;
             }
 
@@ -388,12 +405,14 @@ module NuevaLuz {
             this.saveStatus(this.playerInfo, () => {}, (error : string) => {});
             
             this.playerInfo.media.play();
+            this.playerInfo.status = Media.MEDIA_RUNNING;
             this.isPlaying = true;
 
             this.playerInfo.media.seekTo(this.playerInfo.position.currentTC*1000);
 
             if (!isPlaying) {
                 this.playerInfo.media.pause();
+                this.playerInfo.status = Media.MEDIA_PAUSED;
                 this.isPlaying = false;
             }
                         
@@ -570,6 +589,7 @@ module NuevaLuz {
     
     // Sequence item
     export class Sequence {
+        id : string;
         filename : string;
         title : string;
         level : number;
@@ -733,6 +753,7 @@ module NuevaLuz {
                 var tcin : number = this.ntp2number(audioElements.item(i).attributes.getNamedItem("clip-begin").value);
                 var tcout : number = this.ntp2number(audioElements.item(i).attributes.getNamedItem("clip-end").value);
                 this.sequence.push({
+                     id : id,
                      filename : audioElements.item(i).attributes.getNamedItem("src").value,
                      title : title,
                      level : i===0?level:NAV_LEVEL_PHRASE,

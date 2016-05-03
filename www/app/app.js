@@ -17,6 +17,7 @@
 /// <reference path="./controllers/myabooks-player.ts" />
 /// <reference path="./controllers/myabooks-levels.ts" />
 /// <reference path="./controllers/myabooks-bookmarks.ts" />
+/// <reference path="./controllers/myabooks-index.ts" />
 /// <reference path="./controllers/radio.ts" />
 // Ionic Starter App
 // angular.module is a global place for creating, registering and retrieving Angular modules
@@ -124,6 +125,11 @@ var NuevaLuz;
             url: "/myabooks/player/bookmarks/:abookId",
             templateUrl: "templates/myabooks-bookmarks.html"
         })
+            .state("Indice", {
+            cache: false,
+            url: "/myabooks/player/index/:abookId",
+            templateUrl: "templates/myabooks-index.html"
+        })
             .state("Informacion", {
             url: "/myabooks/info/:abookId",
             templateUrl: "templates/abook-info.html"
@@ -178,6 +184,9 @@ var NuevaLuz;
     });
     NuevaLuz.app.controller("ABooksLevelsCtrl", function ($scope, $stateParams, $location, DaisyPlayerSvc) {
         return new NuevaLuz.ABooksLevelsController($scope, $stateParams, $location, DaisyPlayerSvc);
+    });
+    NuevaLuz.app.controller("ABooksIndexCtrl", function ($scope, $stateParams, $location, DaisyPlayerSvc) {
+        return new NuevaLuz.ABooksIndexController($scope, $stateParams, $location, DaisyPlayerSvc);
     });
     NuevaLuz.app.controller("ABooksBookmarksCtrl", function ($scope, $stateParams, $location, DaisyPlayerSvc) {
         return new NuevaLuz.ABooksBookmarksController($scope, $stateParams, $location, DaisyPlayerSvc);

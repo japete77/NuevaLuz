@@ -9,7 +9,7 @@
     </author>
   <content src="index.html"/>
   <access origin="*"/>
-  <allow-navigation href="*"/>
+  <allow-navigation href="*" />
   <gap:config-file platform="android" parent="/manifest">
     <application android:debuggable="false"/>
   </gap:config-file>

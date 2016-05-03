@@ -1,0 +1,9 @@
+<ion-view ng-controller="ABooksIndexCtrl">
+	<ion-content class="padding has-header">
+		<ion-list>
+            <ion-item ng-if="item.level<=currentLevel" class="item item-text-wrap" ng-repeat="item in book.body" ng-click="control.seek($index)">
+				{{item.title}}
+            </ion-item>
+		</ion-list>	        
+	</ion-content>
+</ion-view>

@@ -17,6 +17,7 @@
 /// <reference path="./controllers/myabooks-player.ts" />
 /// <reference path="./controllers/myabooks-levels.ts" />
 /// <reference path="./controllers/myabooks-bookmarks.ts" />
+/// <reference path="./controllers/myabooks-index.ts" />
 /// <reference path="./controllers/radio.ts" />
 
 // Ionic Starter App
@@ -140,6 +141,11 @@ module NuevaLuz {
                 url: "/myabooks/player/bookmarks/:abookId",
                 templateUrl: "templates/myabooks-bookmarks.html"
             })
+            .state("Indice", {
+                cache: false,
+                url: "/myabooks/player/index/:abookId",
+                templateUrl: "templates/myabooks-index.html"
+            })
             .state("Informacion", {
                 url: "/myabooks/info/:abookId",
                 templateUrl: "templates/abook-info.html"
@@ -220,6 +226,10 @@ module NuevaLuz {
    app.controller("ABooksLevelsCtrl", ($scope : IABooksLevelsScope, $stateParams : angular.ui.IStateParamsService, 
         $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) =>
         new ABooksLevelsController($scope, $stateParams, $location, DaisyPlayerSvc));
+
+   app.controller("ABooksIndexCtrl", ($scope : IABooksIndexScope, $stateParams : angular.ui.IStateParamsService, 
+        $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) =>
+        new ABooksIndexController($scope, $stateParams, $location, DaisyPlayerSvc));
 
    app.controller("ABooksBookmarksCtrl", ($scope : IABooksBookmarksScope, $stateParams : angular.ui.IStateParamsService, 
         $location : ng.ILocationService, DaisyPlayerSvc : DaisyPlayerService) =>

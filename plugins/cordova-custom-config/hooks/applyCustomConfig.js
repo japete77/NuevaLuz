@@ -3,16 +3,20 @@
 /**********
  * Globals
  **********/
-var path = require('path'),
-    cwd = path.resolve(),
-    logger,
-    hooksPath,
+// Pre-existing Cordova npm modules
+var deferral, path, cwd;
+
+// Npm dependencies
+var logger,
     fs,
     _ ,
     et,
     plist,
     xcode,
     tostr;
+
+// Other globals
+var hooksPath;
 
 var applyCustomConfig = (function(){
 
@@ -26,23 +30,11 @@ var applyCustomConfig = (function(){
         "MainActivity" // Cordova >= 4.3.0
     ];
 
+    // Tags that can appear multiple times in the <root> manifest, so must be distinguished by name
+    var androidRootMultiples = ["uses-permission", "permission", "permission-tree", "permission-group", "instrumentation", "uses-sdk", "uses-configuration", "uses-feature", "supports-screens", "compatible-screens", "supports-gl-texture"];
+
     var xcconfigs = ["build.xcconfig", "build-extras.xcconfig", "build-debug.xcconfig", "build-release.xcconfig"];
 
-    /*  Global object that defines the available custom preferences for each platform.
-     Maps a config.xml preference to a specific target file, parent element, and destination attribute or element
-     */
-    var preferenceMappingData = {
-        'android': {
-            'android-manifest-hardwareAccelerated': {target: 'AndroidManifest.xml', parent: './', destination: 'android:hardwareAccelerated'},
-            'android-installLocation': {target: 'AndroidManifest.xml', parent: './', destination: 'android:installLocation'},
-            'android-activity-hardwareAccelerated': {target: 'AndroidManifest.xml', parent: 'application', destination: 'android:hardwareAccelerated'},
-            'android-configChanges': {target: 'AndroidManifest.xml', parent: 'application/activity[@android:name=\'{ActivityName}\']', destination: 'android:configChanges'},
-            'android-launchMode': {target: 'AndroidManifest.xml', parent: 'application/activity[@android:name=\'{ActivityName}\']', destination: 'android:launchMode'},
-            'android-theme': {target: 'AndroidManifest.xml', parent: 'application/activity[@android:name=\'{ActivityName}\']', destination: 'android:theme'},
-            'android-windowSoftInputMode': {target: 'AndroidManifest.xml', parent: 'application/activity[@android:name=\'{ActivityName}\']', destination: 'android:windowSoftInputMode'}
-        },
-        'ios': {}
-    };
     var preferencesData;
 
 
@@ -96,8 +88,7 @@ var applyCustomConfig = (function(){
      */
     function getConfigFilesByTargetAndParent(platform) {
         var configFileData = configXml.findall('platform[@name=\'' + platform + '\']/config-file');
-        var keyBy = _.keyBy ? _.keyBy : _.indexBy; //TODO replace temporary fix for lodash@4 backward-incompatibility
-        return  keyBy(configFileData, function(item) {
+        return  _.keyBy(configFileData, function(item) {
             var parent = item.attrib.parent;
             //if parent attribute is undefined /* or */, set parent to top level elementree selector
             if(!parent || parent === '/*' || parent === '*/') {
@@ -147,6 +138,8 @@ var applyCustomConfig = (function(){
                     prefData["quote"] = preference.attrib.quote;
                 }
 
+                prefData["xcconfigEnforce"] = preference.attrib.xcconfigEnforce ? preference.attrib.xcconfigEnforce : null;
+
                 if(!configData[target]) {
                     configData[target] = [];
                 }
@@ -161,21 +154,10 @@ var applyCustomConfig = (function(){
 
         _.each(preferences, function (preference) {
             // Extract pre-defined preferences (deprecated)
-            var prefMappingData = preferenceMappingData[platform][preference.attrib.name],
-                target,
+            var target,
                 prefData;
 
-            if (prefMappingData) {
-                prefData = {
-                    parent: prefMappingData.parent,
-                    type: type,
-                    destination: prefMappingData.destination,
-                    data: preference
-                };
-                target = prefMappingData.target;
-                logger.warn("WARNING Pre-defined Android preference '"+preference.attrib.name+"' found.\n Pre-defined Android preferences are DEPRECATED in favour of more flexible xpath-style preferences and WILL BE REMOVED in cordova-custom-config@2");
-            }
-            else if(preference.attrib.name.match(/^android-manifest\//)){
+            if(preference.attrib.name.match(/^android-manifest\//)){
                 // Extract manifest Xpath preferences
                 var parts = preference.attrib.name.split("/"),
                     destination = parts.pop();
@@ -252,8 +234,8 @@ var applyCustomConfig = (function(){
                 parentEl.attrib[childSelector.replace("@",'')] = data.attrib['value'];
 
             } else {
-                // since there can be multiple uses-permission elements, we need to select them by unique name
-                if(childSelector === 'uses-permission') {
+                //  if there can be multiple sibling elements, we need to select them by unique name
+                if(androidRootMultiples.indexOf(childSelector > -1)){
                     childSelector += '[@android:name=\'' + data.attrib['android:name'] + '\']';
                 }
 
@@ -373,15 +355,25 @@ var applyCustomConfig = (function(){
             var block = buildConfig[blockName];
 
             if(typeof(block) !== "object" || !(block["buildSettings"])) continue;
-            var literalMatch = !!block["buildSettings"][item.name];
-            var quotedMatch = !!block["buildSettings"][quoteEscape(item.name)];
+            var literalMatch = !!block["buildSettings"][item.name],
+                quotedMatch = !!block["buildSettings"][quoteEscape(item.name)],
+                match = literalMatch || quotedMatch;
 
-            if((literalMatch || quotedMatch || mode === "add") &&
+            if((match || mode === "add") &&
                 (!item.buildType || item.buildType.toLowerCase() === block['name'].toLowerCase())){
-                var name = literalMatch ? item.name : quoteEscape(item.name);
-                block["buildSettings"][name] = quoteEscape(item.value);
+
+                var name;
+                if(match){
+                    name = literalMatch ? item.name : quoteEscape(item.name);
+                }else{
+                    // adding
+                    name = (item.quote && (item.quote == "none" || item.quote == "value")) ? item.name : quoteEscape(item.name);
+                }
+                var value = (item.quote && (item.quote == "none" || item.quote == "key")) ? item.value : quoteEscape(item.value);
+
+                block["buildSettings"][name] = value;
                 modified = true;
-                logger.debug(mode+" XCBuildConfiguration key='"+item.name+"' to value='"+item.value+"' for build type='"+block['name']+"' in block='"+blockName+"'");
+                logger.debug(mode+" XCBuildConfiguration key={ "+name+" } to value={ "+value+" } for build type='"+block['name']+"' in block='"+blockName+"'");
             }
         }
         return modified;
@@ -405,16 +397,43 @@ var applyCustomConfig = (function(){
         var fileContents = fs.readFileSync(targetFilePath, 'utf-8');
 
         _.each(configItems, function (item) {
-            var escapedName = regExpEscape(item.name);
-            // Check if file contains item and replace if so (respecting buildType)
-            if(fileContents.match(escapedName) && (!item.buildType
-                || (item.buildType.toLowerCase() == "debug" && !targetFileName.match("release"))
-                || (item.buildType.toLowerCase() == "release" && !targetFileName.match("debug"))  )){
-                var name = (typeof item.quote == 'undefined' || item.quote == 'both' || item.quote == 'name' ? quoteEscape(item.name) : item.name);
-                var value = (typeof item.quote == 'undefined' || item.quote == 'both' || item.quote == 'value' ? quoteEscape(item.value) : item.value);
-                fileContents = fileContents.replace(new RegExp("\n\"?"+escapedName+"\"?.*"), "\n"+name+" = "+value);
-                logger.debug("Overwrote "+item.name+" with '"+item.value+"' in "+targetFileName);
-                modified = true;
+            // some keys have name===undefined; ignore these.
+            if (item.name) {
+                var escapedName = regExpEscape(item.name);
+                var fileBuildType = "none";
+                if(targetFileName.match("release")){
+                    fileBuildType = "release";
+                }else if(targetFileName.match("debug")){
+                    fileBuildType = "debug";
+                }
+
+                var itemBuildType = item.buildType ? item.buildType.toLowerCase() : "none";
+
+                var name = item.name;
+                var value = item.value;
+
+                var doReplace = function(){
+                    fileContents = fileContents.replace(new RegExp("\n\"?"+escapedName+"\"?.*"), "\n"+name+" = "+value);
+                    logger.debug("Overwrote "+item.name+" with '"+item.value+"' in "+targetFileName);
+                    modified = true;
+                };
+
+                // If item's target build type matches the xcconfig build type
+                if(itemBuildType === fileBuildType){
+                    // If file contains the item, replace it with configured value
+                    if(fileContents.match(escapedName) && item.xcconfigEnforce != "false"){
+                        doReplace();
+                    }else // presence of item is being enforced, so add it to the relevant .xcconfig
+                    if(item.xcconfigEnforce == "true"){
+                        fileContents += "\n"+name+" = "+value;
+                        modified = true;
+                    }
+                }else
+                // if item is a Debug CODE_SIGNING_IDENTITY, this is a special case: Cordova places its default Debug CODE_SIGNING_IDENTITY in build.xcconfig (not build-debug.xcconfig)
+                // so if buildType="debug", want to overrwrite in build.xcconfig
+                if(item.name.match("CODE_SIGN_IDENTITY") && itemBuildType == "debug" && fileBuildType == "none" && !item.xcconfigEnforce){
+                    doReplace();
+                }              
             }
         });
 
@@ -474,7 +493,6 @@ var applyCustomConfig = (function(){
 
         _.each(configData, function (configItems, targetFileName) {
             var targetFilePath;
-
             if (platform === 'ios') {
                 if (targetFileName.indexOf("Info.plist") > -1) {
                     targetFileName =  projectName + '-Info.plist';
@@ -500,22 +518,31 @@ var applyCustomConfig = (function(){
         });
     }
 
+    // Script operations are complete, so resolve deferred promises
+    function complete(){
+        logger.debug("Finished applying platform config");
+        deferral.resolve();
+    }
+
     /*************
      * Public API
      *************/
 
-    applyCustomConfig.init = function(ctx){
-        context = ctx;
-        rootdir = context.opts.projectRoot;
-
-        // Load modules
+    applyCustomConfig.loadDependencies = function(ctx){
         fs = require('fs-extra'),
             _ = require('lodash'),
             et = require('elementtree'),
             plist = require('plist'),
             xcode = require('xcode'),
             tostr = require('tostr'),
-            fileUtils = require(path.resolve(hooksPath, "fileUtils.js"))(context);
+            fileUtils = require(path.resolve(hooksPath, "fileUtils.js"))(ctx);
+        logger.debug("Loaded module dependencies");
+        applyCustomConfig.init(ctx);
+    };
+
+    applyCustomConfig.init = function(ctx){
+        context = ctx;
+        rootdir = context.opts.projectRoot;
 
         configXml = fileUtils.getConfigXml();
         projectName = fileUtils.getProjectName();
@@ -525,26 +552,40 @@ var applyCustomConfig = (function(){
         var platforms = _.filter(fs.readdirSync('platforms'), function (file) {
             return fs.statSync(path.resolve('platforms', file)).isDirectory();
         });
-        _.each(platforms, function (platform) {
+        _.each(platforms, function (platform, index) {
             platform = platform.trim().toLowerCase();
             try{
                 updatePlatformConfig(platform);
-                logger.info("Custom config applied to '"+platform+"' platform");
+                if(index == platforms.length - 1){
+                    complete();
+                }
             }catch(e){
-                logger.error("Error updating config for platform '"+platform+"': "+ e.message);
-                if(settings.stoponerror) throw e;
+                var msg = "Error updating config for platform '"+platform+"': "+ e.message;
+                logger.error(msg);
+                if(settings.stoponerror){
+                    deferral.reject(msg);
+                }
             }
         });
     };
-
-
     return applyCustomConfig;
 })();
 
 // Main
 module.exports = function(ctx) {
+    deferral = ctx.requireCordovaModule('q').defer();
+    path = ctx.requireCordovaModule('path');
+    cwd = path.resolve();
+
     hooksPath = path.resolve(ctx.opts.projectRoot, "plugins", ctx.opts.plugin.id, "hooks");
     logger = require(path.resolve(hooksPath, "logger.js"))(ctx);
     logger.debug("Running applyCustomConfig.js");
-    require(path.resolve(hooksPath, "resolveDependencies.js"))(ctx, applyCustomConfig.init.bind(this, ctx));
+    try{
+        applyCustomConfig.loadDependencies(ctx);
+    }catch(e){
+        logger.warn("Error loading dependencies ("+e.message+") - attempting to resolve");
+        require(path.resolve(hooksPath, "resolveDependencies.js"))(ctx).then(applyCustomConfig.loadDependencies.bind(this, ctx));
+    }
+
+    return deferral.promise;
 };

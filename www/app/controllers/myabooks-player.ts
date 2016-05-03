@@ -8,6 +8,7 @@ module NuevaLuz {
         currentStatus : PlayerInfo;
         tmpBookmark : Bookmark;        
         showPlay : boolean;
+        // msg : string;
         ready : boolean;
     }
     
@@ -86,13 +87,15 @@ module NuevaLuz {
             this.scope.showPlay = true;
             
             this.scope.$on('playerInfo', (event : ng.IAngularEvent, info : PlayerInfo) => {
+                // this.scope.msg = "S: " + JSON.stringify(info);
 
-                this.scope.showPlay = !info.status ||
+                this.scope.showPlay =  !info.status ||
                                        info.status===Media.MEDIA_NONE ||
                                        info.status===Media.MEDIA_STARTING ||
                                        info.status===Media.MEDIA_PAUSED ||
                                        info.status===Media.MEDIA_STOPPED;
                 
+
                 if (this.scope.currentStatus && this.scope.currentStatus.position) {
                     this.scope.currentStatus.position.currentIndex = info.position.currentIndex;
                     this.scope.currentStatus.position.currentSOM = info.position.currentSOM;
@@ -112,11 +115,11 @@ module NuevaLuz {
         
         play(on : boolean) {
             if (on) {
-                this.player.play(this.scope.currentStatus.position);            
+                this.player.play(this.scope.currentStatus.position);
             }
             else {
                 this.player.saveStatus(this.scope.currentStatus, () => {}, (error:string) => {});
-                this.player.pause();                
+                this.player.pause();
             }
         }
         
@@ -143,6 +146,10 @@ module NuevaLuz {
         
         selectLevel() {
             this.location.path("/myabooks/player/level/" + this.scope.currentBook.id);
+        }
+        
+        goToIndex() {
+            this.location.path("/myabooks/player/index/" + this.scope.currentBook.id);            
         }
         
         addBookmark() {
